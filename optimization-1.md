@@ -23,10 +23,10 @@ Table of Contents:
 
 이전 섹션에서 이미지 분류(image classification)을 할 때에 있어 두 가지의 핵심요쇼를 소개했습니다.
 
-1. 원 이미지의 픽셀들을 넣으면 분류 스코어(class score)를 계산해주는 모수화된(parameterized) **스코어 함수(score function)** (예를 들어,  선형 함수).
-2. 학습(training) 데이타에 어떤 특정 모수(parameter/weight)들을 가지고 스코어 함수(score function)를 적용시켰을 때, 실제 class와 얼마나 잘 일치하는지에 따라 그 특정 모수(parameter/weight)들의 질을 측정하는 **손실 함수(loss function)**. 여러 종류의 손실함수(예를 들어, Softmax/SVM)가 있다.
+1. 원 이미지의 픽셀들을 넣으면 분류 스코어(class score)를 계산해주는 모수화된(parameterized) **스코어함수(score function)** (예를 들어,  선형함수).
+2. 학습(training) 데이타에 어떤 특정 모수(parameter/weight)들을 가지고 스코어함수(score function)를 적용시켰을 때, 실제 class와 얼마나 잘 일치하는지에 따라 그 특정 모수(parameter/weight)들의 질을 측정하는 **손실함수(loss function)**. 여러 종류의 손실함수(예를 들어, Softmax/SVM)가 있다.
 
-구체적으로 말하자면, 다음과 같은 형식을 가진 선형함수 $$ f(x_i, W) =  W x_i $$를 스코어 함수(score function)로 쓸 때,  지난 번에 다룬 바와 같이 SVM은 다음과 같은 수식으로 표현할 수 있다.:
+구체적으로 말하자면, 다음과 같은 형식을 가진 선형함수 $$ f(x_i, W) =  W x_i $$를 스코어함수(score function)로 쓸 때,  앞에서 다룬 바와 같이 SVM은 다음과 같은 수식으로 표현할 수 있다.:
 
 $$
 L = \frac{1}{N} \sum_i \sum_{j\neq y_i} \left[ \max(0, f(x_i; W)_j - f(x_i; W)_{y_i} + 1) \right] + \alpha R(W)
@@ -77,7 +77,7 @@ $$
   </div>
 </div>
 
-옆길로 새면, 아마도 밥공기 모양을 보고 SVM 손실함수(loss function)이 일종의 [볼록함수](http://en.wikipedia.org/wiki/Convex_function)라고 생각했을 것이다. 이런 형태의 함수를 효율적으로 최소화하는 문제에 대한 엄청난 양의 연구 성과들이 있다. 스탠포드 강좌 중에서도 이 주제를 다룬 것도 있다. ( [볼록함수 최적화](http://stanford.edu/~boyd/cvxbook/) ). 이 점수함수(score function) $$f$$를 신경망(neural networks)로 확장시키면, 목적함수(역자 주: 손실함수(loss function))은 더이상 볼록함수가 아니게 되고, 위와 같은 시각화를 해봐도 밥공기 모양 대신 울퉁불퉁하고 복잡한 모양이 보일 것이다.
+옆길로 새면, 아마도 밥공기 모양을 보고 SVM 손실함수(loss function)이 일종의 [볼록함수](http://en.wikipedia.org/wiki/Convex_function)라고 생각했을 것이다. 이런 형태의 함수를 효율적으로 최소화하는 문제에 대한 엄청난 양의 연구 성과들이 있다. 스탠포드 강좌 중에서도 이 주제를 다룬 것도 있다. ( [볼록함수 최적화](http://stanford.edu/~boyd/cvxbook/) ). 이 스코어함수(score function) $$f$$를 신경망(neural networks)로 확장시키면, 목적함수(역자 주: 손실함수(loss function))은 더이상 볼록함수가 아니게 되고, 위와 같은 시각화를 해봐도 밥공기 모양 대신 울퉁불퉁하고 복잡한 모양이 보일 것이다.
 
 *미분이 불가능한 손실함수(loss functions)*. 기술적인 설명을 덧붙이자면, $$\max(0,-)$$ 함수 때문에 손실함수(loss functionn)에 *꺾임*이 생기는데, 이 때문에 손실함수(loss functions)는 미분이 불가능해진다. 왜냐하면, 그 꺾이는 부분에서 미분 혹은 그라디언트가 존재하지 않기 때문이다. 하지만, [서브그라디언트(subgradient)](http://en.wikipedia.org/wiki/Subderivative)가 존재하고, 대체로 이를 그라디언트(gradient) 대신 이용한다. 앞으로 이 강의에서는 *그라디언트(gradient)*와 *서브그라디언트(subgradient)*를 구분하지 않고 쓸 것이다.
 
@@ -136,13 +136,13 @@ np.mean(Yte_predict == Yte)
 
 > 우리의 전략은 무작위로 뽑은 모수(parameter/weight)으로부터 시작해서 반복적으로 조금씩 개선시켜 손실(loss)을 낮추는 것이다.
 
-**눈가리고 하산하는 것에 비유.** 앞으로 도움이 될만한 비유는, 경사진 지형에서 눈가리개를 하고 점점 아래로 내려오는 자기 자신을 생각해보는 것이다. CIFAR-10의 예시에서, 그 언덕들은 (**W**가 3073 x 10 차원이므로) 30,730차원이다. 언덕의 각 지점에는 특정 손실값(loss), 즉, 지형의 고도가 주어진다.
+**눈 가리고 하산하는 것에 비유.** 앞으로 도움이 될만한 비유는, 경사진 지형에서 눈가리개를 하고 점점 아래로 내려오는 자기 자신을 생각해보는 것이다. CIFAR-10의 예시에서, 그 언덕들은 (**W**가 3073 x 10 차원이므로) 30,730차원이다. 언덕의 각 지점에서의 고도가 손실함수(loss function)의 손실값(loss)의 역할을 한다.
 
 <a name='opt2'></a>
 
-#### Strategy #2: Random Local Search
+#### 전략 #2: 무작위 국소 탐색 (Random Local Search)
 
-The first strategy you may think of is to to try to extend one foot in a random direction and then take a step only if it leads downhill. Concretely, we will start out with a random $$W$$, generate random perturbations $$ \delta W $$ to it and if the loss at the perturbed $$W + \delta W$$ is lower, we will perform an update. The code for this procedure is as follows:
+처음 떠오르는 전략은, 시작점에서 무작위로 방향을 정해서 발을 살짝 뻗어서 더듬어보고 그게 내리막길길을 때만 한발짝 내딛는 것이다. 구체적으로 말하면, 임의의 $$W$$에서 시작하고, 또다른 임의의 방향 $$ \delta W $$으로 살짝 움직여본다. 만약에 움직여간 자리($$W + \delta W$$)에서의 손실잢(loss)가 더 낮으면, 거기로 움직이고 다시 탐색을 시작한다. 이 과정을 코드로 짜면 다음과 같다.
 
 ~~~python
 W = np.random.randn(10, 3073) * 0.001 # generate random starting W
@@ -157,25 +157,25 @@ for i in xrange(1000):
   print 'iter %d loss is %f' % (i, bestloss)
 ~~~
 
-Using the same number of loss function evaluations as before (1000), this approach achieves test set classification accuracy of **21.4%**. This is better, but still wasteful and computationally expensive.
+이전과 같은 횟수(즉, 1000번)만큼 손실함수(loss function)을 계산하고도, 이 방법을 테스트 데이터에 적용해보니,  분류정확도가 **21.4%**로 나왔다. 발전하긴 했지만, 여전히 좀 비효울적인 것 같다.
 
 <a name='opt3'></a>
 
-#### Strategy #3: Following the Gradient
+#### 전략 #3: 그라디언트(gradient) 따라가기
 
-In the previous section we tried to find a direction in the weight-space that would improve our weight vector (and give us a lower loss). It turns out that there is no need to randomly search for a good direction: we can compute the *best* direction along which we should change our weight vector that is mathematically guaranteed to be the direction of the steepest descend (at least in the limit as the step size goes towards zero). This direction will be related to the **gradient** of the loss function. In our hiking analogy, this approach roughly corresponds to feeling the slope of the hill below our feet and stepping down the direction that feels steepest.
+이전 섹션에서, 모수(parameter/weight) 공간에서 모수(parameter/weight) 벡터를 향상시키는 (즉, 손실값을 더 낮추는) 뱡향을 찾는 시도를 해봤다. 그런데 사실 좋은 방향을 찾기 위해 방향을 무작위로 탐색할 필요가 없다고 한다. (적어도 반지름이 0으로 수렴하는 아주 좁은 근방에서는) 가장 가파르게 감소한다고 수학적으로 검증된 *최선의* 방향을 구할 수 있고, 이 방향을 따라 모수(parameter/weight) 벡터를 움직이면 된다는 것이다. 이 방향이 손실함수(loss function)의 **그라디언트(gradient)**와 관계있다. 눈 가리고 하산하는 것에 비유할 때, 발 밑 지형을 잘 더듬어보고 가장 가파르다는 느낌을 주는 방향으로 내려가는 것에 비견할 수 있다.
 
-In one-dimensional functions, the slope is the instantaneous rate of change of the function at any point you might be interested in. The gradient is a generalization of slope for functions that don't take a single number but a vector of numbers. Additionally, the gradient is just a vector of slopes (more commonly referred to as **derivatives**) for each dimension in the input space. The mathematical expression for the derivative of a 1-D function with respect its input is:
+1차원 함수의 경우, 어떤 점에서 움직일 때 기울기는 함수값의 순간 증가율을 나타낸다. 그라디언트(gradient)는 이 기울기란 것을, 변수가 하나가 아니라 여러 개인 경우로 일반화시킨 것이다. 덧붙여 설명하면, 그라디언트(gradient)는 입력데이터공간(역자 주: x들의 공간)의 각 차원에 해당하는 기울기(**미분**이라고 더 많이 불린다)들의 백터이다. 1차원 함수의 미분을 수식으로 쓰면 다음과 같다.
 
 $$
 \frac{df(x)}{dx} = \lim_{h\ \to 0} \frac{f(x + h) - f(x)}{h}
 $$
 
-When the functions of interest take a vector of numbers instead of a single number, we call the derivatives **partial derivatives**, and the gradient is simply the vector of partial derivatives in each dimension.
+함수가 숫자 하나가 아닌 벡터를 입력으로 받는 경우 (역자 주: x가 벡터인 경우), 우리는 미분을 **편미분**이라고 부른고, 그라디언트(gradient)는 단순히 각 차원으로의 편미분들을 모아놓은 벡터이다.
 
 <a name='gradcompute'></a>
 
-### Computing the gradient
+### 그라디언트(gradient) 계산
 
 There are two ways to compute the gradient: A slow, approximate but easy way (**numerical gradient**), and a fast, exact but more error-prone way that requires calculus (**analytic gradient**). We will now present both.
 
