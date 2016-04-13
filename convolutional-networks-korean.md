@@ -140,7 +140,7 @@ CONV 레이어는 CNN을 이루는 핵심 요소이다. CONV 레이어의 출력
 - `(x,y)`위치에서의 *depth column*은 액티베이션 `X[x,y,:]`이 된다.
 - A *depth slice*, or equivalently an *activation map* at depth `d` would be the activations `X[:,:,d]`.
 - depth `d`에서의 *depth slice*, 또는 *액티베이션 맵 (activation map)*은 `X[:,:,d]`가 된다.
-- 
+
 *컨볼루션 레이어 예제*. 입력 볼륨 `X`의 모양이 `X.shape: (11,11,4)`이고 제로 패딩은 사용하지 않으며($$P = 0$$) 필터 크기는 $$F = 5$$, stride $$S = 2$$라고 하자. 출력 볼륨의 spatial 크기 (가로/세로)는 (11-5)/2 + 1 = 4가 된다. 출력 볼륨의 액티베이션 맵 (`V`라고 하자) 는 아래와 같은 것이다 (아래에는 일부 요소만 나타냄).
 
 - `V[0,0,0] = np.sum(X[:5,:5,:] * W0) + b0`
