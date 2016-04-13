@@ -124,16 +124,16 @@ CONV 레이어는 CNN을 이루는 핵심 요소이다. CONV 레이어의 출력
 
 사실 적절한 가정을 통해 파라미터 개수를 크게 줄이는 것이 가능하다: (x,y)에서 어떤 patch feature가 유용하게 사용되었다면, 이 feature는 다른 위치 (x2,y2)에서도 유용하게 사용될 수 있다. 3차원 볼륨의 한 슬라이스 (깊이 차원으로 자른 2차원 슬라이스) 를 **depth slice**라고 하자 ([55x55x96] 사이즈의 볼륨은 각각 [55x55]의 크기를 가진 96개의 depth slice임). 앞으로는 각 depth slice 내의 뉴런들이 같은 가중치와 바이어스를 가지도록 제한할 것이다. 이런 파라미터 공유 기법을 사용하면, 예제의 첫 번째 컨볼루션 레이어는 (depth slice 당) 96개의 고유한 가중치를 가져서 총 96\*11\*11\*3 = 34,848개의 고유한 가중치, 또는 바이어스를 합쳐서 34,944개의 파라미터를 갖게 된다. 또는 각 depth slice에 존재하는 55*55개의 뉴런들은 모두 같은 파라미터를 사용하게 된다. 실제로는 backpropagation 과정에서 각 depth slice 내의 모든 뉴런들이 가중치에 대한 gradient를 계산하겠지만, 가중치 업데이트 할 때에는 이 gradient들을 합해 사용한다. 
 
-Notice that if all neurons in a single depth slice are using the same weight vector, then the forward pass of the CONV layer can in each depth slice be computed as a **convolution** of the neuron's weights with the input volume (Hence the name: Convolutional Layer). Therefore, it is common to refer to the sets of weights as a **filter** (or a **kernel**), which is convolved with the input. The result of this convolution is an *activation map* (e.g. of size [55x55]), and the set of activation maps for each different filter are stacked together along the depth dimension to produce the output volume (e.g. [55x55x96]).
+한 depth slice내의 모든 뉴런들이 같은 가중치 벡터를 갖기 때문에 컨볼루션 레이어의 forward pass는 입력 볼륨과 가중치 간의 **컨볼루션**으로 계산될 수 있다 (컨볼루션 레이어라는 이름이 붙은 이유).  그러므로 컨볼루션 레이어의 가중치는 **필터(filter)** 또는 **커널(kernel)**이라고 부른다. 컨볼루션의 결과물은 **액티베이션 맵(activation map, [55x55] 사이즈)** 이 되며 각 깊이에 해당하는 필터의 액티베이션 맵들을 쌓으면 최종 출력 볼륨 ([55x55x96] 사이즈) 가 된다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/cnn/weights.jpeg">
   <div class="figcaption">
-    Example filters learned by Krizhevsky et al. Each of the 96 filters shown here is of size [11x11x3], and each one is shared by the 55*55 neurons in one depth slice. Notice that the parameter sharing assumption is relatively reasonable: If detecting a horizontal edge is important at some location in the image, it should intuitively be useful at some other location as well due to the translationally-invariant structure of images. There is therefore no need to relearn to detect a horizontal edge at every one of the 55*55 distinct locations in the Conv layer output volume.
+    Krizhevsky et al. 에서 학습된 필터의 예. 96개의 필터 각각은 [11x11x3] 사이즈이며, 하나의 depth slice 내 55*55개 뉴런들이 이 필터들을 공유한다. 만약 이미지의 특정 위치에서 가로 엣지 (edge)를 검출하는 것이 중요했다면, 이미지의 다른 위치에서도 같은 특성이 중요할 수 있다 (이미지의 translationally-invariant한 특성 때문). 그러므로 55*55개 뉴런 각각에 대해 가로 엣지 검출 필터를 재학습 할 필요가 없다.
   </div>
 </div>
 
-Note that sometimes the parameter sharing assumption may not make sense. This is especially the case when the input images to a ConvNet have some specific centered structure, where we should expect, for example, that completely different features should be learned on one side of the image than another. One practical example is when the input are faces that have been centered in the image. You might expect that different eye-specific or hair-specific features could (and should) be learned in different spatial locations. In that case it is common to relax the parameter sharing scheme, and instead simply call the layer a **Locally-Connected Layer**.
+가끔은 파라미터 sharing에 대한 가정이 부적절할 수도 있다. 특히 입력 이미지가 중심을 기준으로 찍힌 경우 (예를 들면 이미지 중앙에 얼굴이 있는 이미지), 이미지의 각 영역에 대해 완전히 다른 feature들이 학습되어야 할 수 있다. 눈과 관련된 feature나 머리카락과 관련된 feature 등은 서로 다른 영역에서 학습될 것이다. 이런 경우에는 파라미터 sharing 기법을 접어두고 대신 **Locally-Connected Layer**라는 레이어를 사용하는 것이 좋다.
 
 **Numpy examples.** To make the discussion above more concrete, lets express the same ideas but in code and with a specific example. Suppose that the input volume is a numpy array `X`. Then:
 
