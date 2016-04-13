@@ -135,19 +135,20 @@ CONV 레이어는 CNN을 이루는 핵심 요소이다. CONV 레이어의 출력
 
 가끔은 파라미터 sharing에 대한 가정이 부적절할 수도 있다. 특히 입력 이미지가 중심을 기준으로 찍힌 경우 (예를 들면 이미지 중앙에 얼굴이 있는 이미지), 이미지의 각 영역에 대해 완전히 다른 feature들이 학습되어야 할 수 있다. 눈과 관련된 feature나 머리카락과 관련된 feature 등은 서로 다른 영역에서 학습될 것이다. 이런 경우에는 파라미터 sharing 기법을 접어두고 대신 **Locally-Connected Layer**라는 레이어를 사용하는 것이 좋다.
 
-**Numpy examples.** To make the discussion above more concrete, lets express the same ideas but in code and with a specific example. Suppose that the input volume is a numpy array `X`. Then:
-
+**Numpy 예제.** 위에서 다룬 것들을 더 확실히 알아보기 위해 코드를 작성해보자. 입력 볼륨을 numpy 배열 `X`라고 하면: 
 - A *depth column* at position `(x,y)` would be the activations `X[x,y,:]`.
+- `(x,y)`위치에서의 *depth column*은 액티베이션 `X[x,y,:]`이 된다.
 - A *depth slice*, or equivalently an *activation map* at depth `d` would be the activations `X[:,:,d]`.
-
-*Conv Layer Example*. Suppose that the input volume `X` has shape `X.shape: (11,11,4)`. Suppose further that we use no zero padding ($$P = 0$$), that the filter size is $$F = 5$$, and that the stride is $$S = 2$$. The output volume would therefore have spatial size (11-5)/2+1 = 4, giving a volume with width and height of 4. The activation map in the output volume (call it `V`), would then look as follows (only some of the elements are computed in this example):
+- depth `d`에서의 *depth slice*, 또는 *액티베이션 맵 (activation map)*은 `X[:,:,d]`가 된다.
+- 
+*컨볼루션 레이어 예제*. 입력 볼륨 `X`의 모양이 `X.shape: (11,11,4)`이고 제로 패딩은 사용하지 않으며($$P = 0$$) 필터 크기는 $$F = 5$$, stride $$S = 2$$라고 하자. 출력 볼륨의 spatial 크기 (가로/세로)는 (11-5)/2 + 1 = 4가 된다. 출력 볼륨의 액티베이션 맵 (`V`라고 하자) 는 아래와 같은 것이다 (아래에는 일부 요소만 나타냄).
 
 - `V[0,0,0] = np.sum(X[:5,:5,:] * W0) + b0`
 - `V[1,0,0] = np.sum(X[2:7,:5,:] * W0) + b0`
 - `V[2,0,0] = np.sum(X[4:9,:5,:] * W0) + b0`
 - `V[3,0,0] = np.sum(X[6:11,:5,:] * W0) + b0`
 
-Remember that in numpy, the operation `*` above denotes elementwise multiplication between the arrays. Notice also that the weight vector `W0` is the weight vector of that neuron and `b0` is the bias. Here, `W0` is assumed to be of shape `W0.shape: (5,5,4)`, since the filter size is 5 and the depth of the input volume is 4. Notice that at each point, we are computing the dot product as seen before in ordinary neural networks. Also, we see that we are using the same weight and bias (due to parameter sharing), and where the dimensions along the width are increasing in steps of 2 (i.e. the stride). To construct a second activation map in the output volume, we would have:
+Numpy에서 `*`연산은 두 배열 간의 elementwise 곱셈이라는 것을 기억하자. 또한 `W0`는 가중치 벡터이고 `b0`은 바이어스라는 것도 기억하자. 여기에서 `W0`의 모양은 `W0.shape: (5,5,4)`라고 가정하자 (필터 사이즈는 5, depth는 4). 각 위치에서 일반 신경망에서와 같이 내적 연산을 수행하게 된다. 또한 파라미터 sharing 기법으로 같은 가중치, 바이어스가 사용되고 가로 차원에 대해 2 (stride)칸씩 옮겨가며 연산이 이뤄진다는 것을 볼 수 있다. 출력 볼륨의 두 번째 액티베이션 맵을 구성하는 방법은:
 
 - `V[0,0,1] = np.sum(X[:5,:5,:] * W1) + b1`
 - `V[1,0,1] = np.sum(X[2:7,:5,:] * W1) + b1`
@@ -156,26 +157,26 @@ Remember that in numpy, the operation `*` above denotes elementwise multiplicati
 - `V[0,1,1] = np.sum(X[:5,2:7,:] * W1) + b1` (example of going along y)
 - `V[2,3,1] = np.sum(X[4:9,6:11,:] * W1) + b1` (or along both)
 
-where we see that we are indexing into the second depth dimension in `V` (at index 1) because we are computing the second activation map, and that a different set of parameters (`W1`) is now used. In the example above, we are for brevity leaving out some of the other operatations the Conv Layer would perform to fill the other parts of the output array `V`. Additionally, recall that these activation maps are often followed elementwise through an activation function such as ReLU, but this is not shown here.
+위 예제는 `V`의 두 번째 depth 차원 (인덱스 1)을 인덱싱하고 있다. 두 번째 액티베이션 맵을 계산하므로, 여기에서 사용된 가중치는 이전 예제와 달리 `W1`이다. 보통 액티베이션 맵이 구해진 뒤 ReLU와 같은 elementwise 연산이 가해지는 경우가 많은데, 위 예제에서는 다루지 않았다.
 
-**Summary**. To summarize, the Conv Layer:
+**요약**. To summarize, the Conv Layer:
 
-- Accepts a volume of size $$W_1 \times H_1 \times D_1$$
-- Requires four hyperparameters:
-  - Number of filters $$K$$,
-  - their spatial extent $$F$$,
-  - the stride $$S$$,
-  - the amount of zero padding $$P$$.
-- Produces a volume of size $$W_2 \times H_2 \times D_2$$ where:
+- $$W_1 \times H_1 \times D_1$$ 크기의 볼륨을 입력받는다.
+- 4개의 hyperparameter가 필요하다:
+  - 필터 개수 $$K$$,
+  - 필터의 가로/세로 Spatial 크기  $$F$$,
+  - Stride $$S$$,
+  - 제로 패딩 $$P$$.
+- $$W_2 \times H_2 \times D_2$$ 크기의 출력 볼륨을 생성한다:
   - $$W_2 = (W_1 - F + 2P)/S + 1$$
-  - $$H_2 = (H_1 - F + 2P)/S + 1$$ (i.e. width and height are computed equally by symmetry)
+  - $$H_2 = (H_1 - F + 2P)/S + 1$$ (i.e. 가로/세로는 같은 방식으로 계산됨)
   - $$D_2 = K$$
-- With parameter sharing, it introduces $$F \cdot F \cdot D_1$$ weights per filter, for a total of $$(F \cdot F \cdot D_1) \cdot K$$ weights and $$K$$ biases.
-- In the output volume, the $$d$$-th depth slice (of size $$W_2 \times H_2$$) is the result of performing a valid convolution of the $$d$$-th filter over the input volume with a stride of $$S$$, and then offset by $$d$$-th bias.
+- 파라미터 sharing로 인해 필터 당 $$F \cdot F \cdot D_1$$개의 가중치를 가져서 총 $$(F \cdot F \cdot D_1) \cdot K$$개의 가중치와 $$K$$개의 바이어스를 갖게 된다.
+- 출력 볼륨에서 $$d$$번째 depth slice ($$W_2 \times H_2$$ 크기)는 입력 볼륨에 $$d$$번째 필터를 stride $$S$$만큼 옮겨가며 컨볼루션 한 뒤 $$d$$번째 바이어스를 더한 결과이다.
 
-A common setting of the hyperparameters is $$F = 3, S = 1, P = 1$$. However, there are common conventions and rules of thumb that motivate these hyperparameters. See the [ConvNet architectures](#architectures) section below.
+흔한 Hyperparameter기본 세팅은 $$F = 3, S = 1, P = 1$$이다. 뒤에서 다룰 [ConvNet architectures](#architectures)에서 hyperparameter 세팅과 관련된 법칙이나 방식 등을 확인할 수 있다.
 
-**Convolution Demo**. Below is a running demo of a CONV layer. Since 3D volumes are hard to visualize, all the volumes (the input volume (in blue), the weight volumes (in red), the output volume (in green)) are visualized with each depth slice stacked in rows. The input volume is of size $$W_1 = 5, H_1 = 5, D_1 = 3$$, and the CONV layer parameters are $$K = 2, F = 3, S = 2, P = 1$$. That is, we have two filters of size $$3 \times 3$$, and they are applied with a stride of 2. Therefore, the output volume size has spatial size (5 - 3 + 2)/2 + 1 = 3. Moreover, notice that a padding of $$P = 1$$ is applied to the input volume, making the outer border of the input volume zero. The visualization below iterates over the output activations (green), and shows that each element is computed by elementwise multiplying the highlighted input (blue) with the filter (red), summing it up, and then offsetting the result by the bias.
+** 컨볼루션 데모**. 아래는 컨볼루션 레이어 데모이다. 3차원 볼륨은 시각화하기 힘드므로 각 행마다 depth slice를 하나씩 배치했다. 각 볼륨은 입력 볼륨(파란색), 가중치 볼륨(빨간색), 출력 볼륨(녹색)으로 이뤄진다. 입력 볼륨의 크기는 $$W_1 = 5, H_1 = 5, D_1 = 3$$이고 컨볼루션 레이어의 파라미터들은 $$K = 2, F = 3, S = 2, P = 1$$이다. 즉, 2개의 $$3 \times 3$$크기의 필터가 각각 stride 2마다 적용된다. 그러므로 출력 볼륨의 spatial 크기 (가로/세로)는 (5 - 3 + 2)/2 + 1 = 3이다. 제로 패딩 $$P = 1$$ 이 적용되어 입력 볼륨의 가장자리가 모두 0으로 되어있다는 것을 확인할 수 있다. 아래의 영상에서 하이라이트 표시된 입력(파란색)과 필터(빨간색)이 elementwise로 곱해진 뒤 하나로 더해지고 bias가 더해지는걸 볼 수 있다. 
 
 <div class="fig figcenter fighighlight">
   <iframe src="{{site.baseurl}}/assets/conv-demo/index.html" width="100%" height="700px;" style="border:none;"></iframe>
