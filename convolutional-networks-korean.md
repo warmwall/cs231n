@@ -183,6 +183,7 @@ Numpy에서 `*`연산은 두 배열 간의 elementwise 곱셈이라는 것을 �
   <div class="figcaption"></div>
 </div>
 
+**매트릭스 곱으로 구현**. 컨볼루션 연산은 필터와 이미지의 로컬한 영역간의 내적 연산을 한 것과 같다. 컨볼루션 레이어의 일반적인 구현 패턴은 이 점을 이용해 컨볼루션 레이어의 forward pass를 다음과 같이 하나의 큰 매트릭스 곱으로 
 **Implementation as Matrix Multiplication**. Note that the convolution operation essentially performs dot products between the filters and local regions of the input. A common implementation pattern of the CONV layer is to take advantage of this fact and formulate the forward pass of a convolutional layer as one big matrix multiply as follows:
 
 1. The local regions in the input image are stretched out into columns in an operation commonly called **im2col**. For example, if the input is [227x227x3] and it is to be convolved with 11x11x3 filters at stride 4, then we would take [11x11x3] blocks of pixels in the input and stretch each block into a column vector of size 11\*11\*3 = 363. Iterating this process in the input at stride of 4 gives (227-11)/4+1 = 55 locations along both width and height, leading to an output matrix `X_col` of *im2col* of size [363 x 3025], where every column is a stretched out receptive field and there are 55*55 = 3025 of them in total. Note that since the receptive fields overlap, every number in the input volume may be duplicated in multiple distinct columns.
