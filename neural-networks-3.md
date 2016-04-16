@@ -5,47 +5,49 @@ permalink: /neural-networks-3/
 
 Table of Contents:
 
-- [Gradient checks](#gradcheck)
+- [그라디언트 점검 (Gradient checks)](#gradcheck)
 - [Sanity checks](#sanitycheck)
-- [Babysitting the learning process](#baby)
-  - [Loss function](#loss)
-  - [Train/val accuracy](#accuracy)
-  - [Weights:Updates ratio](#ratio)
-  - [Activation/Gradient distributions per layer](#distr)
-  - [Visualization](#vis)
-- [Parameter updates](#update)
-  - [First-order (SGD), momentum, Nesterov momentum](#sgd)
-  - [Annealing the learning rate](#anneal)
-  - [Second-order methods](#second)
-  - [Per-parameter adaptive learning rates (Adagrad, RMSProp)](#ada)
-- [Hyperparameter Optimization](#hyper)
-- [Evaluation](#eval)
-  - [Model Ensembles](#ensemble)
-- [Summary](#summary)
-- [Additional References](#add)
+- [학습 과정 돌보기 (Babysitting the learning process)](#baby)
+  - [손실 함수 (Loss function)](#loss)
+  - [훈련/검증 성능 (Train/val accuracy)](#accuracy)
+  - [웨이트의 현재값과 변화량의 비율 (Weights:Updates ratio)](#ratio)
+  - [레이어별 활성값 및 그라디언트값의 분포 (Activation/Gradient distributions per layer)](#distr)
+  - [시각화 (Visualization)](#vis)
+- [파라미터 업데이트 (Parameter updates)](#update)
+  - [일차 근사 방법 (SGD) (First-order (SGD)), 모멘텀 (momentum), Nesterov 모멘텀 (Nesterov momentum)](#sgd)
+  - [학습 속도를 담금질하기 (Annealing the learning rate)](#anneal)
+  - [이차 근사 방법 (Second-order methods)](#second)
+  - [파라미터별로 학습 속도를 데이터가 판단하게 하기 (Adagrad, RMSProp) )Per-parameter adaptive learning rates (Adagrad, RMSProp))](#ada)
+- [초-파라미터 최적화 (Hyperparameter Optimization)](#hyper)
+- [평가 (Evaluation)](#eval)
+  - [모형 앙상블 (Model Ensembles)](#ensemble)
+- [요약](#summary)
+- [추가적인 참고 문헌](#add)
 
 ## Learning
 
-In the previous sections we've discussed the static parts of a Neural Networks: how we can set up the network connectivity, the data, and the loss function. This section is devoted to the dynamics, or in other words, the process of learning the parameters and finding good hyperparameters.
+이전 섹션들에서는 레이어를 몇 층 쌓고 레이어별로 몇 개의 유닛을 준비할지(newwork connectivity), 데이터를 어떻게 준비하고 어떤 손실 함수(loss function)를 선택할지 논하였다. 말하자면 이전 섹션들은 주로 뉴럴 네트워크(Neural Network)의 정적인 부분인데, 본 섹션에서는 동적인 부분들을 소개한다. 파라미터(parameter)를 학습하고 좋은 초-파라미터(hyperparamter)를 찾는 과정 등을 다룰 예정이다.
 
 <a name='gradcheck'></a>
-### Gradient Checks
+### 그라디언트 체크 (Gradient Checks)
 
-In theory, performing a gradient check is as simple as comparing the analytic gradient to the numerical gradient. In practice, the process is much more involved and error prone. Here are some tips, tricks, and issues to watch out for:
+이론적인 그라디언트 체크라 하면, 수치적으로 계산한(numerical) 그라디언트와 수식으로 계산한(analytic) 그라디언트를 비교하는 정도라 매우 간단하다고 생각할 수도 있겠다. 그렇지만 이 작업을 직접 실현해 보면 훨씬 복잡하고 뜬금없이 오차가 발생하기도 쉽다는 것을 깨달을 것이다. 이제 팁, 트릭, 조심할 이슈들 몇 개를 소개하고자 한다.
 
-**Use the centered formula**. The formula you may have seen for the finite difference approximation when evaluating the numerical gradient looks as follows:
+
+**같은 근사라 하여도 이론적으로 더 정확도가 높은 공식이 있다 (Use the centered formula)**. 그라디언트($\frac{df(x)}{dx}$)를 수치적으로 근사한다 하면 보통 다음 유한 차분 근사(finite difference approximation)를 떠올릴 것이다:
 
 $$
 \frac{df(x)}{dx} = \frac{f(x + h) - f(x)}{h} \hspace{0.1in} \text{(bad, do not use)}
 $$
 
-where $h$ is a very small number, in practice approximately 1e-5 or so. In practice, it turns out that it is much better to use the *centered* difference formula of the form:
+여기서 $h$는 아주 작은 수이고 보통 1e-5 정도의 수를 사용한다. 위 식보다는 아래의 *중심화된(centered)* 차분 공식이 경험적으로는 훨씬 낫다:
 
 $$
 \frac{df(x)}{dx} = \frac{f(x + h) - f(x - h)}{2h} \hspace{0.1in} \text{(use instead)}
 $$
 
-This requires you to evaluate the loss function twice to check every single dimension of the gradient (so it is about 2 times as expensive), but the gradient approximation turns out to be much more precise. To see this, you can use Taylor expansion of $f(x+h)$ and $f(x-h)$ and verify that the first formula has an error on order of $O(h)$, while the second formula only has error terms on order of $O(h^2)$ (i.e. it is a second order approximation).
+물론 이 공식은 $f(x+h)$ 말고도 $f(x-h)$도 계산하여야 하므로 최초 식보다 계산량이 두 배 많지만 훨씬 정확한 근사를 제공한다. $f(x+h)$ 및 $f(x-h)$의 ($x$ 근방에서의) 테일러 전개를 고려하면 이유를 금방 알 수 있다. 첫 식은 
+To see this, you can use Taylor expansion of $f(x+h)$ and $f(x-h)$ and verify that the first formula has an error on order of $O(h)$, while the second formula only has error terms on order of $O(h^2)$ (i.e. it is a second order approximation).
 
 **Use relative error for the comparison**. What are the details of comparing the numerical gradient $f'_n$ and analytic gradient $f'_a$? That is, how do we know if the two are not compatible? You might be temped to keep track of the difference $\mid f'_a - f'_n \mid $ or its square and define the gradient check as failed if that difference is above a threshold. However, this is problematic. For example, consider the case where their difference is 1e-4. This seems like a very appropriate difference if the two gradients are about 1.0, so we'd consider the two gradients to match. But if the gradients were both on order of 1e-5 or lower, then we'd consider 1e-4 to be a huge difference and likely a failure. Hence, it is always more appropriate to consider the *relative error*:
 
