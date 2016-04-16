@@ -46,10 +46,10 @@ $$
 \frac{df(x)}{dx} = \frac{f(x + h) - f(x - h)}{2h} \hspace{0.1in} \text{(use instead)}
 $$
 
-물론 이 공식은 $f(x+h)$ 말고도 $f(x-h)$도 계산하여야 하므로 최초 식보다 계산량이 두 배 많지만 훨씬 정확한 근사를 제공한다. $f(x+h)$ 및 $f(x-h)$의 ($x$ 근방에서의) 테일러 전개를 고려하면 이유를 금방 알 수 있다. 첫 식은 
-To see this, you can use Taylor expansion of $f(x+h)$ and $f(x-h)$ and verify that the first formula has an error on order of $O(h)$, while the second formula only has error terms on order of $O(h^2)$ (i.e. it is a second order approximation).
+물론 이 공식은 $f(x+h)$ 말고도 $f(x-h)$도 계산하여야 하므로 최초 식보다 계산량이 두 배 많지만 훨씬 정확한 근사를 제공한다. $f(x+h)$ 및 $f(x-h)$의 ($x$ 근방에서의) 테일러 전개를 고려하면 이유를 금방 알 수 있다. 첫 식은 $O(h)$의 오차가 있는 데 반해  -- 역자 주 : $f(x + h) = f(x) + hf'(x) + O(h)$로부터 $f'(x) - \frac{(f(x+h)-f(x)}{h} = O(h)$ -- 두번째 식은 오차가 $O(h^2)$이다 (즉, 이차 근사이다). 
 
-**Use relative error for the comparison**. What are the details of comparing the numerical gradient $f'_n$ and analytic gradient $f'_a$? That is, how do we know if the two are not compatible? You might be temped to keep track of the difference $\mid f'_a - f'_n \mid $ or its square and define the gradient check as failed if that difference is above a threshold. However, this is problematic. For example, consider the case where their difference is 1e-4. This seems like a very appropriate difference if the two gradients are about 1.0, so we'd consider the two gradients to match. But if the gradients were both on order of 1e-5 or lower, then we'd consider 1e-4 to be a huge difference and likely a failure. Hence, it is always more appropriate to consider the *relative error*:
+
+**상대 오차를 사용하라 (Use relative error for the comparison)**. 그라디언트의 (수식으로 계산한, analytic) 참값 $f'_a$와 수치적(numerical) 근사값 $f'_n$을 비교하려면 어떤 디테일을 점검하여야 할까? 이 둘이 비슷하지 않음(not compatible)을 어떻게 알아낼 수 있을까? 가장 쉽게는 둘의 절대 오차 $\mid f'_a - f'_n \mid $ 혹은 그 제곱을 쭉 추적하여 이 값(들)이 언젠가 어느 한계점(threshold)를 넘으면 그라디언트 오류라 할 수도 있겠다. 그렇지만 절대 오차에는 문제가 있는 것이, 가령 절대 오차가 1e-4라 가정하여 보자. 만약 $f'_a$와 $f'_n$ 모두 1.0 언저리라면 1e-4의 오차 정도는 매우 훌륭한 근사이고  $f'_a \approx f'_n$이라 할 수 있다. 그런데 만약 두 그라디언트가 1e-5거나 더 작은 값이라면? 그렇다면 1e-4는 매우 큰 차이가 되고 근사가 실패했다고 보는 게 맞다. 따라서 절대 오차와 두 그라디언트 값의 비율을 고려하는 *상대 오차*가 더 적절하다. 언제나!: 
 
 $$
 \frac{\mid f'_a - f'_n \mid}{\max(\mid f'_a \mid, \mid f'_n \mid)}
