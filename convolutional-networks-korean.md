@@ -183,51 +183,52 @@ Numpy에서 `*`연산은 두 배열 간의 elementwise 곱셈이라는 것을 �
   <div class="figcaption"></div>
 </div>
 
-**매트릭스 곱으로 구현**. 컨볼루션 연산은 필터와 이미지의 로컬한 영역간의 내적 연산을 한 것과 같다. 컨볼루션 레이어의 일반적인 구현 패턴은 이 점을 이용해 컨볼루션 레이어의 forward pass를 다음과 같이 하나의 큰 매트릭스 곱으로 
-**Implementation as Matrix Multiplication**. Note that the convolution operation essentially performs dot products between the filters and local regions of the input. A common implementation pattern of the CONV layer is to take advantage of this fact and formulate the forward pass of a convolutional layer as one big matrix multiply as follows:
+**매트릭스 곱으로 구현**. 컨볼루션 연산은 필터와 이미지의 로컬한 영역간의 내적 연산을 한 것과 같다. 컨볼루션 레이어의 일반적인 구현 패턴은 이 점을 이용해 컨볼루션 레이어의 forward pass를 다음과 같이 하나의 큰 매트릭스 곱으로 계산된다:
 
-1. The local regions in the input image are stretched out into columns in an operation commonly called **im2col**. For example, if the input is [227x227x3] and it is to be convolved with 11x11x3 filters at stride 4, then we would take [11x11x3] blocks of pixels in the input and stretch each block into a column vector of size 11\*11\*3 = 363. Iterating this process in the input at stride of 4 gives (227-11)/4+1 = 55 locations along both width and height, leading to an output matrix `X_col` of *im2col* of size [363 x 3025], where every column is a stretched out receptive field and there are 55*55 = 3025 of them in total. Note that since the receptive fields overlap, every number in the input volume may be duplicated in multiple distinct columns.
-2. The weights of the CONV layer are similarly stretched out into rows. For example, if there are 96 filters of size [11x11x3] this would give a matrix `W_row` of size [96 x 363].
-3. The result of a convolution is now equivalent to performing one large matrix multiply `np.dot(W_row, X_col)`, which evaluates the dot product between every filter and every receptive field location. In our example, the output of this operation would be [96 x 3025], giving the output of the dot product of each filter at each location.
-4. The result must finally be reshaped back to its proper output dimension [55x55x96].
+1. 이미지의 각 로컬 영역을 열 벡터로 stretch 한다 (이런 연산을 보통 **im2col** 이라고 부름). 예를 들어, 만약 [227x227x3] 사이즈의 입력이 11x11x3 사이즈와 strie 4의 필터와 컨볼루션 한다면, 이미지에서 [11x11x3] 크기의 픽셀 블록을 가져와 11\*11\*3=363 크기의 열 벡터로 바꾸게 된다. 이 과정을 stride 4마다 하므로 가로, 세로에 대해 각각 (227-11)/4+1=55, 총 55\*55=3025 개 영역에 대해 반복하게 되고, 출력물인 `X_col`은 [363x3025]의 사이즈를 갖게 된다. 각각의 열 벡터는 리셉티브 필드를 1차원으로 stretch 한 것이고, 이 리셉티브 필드는 주위 리셉티브 필드들과 겹치므로 입력 볼륨의 여러 값들이 여러 출력 열벡터에 중복되어 나타날 수 있다.
+2. 컨볼루션 레이어의 가중치는 비슷한 방식으로 행 벡터 형태로 stretch된다. 예를 들어 [11x11x3]사이즈의 총 96개 필터가 있다면, [96x363] 사이즈의 W_row가 만들어진다.
+3. 이제 컨볼루션 연산은 하나의 큰 매트릭스 연산 `np.dot(W_row, X_col)`를 계산하는 것과 같다. 이 연산은 모든 필터와 모든 리셉티브 필터 영역들 사이의 내적 연산을 하는 것과 같다. 우리의 예에서는 각 영역에 대한 각각의 필터를 각각의 영역에 적용한 [96x3025] 사이즈의 출력물이 얻어진다.
+4. 결과물은 [55x55x96] 차원으로 reshape 한다.
 
-This approach has the downside that it can use a lot of memory, since some values in the input volume are replicated multiple times in `X_col`. However, the benefit is that there are many very efficient implementations of Matrix Multiplication that we can take advantage of (for example, in the commonly used [BLAS](http://www.netlib.org/blas/) API). Morever, the same *im2col* idea can be reused to perform the pooling operation, which we discuss next.
+이 방식은 입력 볼륨의 여러 값들이 `X_col`에 여러 번 복사되기 때문에 메모리가 많이 사용된다는 단점이 있다. 그러나 매트릭스 연산과 관련된 많은 효율적 구현방식들을 사용할 수 있다는 장점도 있다 ([BLAS](http://www.netlib.org/blas/) API 가 하나의 예임). 뿐만 아니라 같은 *im2col* 아이디어는 풀링 연산에서 재활용 할 수도 있다 (뒤에서 다루게 된다).
 
-**Backpropagation.** The backward pass for a convolution operation (for both the data and the weights) is also a convolution (but with spatially-flipped filters). This is easy to derive in the 1-dimensional case with a toy example (not expanded on for now).
+**Backpropagation.** 컨볼루션 연산의 backward pass 역시 컨볼루션 연산이다 (가로/세로가 뒤집어진 필터를 사용한다는 차이점이 있음). 간단한 1차원 예제를 가지고 쉽게 확인해볼 수 있다.
 
 <a name='pool'></a>
-#### Pooling Layer
+#### 풀링 레이어 (Pooling Layer)
 
-It is common to periodically insert a Pooling layer in-between successive Conv layers in a ConvNet architecture. Its function is to progressively reduce the spatial size of the representation to reduce the amount of parameters and computation in the network, and hence to also control overfitting. The Pooling Layer operates independently on every depth slice of the input and resizes it spatially, using the MAX operation. The most common form is a pooling layer with filters of size 2x2 applied with a stride of 2 downsamples every depth slice in the input by 2 along both width and height, discarding 75% of the activations. Every MAX operation would in this case be taking a max over 4 numbers (little 2x2 region in some depth slice). The depth dimension remains unchanged. More generally, the pooling layer:
+CNN 구조 내에 컨볼루션 레이어들 중간중간에 주기적으로 풀링 레이어를 넣는 것이 일반적이다. 풀링 레이어가 하는 일은 네트워크의 파라미터의 개수나 연산량을 줄이기 위해 representation의 spatial한 사이즈를 줄이는 것이다. 이는 오버피팅을 조절하는 효과도 가지고 있다. 풀링 레이어는 MAX 연산을 각 depth slice에 대해 독립적으로 적용하여 spatial한 크기를 줄인다. 사이즈 2x2와 stride 2가 가장 많이 사용되는 풀링 레이어이다. 각 depth slice를 가로/세로축을 따라 1/2로 downsampling해 75%의 액티베이션은 버리게 된다. 이 경우 MAX 연산은 4개 숫자 중 최대값을 선택하게 된다 (같은 depth slice 내의 2x2 영역). Depth 차원은 변하지 않는다. 풀링 레이어의 특징들은 일반적으로 아래와 같다:
 
-- Accepts a volume of size $$W_1 \times H_1 \times D_1$$
-- Requires three hyperparameters:
-  - their spatial extent $$F$$,
-  - the stride $$S$$,
-- Produces a volume of size $$W_2 \times H_2 \times D_2$$ where:
+- $$W_1 \times H_1 \times D_1$$ 사이즈의 입력을 받는다
+- 3가지 hyperparameter를 필요로 한다.
+  - Spatial extent $$F$$
+  - Stride $$S$$
+- $$W_2 \times H_2 \times D_2$$ 사이즈의 볼륨을 만든다
   - $$W_2 = (W_1 - F)/S + 1$$
   - $$H_2 = (H_1 - F)/S + 1$$
   - $$D_2 = D_1$$
-- Introduces zero parameters since it computes a fixed function of the input
-- Note that it is not common to use zero-padding for Pooling layers
+- 입력에 대해 항상 같은 연산을 하므로 파라미터는 따로 존재하지 않는다
+- 풀링 레이어에는 보통 제로 패딩을 하지 않는다
 
-It is worth noting that there are only two commonly seen variations of the max pooling layer found in practice: A pooling layer with $$F = 3, S = 2$$ (also called overlapping pooling), and more commonly $$F = 2, S = 2$$. Pooling sizes with larger receptive fields are too destructive.
+일반적으로 실전에서는 두 종류의 max 풀링 레이어만 널리 쓰인다. 하나는 overlapping 풀링이라고도 불리는 $$F = 3, S = 2$$ 이고 하나는 더 자주 쓰이는 $$F = 2, S = 2$$ 이다. 큰 리셉티브 필드에 대해서 풀링을 하면 보통 너무 많은 정보를 버리게 된다.
 
-**General pooling**. In addition to max pooling, the pooling units can also perform other functions, such as *average pooling* or even *L2-norm pooling*. Average pooling was often used historically but has recently fallen out of favor compared to the max pooling operation, which has been shown to work better in practice.
+**일반적인 풀링**. Max 풀링 뿐 아니라 *average 풀링*, *L2-norm 풀링* 등 다른 연산으로 풀링할 수도 있다. Average 풀링은 과거에 많이 쓰였으나 최근에는 Max 풀링이 더 좋은 성능을 보이며 점차 쓰이지 않고 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/cnn/pool.jpeg" width="36%">
   <img src="{{site.baseurl}}/assets/cnn/maxpool.jpeg" width="59%" style="border-left: 1px solid black;">
   <div class="figcaption">
-    Pooling layer downsamples the volume spatially, independently in each depth slice of the input volume. <b>Left:</b> In this example, the input volume of size [224x224x64] is pooled with filter size 2, stride 2 into output volume of size [112x112x64]. Notice that the volume depth is preserved. <b>Right:</b> The most common downsampling operation is max, giving rise to <b>max pooling</b>, here shown with a stride of 2. That is, each max is taken over 4 numbers (little 2x2 square).
+    풀링 레이어는 입력 볼륨의 각 depth slice를 spatial하게 downsampling한다. <b>좌:</b> 이 예제에서는 입력 볼륨이 [224x224x64]이며 필터 크기 2, stride 2로 풀링해 [112x112x64] 크기의 출력 볼륨을 만든다. 볼륨의 depth는 그대로 유지된다는 것을 기억하자. <b>Right:</b> 가장 널리 쓰이는 <b>max 풀링</b>. 2x2의 4개 숫자에 대해 max를 취하게된다. 
   </div>
 </div>
 
-**Backpropagation**. Recall from the backpropagation chapter that the backward pass for a max(x, y) operation has a simple interpretation as only routing the gradient to the input that had the highest value in the forward pass. Hence, during the forward pass of a pooling layer it is common to keep track of the index of the max activation (sometimes also called *the switches*) so that gradient routing is efficient during backpropagation.
+**Backpropagation**. Backpropagation 챕터에서 max(x,y)의 backward pass는 그냥 forward pass에서 가장 큰 값을 가졌던 입력의 gradient를 보내는 것과 같다고 배운 것을 기억하자. 그러므로 forward pass 과정에서 보통 max 액티베이션의 위치를 저장해두었다가 backpropagation 때 사용한다.
 
-**Recent developments**.
+**최근의 발전된 내용들**.
 
-- [Fractional Max-Pooling](http://arxiv.org/abs/1412.6071) suggests a method for performing the pooling operation with filters smaller than 2x2. This is done by randomly generating pooling regions with a combination of 1x1, 1x2, 2x1 or 2x2 filters to tile the input activation map. The grids are generated randomly on each forward pass, and at test time the predictions can be averaged across several grids.
+- [Fractional Max-Pooling](http://arxiv.org/abs/1412.6071) 2x2보다 더 작은 필터들로 풀링하는 방식. 1x1, 1x2, 2x1, 2x2 크기의
+- 
+- suggests a method for performing the pooling operation with filters smaller than 2x2. This is done by randomly generating pooling regions with a combination of 1x1, 1x2, 2x1 or 2x2 filters to tile the input activation map. The grids are generated randomly on each forward pass, and at test time the predictions can be averaged across several grids.
 - [Striving for Simplicity: The All Convolutional Net](http://arxiv.org/abs/1412.6806) proposes to discard the pooling layer in favor of architecture that only consists of repeated CONV layers. To reduce the size of the representation they suggest using larger stride in CONV layer once in a while.
 
 Due to the aggressive reduction in the size of the representation (which is helpful only for smaller datasets to control overfitting), the trend in the literature is towards discarding the pooling layer in modern ConvNets.
