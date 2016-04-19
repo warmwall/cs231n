@@ -177,13 +177,13 @@ $$
 
 ### 그라디언트(gradient) 계산
 
-There are two ways to compute the gradient: A slow, approximate but easy way (**numerical gradient**), and a fast, exact but more error-prone way that requires calculus (**analytic gradient**). We will now present both.
+그라디언트(gradient) 계산법은 크게 2가지가 있다: 느리고 근사값이지만 쉬운 방법 (**수치 그라디언트**), and 빠르고 정확하지만 미분이 필요하고 실수하기 쉬운 방법 (**해석적 그라디언트**). 여기서 둘 다 다룰 것이다.
 
 <a name='numerical'></a>
 
-#### Computing the gradient numerically with finite differences
+#### 유한한 차이(Finite Difference)를 이용하여 수치적으로 그라디언트(gradient) 계산하기
 
-The formula given above allows us to compute the gradient numerically. Here is a generic function that takes a function `f`, a vector `x` to evaluate the gradient on, and returns the gradient of `f` at `x`:
+위에 주어진 수식을 이용하여 그라디언트(gradient)를 수치적으로 계산할 수 있다. 여기 임의의 함수 `f`, 이 함수에 입력값으로 넣을 벡터 `x` 가 주어졌을 때, `x`에서 `f`의 그라디언트(gradient)를 계산해주는 범용 함수가 있다:
 
 ~~~python
 def eval_numerical_gradient(f, x):
@@ -215,11 +215,11 @@ def eval_numerical_gradient(f, x):
   return grad
 ~~~
 
-Following the gradient formula we gave above, the code above iterates over all dimensions one by one, makes a small change `h` along that dimension and calculates the partial derivative of the loss function along that dimension by seeing how much the function changed. The variable `grad` holds the full gradient in the end.
+이 코드는, 위에 주어진 그라디언트(gradient) 식을 이용해서 모든 차원을 하나씩 돌아가면서 그 방향으로 작은 변화 `h`를 줬을 때, 손실함수(loss function)의 값이 얼마나 변하는지를 구해서, 그 방향의 편미분 값을 계산한다. 변수 `grad`에 전체 그라디언트(gradient) 값이 최종적으로 저장된다.
 
-**Practical considerations**. Note that in the mathematical formulation the gradient is defined in the limit as **h** goes towards zero, but in practice it is often sufficient to use a very small value (such as 1e-5 as seen in the example). Ideally, you want to use the smallest step size that does not lead to numerical issues. Additionally, in practice it often works better to compute the numeric gradient using the **centered difference formula**: $ [f(x+h) - f(x-h)] / 2 h $ . See [wiki](http://en.wikipedia.org/wiki/Numerical_differentiation) for details.
+**실제 고려할 사항**. **h**가 0으로 수렴할 때의 극한값이 그라디언트(gradient)의 수학적으로 정의인데, (이 예제에서 나온 것처럼 1e-5 같이) 작은 값이면 충분하다. 이상적으로, 수치적인 문제를 일으키지 않는 수준에서 가장 작은 값을 쓰면 된다. 덧붙여서, 실제 활용할 때, x를 **양 방향으로 변화를 주어서 구한 수식**이 더 좋은 경우가 많다: $ [f(x+h) - f(x-h)] / 2 h $ . 다음  [위키](http://en.wikipedia.org/wiki/Numerical_differentiation)를 보면 자세한 것을 알 수 있다.
 
-We can use the function given above to compute the gradient at any point and for any function. Lets compute the gradient for the CIFAR-10 loss function at some random point in the weight space:
+위에서 계산한 함수를 이용하면, 아무 함수의 아무 값에서나 그라디언트(gradient)를 계산할 수 있다. 무작위로 뽑은 모수(parameter/weight)값에서 CIFAR-10의 손실함수(loss function)의 그라디언트를 구해본다.:
 
 ~~~python
 
@@ -232,7 +232,7 @@ W = np.random.rand(10, 3073) * 0.001 # random weight vector
 df = eval_numerical_gradient(CIFAR10_loss_fun, W) # get the gradient
 ~~~
 
-The gradient tells us the slope of the loss function along every dimension, which we can use to make an update:
+그라디언트(gradient)는 각 차원에서 CIFAR-10의 손실함수(loss function)의 기울기를 알려주는데, 그걸 이용해서 모수(parameter/weight)를 업데이트한다.
 
 ~~~python
 loss_original = CIFAR10_loss_fun(W) # the original loss
@@ -259,9 +259,9 @@ for step_size_log in [-10, -9, -8, -7, -6, -5,-4,-3,-2,-1]:
 # for step size 1.000000e-01 new loss: 25392.214036
 ~~~
 
-**Update in negative gradient direction**. In the code above, notice that to compute `W_new` we are making an update in the negative direction of the gradient `df` since we wish our loss function to decrease, not increase.
+**Update in negative gradient direction**. 위 코드에서, 새로운 모수 `W_new`로 업데이트할 때, 그라디언트(gradient) `df`의 반대방향으로 움직인 것을 주목하자. 왜냐하면 우리가 원하는 것은 손실함수(loss function)의 증가가 아니라 감소하는 것이기 때문이다.
 
-**Effect of step size**. The gradient tells us the direction in which the function has the steepest rate of increase, but it does not tell us how far along this direction we should step. As we will see later in the course, choosing the step size (also called the *learning rate*) will become one of the most important (and most headache-inducing) hyperparameter settings in training a neural network. In our blindfolded hill-descent analogy, we feel the hill below our feet sloping in some direction, but the step length we should take is uncertain. If we shuffle our feet carefully we can expect to make consistent but very small progress (this corresponds to having a small step size). Conversely, we can choose to make a large, confident step in an attempt to descend faster, but this may not pay off. As you can see in the code example above, at some point taking a bigger step gives a higher loss as we "overstep".
+**작은 변화값 `h` (step)의 크기가 미치는 영향**. 그라디언트(gradient)에서 알 수 있는 것은 함수값이 가장 빠르게 증가하는 방향이고, 그 방향으로 대체 얼만큼을 가야하는지는 알려주지 않는다. 강의 뒤에서 다루게 되겠지만, 얼만큼 가야하는지(*학습 속도*라고도 함), 즉, `h`값의 크기는 신경망(neural network)를 학습시킬 때 있어 가장 중요한 (그래서 결정하기 까다로운) 하이퍼파라미터(hyperparameter)가 될 것이다. 눈 가리고 하산하는 비유에서, 우리는 우리 발 밑으로 어느 방향이 가장 가파른지 느끼지만, 얼마나 발을 뻗어야할 지는 불확실하다. 발을 살살 휘져으면, 꾸준하지만 매우 조금씩밖에 못 내려갈 것이다. (이는 아주 작은 `h`값에 비견된다.) 반대로, 욕심껏 빨리 내려가려고 크고 과감하게 발을 내딛을 수도 있는데, 항상 뜻대로 되지는 않을지 모른다. 위의 제시된 코드에서와 같이, 어느 수준 이상의 큰 `h`값은 오히려 손실값을 증가시킨다.
 
 <div class="fig figleft fighighlight">
   <img src="{{site.baseurl}}/assets/stepsize.jpg">
@@ -271,7 +271,7 @@ for step_size_log in [-10, -9, -8, -7, -6, -5,-4,-3,-2,-1]:
   <div style="clear:both;"></div>
 </div>
 
-**A problem of efficiency**. You may have noticed that evaluating the numerical gradient has complexity linear in the number of parameters. In our example we had 30730 parameters in total and therefore had to perform 30,731 evaluations of the loss function to evaluate the gradient and to perform only a single parameter update. This problem only gets worse, since modern Neural Networks can easily have tens of millions of parameters. Clearly, this strategy is not scalable and we need something better.
+**효율성의 문제**. 알다시피, 그라디언트(gradient)를 수치적으로 계산하는 데 드는 비용은 모수(parameter/weight)의 수에 따라 선형적으로 늘어난다. 위 예시에서, 총 30,730의 모수(parameter/weight)가 있으므로 30,731번 손실함수값을 계산해서 그라디언트(gradient)를 구해 봐야 딱 한 번 업데이트할 수 있다. 요즘 쓰이는 신경망(neural networks)들은 수천만개의 모수(parameter/weight)도 우스운데, 그런 경우 이 문제는 매우 심각해진다. 당연하게도, 이 전략은 별로고, 더 좋은게 있다.
 
 <a name='analytic'></a>
 
