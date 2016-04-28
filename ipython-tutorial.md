@@ -3,72 +3,55 @@ layout: page
 title: IPython Tutorial
 permalink: /ipython-tutorial/
 ---
+cs231s 수업에서는 프로그래밍 과제 진행을 위해 [IPython notebooks](http://ipython.org/)을 사용합니다. IPython notebook을 사용하면 여러분의 브라우저에서 Python코드를 작성하고 실행할 수 있습니다. Python notebook를 사용하면 여러조각의 코드를 아주 쉽게 수정하고 실행할 수 있습니다. 이런 장점 때문에 IPython notebook은 계산과학분야에서 널리 사용되고 있습니다.
 
-In this class, we will use [IPython notebooks](http://ipython.org/) for the
-programming assignments. An IPython notebook lets you write and execute Python
-code in your web browser. IPython notebooks make it very easy to tinker with
-code and execute it in bits and pieces; for this reason IPython notebooks are
-widely used in scientific computing.
-
-Installing and running IPython is easy. From the command line, the following
-will install IPython:
+IPython의 설치와 실행은 간단합니다. command line에서 다음 명령어를 입력하여 IPython을 설치합니다.
 
 ~~~
 pip install "ipython[notebook]"
 ~~~
 
-Once you have IPython installed, start it with this command:
+IPython의 설치가 완료되면 다음 명령어를 통해 IPython을 실행합니다.
 
 ~~~
 ipython notebook
 ~~~
 
-Once IPython is running, point your web browser at http://localhost:8888 to
-start using IPython notebooks. If everything worked correctly, you should
-see a screen like this, showing all available IPython notebooks in the current
-directory:
+IPython이 실행되면, IPyhton을 사용하기 위해 웹 브라우저를 실행하여 http://localhost:8888 에 접속합니다. 모든것이 잘 작동한다면 웹 브라우저에는 아래와 같은 화면이 나타납니다. 화면에는 현재 폴더에 사용가능한 Python notebook들이 나타납니다.
 
 <div class='fig figcenter'>
   <img src='{{site.baseurl}}/assets/ipython-tutorial/file-browser.png'>
 </div>
 
-If you click through to a notebook file, you will see a screen like this:
+notebook 파일을 클릭하면 다음과 같은 화면이 나타납니다.
 
 <div class='fig figcenter'>
   <img src='{{site.baseurl}}/assets/ipython-tutorial/notebook-1.png'>
 </div>
 
-An IPython notebook is made up of a number of **cells**. Each cell can contain
-Python code. You can execute a cell by clicking on it and pressing `Shift-Enter`.
-When you do so, the code in the cell will run, and the output of the cell
-will be displayed beneath the cell. For example, after running the first cell
-the notebook looks like this:
+IPython notebook은 여러개의 **cell**들로 이루어져있습니다. 각각의 cell들은 Python코드를 포함하고 있습니다. `Shift-Enter`를 누르거나 셀을 클릭하여 셀을 실행할 수 있습니다. 셀의 코드를 실행하면 셀의 코드의 실행결과는 셀의 바로 아래에 나타납니다. 예를 들어 첫번째 cell의 코드를 실행하면 아래와 같은 화면이 나타납니다.
 
 <div class='fig figcenter'>
   <img src='{{site.baseurl}}/assets/ipython-tutorial/notebook-2.png'>
 </div>
 
-Global variables are shared between cells. Executing the second cell thus gives
-the following result:
+전역변수들은 다른 셀들에게도 공유됩니다. 두번째 셀을 실행하면 다음과 같은 결과가 나옵니다.
 
 <div class='fig figcenter'>
   <img src='{{site.baseurl}}/assets/ipython-tutorial/notebook-3.png'>
 </div>
 
-By convention, IPython notebooks are expected to be run from top to bottom.
-Failing to execute some cells or executing cells out of order can result in
-errors:
+일반적으로, IPython notebook의 코드를 실행할 때 맨위에서 맨 아래 순서로 실행합니다.
+몇몇 셀을 실행하는데 실패하거나 셀들을 순서대로 실행하지 않으면 오류가 발생할 수 있습니다.
 
 <div class='fig figcenter'>
   <img src='{{site.baseurl}}/assets/ipython-tutorial/notebook-error.png'>
 </div>
 
-After you have modified an IPython notebook for one of the assignments by
-modifying or executing some of its cells, remember to **save your changes!**
+과제를 진행하면서 notebook의 cell을 수정하거나 실행하여 IPython notebook이 변경되었다면 **저장하는것을 잊지마세요.**
 
 <div class='fig figcenter'>
   <img src='{{site.baseurl}}/assets/ipython-tutorial/save-notebook.png'>
 </div>
 
-This has only been a brief introduction to IPython notebooks, but it should
-be enough to get you up and running on the assignments for this course.
+지금 까지 IPyhton의 사용법에 대해서 알아보았습니다. 간략한 내용이지만 위 내용들을 잘 숙지하면 숙제를 진행하는데 어려움이 없을 겁니다.
