@@ -54,4 +54,4 @@ IPython notebook은 여러개의 **cell**들로 이루어져있습니다. 각각
   <img src='{{site.baseurl}}/assets/ipython-tutorial/save-notebook.png'>
 </div>
 
-지금 까지 IPyhton의 사용법에 대해서 알아보았습니다. 간략한 내용이지만 위 내용들을 잘 숙지하면 숙제를 진행하는데 어려움이 없을 겁니다.
+지금 까지 IPyhton의 사용법에 대해서 알아보았습니다. 간략한 내용이지만 위 내용들을 잘 숙지하면 무리없이과제를 진행할 수 있습니다.
