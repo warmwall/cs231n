@@ -48,7 +48,7 @@ IPython notebook은 여러개의 **cell**들로 이루어져있습니다. 각각
   <img src='{{site.baseurl}}/assets/ipython-tutorial/notebook-error.png'>
 </div>
 
-과제를 진행하면서 notebook의 cell을 수정하거나 실행하여 IPython notebook이 변경되었다면 **저장하는것을 잊지마세요.**
+과제를 진행하면서 notebook의 cell을 수정하거나 실행하여 IPython notebook이 변경되었다면 **저장하는 것을 잊지마세요.**
 
 <div class='fig figcenter'>
   <img src='{{site.baseurl}}/assets/ipython-tutorial/save-notebook.png'>
