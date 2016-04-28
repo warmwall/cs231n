@@ -35,4 +35,4 @@ terminal에 Jupyter Notebook과 다른 필요요소들이 설치되어 있습니
 
 [Terminal](https://www.stanfordterminalcloud.com)에 대한 더 많은 정보를 원하시면 [FAQ](https://www.stanfordterminalcloud.com/faq)페이지를 방문해주세요
 
-**Important Note:** the usage of Terminal is charged on an hourly rate based on the instance type. A medium type instance costs $0.124 per hour. If you are enrolled in the class email Serena Yeung (syyeung@cs.stanford.edu) to request Terminal credits. We will send you $3 the first time around, and you can request more funds on a rolling basis when you run out. Please be responsible with the funds we allocate you.
+**중요 공지사항:** 터미널 사용시 사용하는 인스턴스 타입에 따라 시간당 사용요금이 부과됩니다. 미디엄 타입의 인스턴스 요금은 시간당 $0.124 입니다.
