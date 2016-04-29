@@ -261,12 +261,12 @@ for step_size_log in [-10, -9, -8, -7, -6, -5,-4,-3,-2,-1]:
 
 **Update in negative gradient direction**. 위 코드에서, 새로운 모수 `W_new`로 업데이트할 때, 그라디언트(gradient) `df`의 반대방향으로 움직인 것을 주목하자. 왜냐하면 우리가 원하는 것은 손실함수(loss function)의 증가가 아니라 감소하는 것이기 때문이다.
 
-**작은 변화값 `h` (step)의 크기가 미치는 영향**. 그라디언트(gradient)에서 알 수 있는 것은 함수값이 가장 빠르게 증가하는 방향이고, 그 방향으로 대체 얼만큼을 가야하는지는 알려주지 않는다. 강의 뒤에서 다루게 되겠지만, 얼만큼 가야하는지(*학습 속도*라고도 함), 즉, `h`값의 크기는 신경망(neural network)를 학습시킬 때 있어 가장 중요한 (그래서 결정하기 까다로운) 하이퍼파라미터(hyperparameter)가 될 것이다. 눈 가리고 하산하는 비유에서, 우리는 우리 발 밑으로 어느 방향이 가장 가파른지 느끼지만, 얼마나 발을 뻗어야할 지는 불확실하다. 발을 살살 휘져으면, 꾸준하지만 매우 조금씩밖에 못 내려갈 것이다. (이는 아주 작은 `h`값에 비견된다.) 반대로, 욕심껏 빨리 내려가려고 크고 과감하게 발을 내딛을 수도 있는데, 항상 뜻대로 되지는 않을지 모른다. 위의 제시된 코드에서와 같이, 어느 수준 이상의 큰 `h`값은 오히려 손실값을 증가시킨다.
+**스텝 크기가 미치는 영향**. 그라디언트(gradient)에서 알 수 있는 것은 함수값이 가장 빠르게 증가하는 방향이고, 그 방향으로 대체 얼만큼을 가야하는지는 알려주지 않는다. 강의 뒤에서 다루게 되겠지만, 얼만큼 가야하는지를 의미하는 스텝 크기(혹은 *학습 속도*라고도 함)는 신경망(neural network)를 학습시킬 때 있어 가장 중요한 (그래서 결정하기 까다로운) 하이퍼파라미터(hyperparameter)가 될 것이다. 눈 가리고 하산하는 비유에서, 우리는 우리 발 밑으로 어느 방향이 가장 가파른지 느끼지만, 얼마나 발을 뻗어야할 지는 불확실하다. 발을 살살 휘져으면, 꾸준하지만 매우 조금씩밖에 못 내려갈 것이다. (이는 아주 작은 스텝 크기에 비견된다.) 반대로, 욕심껏 빨리 내려가려고 크고 과감하게 발을 내딛을 수도 있는데, 항상 뜻대로 되지는 않을지 모른다. 위의 제시된 코드에서와 같이, 어느 수준 이상의 큰  스켑 크기는 오히려 손실값을 증가시킨다.
 
 <div class="fig figleft fighighlight">
   <img src="{{site.baseurl}}/assets/stepsize.jpg">
   <div class="figcaption">
-    Visualizing the effect of step size. We start at some particular spot W and evaluate the gradient (or rather its negative - the white arrow) which tells us the direction of the steepest decrease in the loss function. Small steps are likely to lead to consistent but slow progress. Large steps can lead to better progress but are more risky. Note that eventually, for a large step size we will overshoot and make the loss worse. The step size (or as we will later call it - the <b>learning rate</b>) will become one of the most important hyperparameters that we will have to carefully tune.
+    작은 변화값(step)이 주는 영향을 시각적으로 보여주는 그림. 특정 지검 W에서 시작해서 그라디언트(혹은 거기에 -1을 곱한 값)를 계산한다. 이 그라디언트에 -1을 곱한 방향, 즉 하얀 화살표 방향이 손실함수(loss function)이 가장 빠르게 감소하는 방향이다. 그 방향으로 조금 가는 것은 일관되지만 느리게 최적화를 진행시킨다. 반면에, 그 방향으로 너무 많이 가면, 더 많이 감소시키지만 위험성도 크다. 스텝 크기가 점점 커지면, 결국에는 최소값을 지나쳐서 손실값이 더 커지는 지점까지 가게될 것이다. 스텝 크기(나중에 <b>학습속도</b>라고 부를 것임) 가장 중요한 하이퍼파라미터(hyperparameter)이라서 매우 조심스럽게 결정해야 할 것이다.
   </div>
   <div style="clear:both;"></div>
 </div>
@@ -275,50 +275,50 @@ for step_size_log in [-10, -9, -8, -7, -6, -5,-4,-3,-2,-1]:
 
 <a name='analytic'></a>
 
-#### Computing the gradient analytically with Calculus
+#### 미적분을 이용하여 해석적으로 그라디언트(gradient)를 계산하기
 
-The numerical gradient is very simple to compute using the finite difference approximation, but the downside is that it is approximate (since we have to pick a small value of *h*, while the true gradient is defined as the limit as *h* goes to zero), and that it is very computationally expensive to compute. The second way to compute the gradient is analytically using Calculus, which allows us to derive a direct formula for the gradient (no approximations) that is also very fast to compute. However, unlike the numerical gradient it can be more error prone to implement, which is why in practice it is very common to compute the analytic gradient and compare it to the numerical gradient to check the correctnes of your implementation. This is called a **gradient check**.
+수치적으로 계산하는 그라디언트(gradient)는 유한차이(finite difference)를 이용해서 매우 단순하지만, 단점은 근사값이라는 점과 (그라디언트의 진짜 정의는 "h"가 0으로 수렴할 때의 극한값인데, 여기서는 그냥 작은 "h"값을 쓰기 때문에), 계산이 비효율적이라는 것이다. 두번째 방법은 미적분을 이용해서 해석적으로 그라디언트(gradient)를 구하는 것인데, 이는 (근사치가 아닌) 정확한 수식을 이용하기 때문에 계산하기 매우 빠르다. 하지만, 수치적으로 구한 그라디언트(gradient)와는 다르게, 구현하는데 실수하기 쉽다. 그래서, 실제 응용할 때 해석적으로 구한 다음에 수치적으로 구한 것과 비교해보고, 틀린 경우 고치는 게 흔한 일이다. 이 과정을 **그라디언트체크(gradient check)**라고 한다..
 
-Lets use the example of the SVM loss function for a single datapoint:
+SVM 손실함수(loss function)의 예를 들어서 설명해보자.
 
 $$
 L_i = \sum_{j\neq y_i} \left[ \max(0, w_j^Tx_i - w_{y_i}^Tx_i + \Delta) \right]
 $$
 
-We can differentiate the function with respect to the weights. For example, taking the gradient with respect to $w_{y_i}$ we obtain:
+모수(parameter/weight)로 이 함수를 미분할 수 있다. 예를 들어, $w_{y_i}$로 미분하면 이렇게 된다:
 
 $$
 \nabla_{w_{y_i}} L_i = - \left( \sum_{j\neq y_i} \mathbb{1}(w_j^Tx_i - w_{y_i}^Tx_i + \Delta > 0) \right) x_i
 $$
 
-where $\mathbb{1}$ is the indicator function that is one if the condition inside is true or zero otherwise. While the expression may look scary when it is written out, when you're implementing this in code you'd simply count the number of classes that didn't meet the desired margin (and hence contributed to the loss function) and then the data vector $x_i$ scaled by this number is the gradient. Notice that this is the gradient only with respect to the row of $W$ that corresponds to the correct class. For the other rows where $j \neq y_i $ the gradient is:
+여기서 $\mathbb{1}$은 정의함수라고 하는데, 쉽게 말해 괄호 안의 조건이 충족되면 1, 아니면 0인 값을 갖는다. 이렇게 써놓으면 무시무시해보이지만, 실제로 코딩으로 구현할 때는 원하는 차이(마진, margin)을 못 만족시키는, 따라서 손실함수(loss function)의 증가에 일조하는 클래스의 개수를 세고, 이 숫자를 데이터벡터 $x_i$에 곱하면 이게 바로 그라디언트(gradient)이다. 단, 이는 참인 클래스에 해당하는 $W$의 행으로 미분했을 때의 그라디언트이다. $j \neq y_i $인 다른 행에 대한 그라디언트(gradient)는 다음과 같다.
 
 $$
 \nabla_{w_j} L_i = \mathbb{1}(w_j^Tx_i - w_{y_i}^Tx_i + \Delta > 0) x_i
 $$
 
-Once you derive the expression for the gradient it is straight-forward to implement the expressions and use them to perform the gradient update.
+일단 그라디언트(gradient) 수식을 구하고 그라디언트(gradient)를 업데이트시키는 것은 간단하다.
 
 <a name='gd'></a>
 
-### Gradient Descent
+### 그라디언트 하강 (gradient descent)
 
-Now that we can compute the gradient of the loss function, the procedure of repeatedly evaluating the gradient and then performing a parameter update is called *Gradient Descent*. Its **vanilla** version looks as follows:
+이제 손실함수(loss function)의 그라디언트(gradient)를 계산할 줄 알게 됐는데, 그라디언트(gradient)를 계속해서 계산하고 모수(weight/parameter)를 Now that we can compute the gradient of the loss function, the procedure of repeatedly evaluating the gradient and then performing a parameter update is called *Gradient Descent*. Its **vanilla** version looks as follows:
 
 ~~~python
-# Vanilla Gradient Descent
+# 단순한 경사하강(gradient descent)
 
 while True:
   weights_grad = evaluate_gradient(loss_fun, data, weights)
   weights += - step_size * weights_grad # perform parameter update
 ~~~
 
-This simple loop is at the core of all Neural Network libraries. There are other ways of performing the optimization (e.g. LBFGS), but Gradient Descent is currently by far the most common and established way of optimizing Neural Network loss functions. Throughout the class we will put some bells and whistles on the details of this loop (e.g. the exact details of the update equation), but the core idea of following the gradient until we're happy with the results will remain the same.
+이 단순한 루프는 모든 신경망(neural network)의 중심에 있는 것이다. 다른 방법으로 (예컨데. LBFGS) 최적화를 할 수 있는 방법이 있긴 하지만, 현재로는 그라디언트 하강 (gradient descent)이 신경망(neural network)의 손실함수(loss function)을 최적화하는 것으로는 가장 많이 쓰인다. 이 강의에서, 이 루프에 이것저것 세세하게 덧붙이기(예를 들어, 업데이트 수식이 정확히 어떻게 되는지 등)는 할 것이다. 하지만, 결과에 만족할 때까지 그라디언트(gradient)를 따라서 움직인다는 기본적인 개념은 안 바뀔 것이다.
 
-**Mini-batch gradient descent.** In large-scale applications (such as the ILSVRC challenge), the training data can have on order of millions of examples. Hence, it seems wasteful to compute the full loss function over the entire training set in order to perform only a single parameter update. A very common approach to addressing this challenge is to compute the gradient over **batches** of the training data. For example, in current state of the art ConvNets, a typical batch contains 256 examples from the entire training set of 1.2 million. This batch is then used to perform a parameter update:
+**Mini-batch gradient descent (MGD).** (ILSVRC challenge처럼) 대규모의 응용사례에서, 학습데이터(training data)가 수백만개 주어질 수 있다. 따라서, 모수를 한 번 업데이트하려고 학습데이터(training data) 전체를 계산에 사용하는 것은 낭비가 될 수 있다. 이를 극복하기 위해서 흔하게 쓰이는 방법으로는, 학습데이터(training data)의 **소집합(batches)**만 이용해서 그라디언트(gradient)를 구하는 것이다. 예를 들어 ConvNets을 쓸 때, 한 번에 120만개 중에 256개만을 이용해서 그라디언트(gradient)를 구하고 모수(parameter/weight) 업데이트를 한다.  다음 코드를 보자.
 
 ~~~python
-# Vanilla Minibatch Gradient Descent
+# 단순한 소집합(minibatch) 그라디언트(gradient) 업데이트
 
 while True:
   data_batch = sample_training_data(data, 256) # sample 256 examples
@@ -326,30 +326,29 @@ while True:
   weights += - step_size * weights_grad # perform parameter update
 ~~~
 
-The reason this works well is that the examples in the training data are correlated. To see this, consider the extreme case where all 1.2 million images in ILSVRC are in fact made up of exact duplicates of only 1000 unique images (one for each class, or in other words 1200 identical copies of each image). Then it is clear that the gradients we would compute for all 1200 identical copies would all be the same, and when we average the data loss over all 1.2 million images we would get the exact same loss as if we only evaluated on a small subset of 1000. In practice of course, the dataset would not contain duplicate images, the gradient from a mini-batch is a good approximation of the gradient of the full objective. Therefore, much faster convergence can be achieved in practice by evaluating the mini-batch gradients to perform more frequent parameter updates.
+이 방법이 먹히는 이유는 학습데이터들의 예시들이 서로 상관관계가 있기 때문이다. 이것에 대해 알아보기위해, ILSVRC의 120만개 이미지들이 사실은 1천개의 서로 다른 이미지들의 복사본이라는 극단적인 경우를 생각해보자. (즉, 한 클래스 당 하나이고, 이 하나가 1천2백번 복사된 것) 그러면 명백한 것은, 이 1천2백개의 이미지에서의 그라디언트(gradient)값 (역자 주: 이 1천2백개에 해당하는 $i$에 대한 $L_i$값)은 다 똑같다는 점이다. 그렇다면 이 1천2백개씩 똑같은 값들 120만개를 평균내서 손실값(loss)를 구하는 것이나, 서로 다른 1천개의 이미지당 하나씩 1000개의 값을 평균내서 손실값(loss)을 구하는 것이나 똑같다. 실제로는 당연히 중복된 데이터를 주지는 않겠지만, 소집합에서 계산하는 그라디언트(gradient)가 모든 데이터를 써서 구하는 것의 근사값으로 괜찮게 쓰일 수 있을 것이다. 따라서, 소집합에서 그라디언트(gradient)를 구해서 더 자주자주 모수(parameter/weight)을 업데이트하면 실제로 더 빠른 수렴하게 된다.
 
-The extreme case of this is a setting where the mini-batch contains only a single example. This process is called **Stochastic Gradient Descent (SGD)** (or also sometimes **on-line** gradient descent). This is relatively less common to see because in practice due to vectorized code optimizations it can be computationally much more efficient to evaluate the gradient for 100 examples, than the gradient for one example 100 times. Even though SGD technically refers to using a single example at a time to evaluate the gradient, you will hear people use the term SGD even when referring to mini-batch gradient descent (i.e. mentions of MGD for "Minibatch Gradient Descent", or BGD for "Batch gradient descent" are rare to see), where it is usually assumed that mini-batches are used. The size of the mini-batch is a hyperparameter but it is not very common to cross-validate it. It is usually based on memory constraints (if any), or set to some value, e.g. 32, 64 or 128. We use powers of 2 in practice because many vectorized operation implementations work faster when their inputs are sized in powers of 2.
+이 방법의 극단적인 형태는 소집합이 데이터 달랑 한개로 이루어졌을 때이다. 이는 **확률그라디언트하강(Stochastic Gradient Descent (SGD))** (혹은 **온라인** 그라디언트 하강)이라고 불린다. 이건 상대적으로 덜 보편적인데, 그 이유는 우리가 프로그램을 짤 때 계산을 벡터/행렬로 만들어서 하기 때문에, 한 예제에서 100번 계산하는 것보다 100개의 예제에서 1번 계산하는게 더 빠르기 때문이다. SGD가 엄밀한 의미에서는 예제 하나짜리 소집합에서 그라디언트(gradient)를 계산하는 것이지만, 많은 사람들이 그냥 MGD를 의미하면서 SGD라고 부르기도 한다. 혹은 드물게나마 집합 그라디언트 하강 (Batch gradient descent, BGD)이라고도 부른다. 소집합(minibatch)의 크기도 하이퍼파라미터(hyperparameter)이지만, 이것을 교차검증하는 일은 흔치 않다. 이건 대체로 컴퓨터 메모리 크기의 한계에 따라 결정되거나, 몇몇 특정값 (예를 들어, 32, 64 or 128 같은 것)을 이용한다. 2의 제곱수를 이용하는 이유는 많은 벡터 계산이 2의 제곱수가 입력될 때 더 빠르기 때문이다.
 
 <a name='summary'></a>
 
-### Summary
+### 요약
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/dataflow.jpeg">
   <div class="figcaption">
-    Summary of the information flow. The dataset of pairs of <b>(x,y)</b> is given and fixed. The weights start out as random numbers and can change. During the forward pass the score function computes class scores, stored in vector <b>f</b>. The loss function contains two components: The data loss computes the compatibility between the scores <b>f</b> and the labels <b>y</b>. The regularization loss is only a function of the weights. During Gradient Descent, we compute the gradient on the weights (and optionally on data if we wish) and use them to perform a parameter update during Gradient Descent.
+    정보 흐름 요약. <b>(x,y)</b>라는 고정된 데이터 쌍이 주어져 있다. 처음에는 무작위로 뽑은 모수(parameter/weight)값으로 시작해서 바꿔나간다. 왼쪽에서 오른쪽으로 가면서, 점수함수(score function)가 각 클래스의 점수를 계산하고 그 값이 <b>f</b> 벡터에 저장된다. 손실함수(loss function)는 두 부분으로 나뉘어 있다. 첫째, 데이터 손실(data loss)은 모수(parameter/weight)만으로 계산하는 함수이다. 그라디언트 하강(Gradient Descent) 과정에서, 모수(parameter/weight)로 미분한 (혹은 원한다면 데이터 값으로 추가로 미분한... ??? 역자 주: 이 괄호안의 내용은 무슨 소린지 모르겠음.) 그라디언트(gradient)를 계산하고, 이것을 이용해서 모수(parameter/weight)값을 업데이트한다.
   </div>
 </div>
 
 
-In this section,
+이 섹션에서 다음을 다루었다.
 
-- We developed the intuition of the loss function as a **high-dimensional optimization landscape** in which we are trying to reach the bottom. The working analogy we developed was that of a blindfolded hiker who wishes to reach the bottom. In particular, we saw that the SVM cost function is piece-wise linear and bowl-shaped.
-- We motivated the idea of optimizing the loss function with
-**iterative refinement**, where we start with a random set of weights and refine them step by step until the loss is minimized.
-- We saw that the **gradient** of a function gives the steepest ascent direction and we discussed a simple but inefficient way of computing it numerically using the finite difference approximation (the finite difference being the value of *h* used in computing the numerical gradient).
-- We saw that the parameter update requires a tricky setting of the **step size** (or the **learning rate**) that must be set just right: if it is too low the progress is steady but slow. If it is too high the progress can be faster, but more risky. We will explore this tradeoff in much more detail in future sections.
-- We discussed the tradeoffs between computing the **numerical** and **analytic** gradient. The numerical gradient is simple but it is approximate and expensive to compute. The analytic gradient is exact, fast to compute but more error-prone since it requires the derivation of the gradient with math. Hence, in practice we always use the analytic gradient and then perform a **gradient check**, in which its implementation is compared to the numerical gradient.
-- We introduced the **Gradient Descent** algorithm which iteratively computes the gradient and performs a parameter update in loop.
+- 손실함수(loss function)가 **고차원의 울퉁불퉁한 지형**이고, 이 지형에서 아래쪽으로 내려가는 것으로 직관적인 설명을 발전시켰다. 이에 대한 비유는 눈가린 등산객이 하산하는 것이었다. 특히, SVM의 손실함수(loss function)가 부분적으로 선형(linear)인 밥공기 모양이라는 것을 확인했따.
+- 손실함수(loss function)을 최적화시킨다는 개념을, 아무 데서나 시작해서 더 나아지는 쪽으로 한걸음 한걸음 나은 쪽으로 가서 최적화시킨다는 **반복적으로 개선**의 측면으로 운을 띄워봤고
+- 함수의 **그라디언트(gradient)**는 그 함수값이 감소하는 가장 빠른 방향이라는 점을 알아봤고, 이것을 유한차이(finite difference, 즉 미분할 때 *h*의 값이 유한하다는 의미)를 이용하여 단순무식하게 수치적으로 어림잡아 계산하는 방법도 알아보았다.
+- 모수(parameter/weight)를 업데이트할 때, 한 번에 얼마나 움직여야하는지(혹은 **학습속도**)를 딱 맞게 설정하는 것이 까다로운 문제라는 것도 알아보았다. 이 값이 너무 낮으면 너무 느려지고, 너무 높으면 빨라지지만 위험한 점이 있다. 이 장단점에 대해 다음 섹션에서 자세하게 알아볼 것이다.
+- 그라디언트(gradient)를 계산할 때 **수치적**인 방법과 **해석적**인 방법의 장단점을 알아보았다. 수치적인 그라디언트(gradient)는 단순하지만, 근사값이고 비효율적이다. 해석적인 그라디언트(gradient)는 정확하고 빠르지만 손으로 계산해야 되서 실수를 할 수 있다. 따라서 실제 응용에서는 해석적인 그라디언트(gradient)을 쓰고, **그라디언트 체크(gradient check)**라는 수치적인 그라디언트(gradient)와 비교하는 과정을 거친다.
+- 반복적으로 뺑뺑이 돌려서 그라디언트(gradient)를 계산하고 모수(parameter/weight)를 업데이트하는 **그라디언트 하강 (Gradient Descent)** 알고리즘을 소개했다.
 
-**Coming up:** The core takeaway from this section is that the ability to compute the gradient of a loss function with respect to its weights (and have some intuitive understanding of it) is the most important skill needed to design, train and understand neural networks. In the next section we will develop proficiency in computing the gradient analytically using the chain rule, otherwise also refered to as **backpropagation**. This will allow us to efficiently optimize relatively arbitrary loss functions that express all kinds of Neural Networks, including Convolutional Neural Networks.
+**예고:** 이 섹션에서 핵심은, 손실함수(loss function)를 모수(parameter/weight)로 미분하여 그라디언트(gradient)를 계산하는 법(과 그에 대한 직관적인 이해)가 신경망(neural network)를 디자인하고 학습시키고 이해하는데 있어 가장 중요한 기술이라는 점이다. 다음 섹션에서는, 그라디언(gradient)를 해석적으로 구할 때 연쇄법칙을 이용한, **backpropagation**이라고도 불리는 효율적인 방법에 대해 알아보겠다. 이 방법을 쓰면 컨볼루션 신경망 (Convolutional Neural Networks)을 포함한 모든 종류의 신경망(Neural Networks)에서 쓰이는 상대적으로 일반적인 손실함수(loss function)를 효율적으로 최적화시킬 수 있다.
