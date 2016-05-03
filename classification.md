@@ -46,39 +46,43 @@ permalink: /classification/
 </div>
 
 **Data-driven approach(데이터 기반 방법론)**. 어떻게 하면 이미지를 각각의 카테고리로 분류하는 알고리즘을 작성할 수 있을까? 숫자를 정렬하는 알고리즘 작성과는 달리 고양이를 분별하는 알고리즘을 작성하는 것은 어렵다.
-How might we go about writing an algorithm that can classify images into distinct categories? Unlike writing an algorithm for, for example, sorting a list of numbers, it is not obvious how one might write an algorithm for identifying cats in images. Therefore, instead of trying to specify what every one of the categories of interest look like directly in code, the approach that we will take is not unlike one you would take with a child: we're going to provide the computer with many examples of each class and then develop learning algorithms that look at these examples and learn about the visual appearance of each class. This approach is referred to as a *data-driven approach*, since it relies on first accumulating a *training dataset* of labeled images. Here is an example of what such a dataset might look like:
+
+그러므로, 코드를 통해 직접적으로 모든 것을 카테고리로 분류하기 보다는 좀 더 쉬운 방법을 사용할 것이다. 먼저 컴퓨터에게 각 클래스에 대해 많은 예제를 주고 나서 이 예제들을 보고 시각적으로 학습할 수 있는 학습 알고리즘을 개발한다.
+ 이런 방법을 *data-driven approach(데이터 기반  아법론)* 이라고 한다. 이 방법은 라벨화가 된 이미지들 *training dataset(트레이닝 데이터 셋)* 이 처음 학습을 위해 필요하다. 아래 그림은 이런 데이터셋의 예이다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/trainset.jpg">
-  <div class="figcaption">An example training set for four visual categories. In practice we may have thousands of categories and hundreds of thousands of images for each category.</div>
+  <div class="figcaption">4개의 카테고리에 대한 트레이닝 셋에 대한 예. 학습과정에서 천여개의 카테고리와 각 카테고리당 수십만개의 이미지가 있을 수 있다.</div>
 </div>
 
-**The image classification pipeline**. We've seen that the task in Image Classification is to take an array of pixels that represents a single image and assign a label to it. Our complete pipeline can be formalized as follows:
+**The image classification pipeline(이미지 분류 파이프라인)**. 이제까지 이미지 분류는 픽셀값을 같고 있는 배열은 하나의 이미지로 표현하고 라벨을 할당하는 것이다라는 것을 살펴봤다. 우리의 완전한 파이프라인은 아래와 같이 공식화할 수 있다:
 
-- **Input:** Our input consists of a set of *N* images, each labeled with one of *K* different classes. We refer to this data as the *training set*.
-- **Learning:** Our task is to use the training set to learn what every one of the classes looks like. We refer to this step as *training a classifier*, or *learning a model*.
-- **Evaluation:** In the end, we evaluate the quality of the classifier by asking it to predict labels for a new set of images that it has never seen before. We will then compare the true labels of these images to the ones predicted by the classifier. Intuitively, we're hoping that a lot of the predictions match up with the true answers  (which we call the *ground truth*).
+- **Input(입력):** 입력은 *N* 개의 이미지로 구성되어 있고, *K* 개의 별개의 클래스로 라벨화 되어 있다. 이 데이터를 *training set* 으로 사용한다.
+- **Learning(학습):** 학습에서 할 일은 트레이닝 셋을 이용해 각각의 클래스를 학습하는 것이다. 이 과정을 *training a classifier* 혹은 *learning a model* 이란 용어를 사용해 표현할 수 있다.
+- **Evaluation(평가):** 마지막으로 새로운 이미지에 대해 어떤 라벨값으로 분류되는지 예측해봄으로써 분류기의 성능을 평가한다. 새로운 이미지의 라벨값과 분류기를 통해 예측된 라벨값을 비교할 수 있다. 직감적으로, 많은 예상치들이 실제 답과 일치하기를 기대한다. 이 것을 *ground truth(실측 자료)* 라고 한다.
 
 <a name='nn'></a>
-### Nearest Neighbor Classifier
-As our first approach, we will develop what we call a **Nearest Neighbor Classifier**. This classifier has nothing to do with Convolutional Neural Networks and it is very rarely used in practice, but it will allow us to get an idea about the basic approach to an image classification problem.
 
-**Example image classification dataset: CIFAR-10.** One popular toy image classification dataset is the <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a>. This dataset consists of 60,000 tiny images that are 32 pixels high and wide. Each image is labeled with one of 10 classes (for example *"airplane, automobile, bird, etc"*). These 60,000 images are partitioned into a training set of 50,000 images and a test set of 10,000 images. In the image below you can see 10 random example images from each one of the 10 classes:
+## Nearest Neighbor Classifier(최근접 이웃 분류기)
+
+첫번째 방법으로써, **Nearest Neighbor Classifier** 라 불리는 분류기를 개발할 것이다. 이 분류기는 컨볼루션 신경망 방법이 사용되지 않고 연습과정애서 매우 드물게 사용된다. 하지만 이 분류기는 이미지 분류 문제에 대한 기본적인 접근방법을 알 수 있다.
+
+**이미지 분류 데이터셋의 예: CIFAR-10.** 하나의 유명한 이미지 분류 데이터셋은 <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 이다. 이 데이터셋은 60,000개의 작은 이미지로 구성되어 있고, 각 이미지는 32x32픽셀 크기있다. 각 이미지는 10개의 클래스중 하나로 라벨화되어 있다(예를 들어, *"airplane, automobile, bird, etc"*). 이 60,000개의 이미지 중에 50,000개는 트레이싱 셋, 10,000개는 트레이닝 셋으로 분류된다. 아래의 그림에서 각 10개의 클래스에 대해 임의로 선정한 10개의 이미지들의 예를 볼 수 있다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn.jpg">
-  <div class="figcaption">Left: Example images from the <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a>. Right: first column shows a few test images and next to each we show the top 10 nearest neighbors in the training set according to pixel-wise difference.</div>
+  <div class="figcaption">좌: <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 의 각 클래스 예. 우: 첫번째 열은 테스트 셋이고 나머지 열은 이 테스트셋에 대해서 트레이닝 셋에 있는 이미지 중 픽셀값 차에 따른 상위 10개의 최근접 이웃 이미지이다.</div>
 </div>
 
-Suppose now that we are given the CIFAR-10 training set of 50,000 images (5,000 images for every one of the labels), and we wish to label the remaining 10,000. The nearest neighbor classifier will take a test image, compare it to every single one of the training images, and predict the label of the closest training image. In the image above and on the right you can see an example result of such a procedure for 10 example test images. Notice that in only about 3 out of 10 examples an image of the same class is retrieved, while in the other 7 examples this is not the case. For example, in the 8th row the nearest training image to the horse head is a red car, presumably due to the strong black background. As a result, this image of a horse would in this case be mislabeled as a car.
+50,000개의 CIFAR-10 트레이닝 셋(하나의 라벨 당 5,000개의 이미지)이 주어진 상태에서 나머지 10,000개의 이미지에 대해 라벨화 하는 것을 가정해보자. 최근접 이웃 분류기는 테스트 이미지를 취해 모든 트레이닝 이미지와 비교를 하고 라벨 값을 예상할 것이다. 상단 이미지의 우측과 같이 10개의 테스트 이미지에 대한 결과를 확인할 수 있다. 10개의 이미지 중 3개만이 같은 클래스로 검색된 반면에, 7개의 이미지는 같은 클래스로 분류되지 않았다. 예를 들어, 8번째 행의 말 학습 이미지에 대한 첫번째 최근접 이웃 이미지는 붉은색의 차이다. 짐작컨데 이 경우는 검은색 배경의 영향이 큰 듯 하다. 결과적으로, 이 말 이미지는 차로 잘 못 분류될 것이다.
 
-You may have noticed that we left unspecified the details of exactly how we compare two images, which in this case are just two blocks of 32 x 32 x 3. One of the simplest possibilities is to compare the images pixel by pixel and add up all the differences. In other words, given two images and representing them as vectors $$ I_1, I_2 $$ , a reasonable choice for comparing them might be the **L1 distance**:
+두개의 이미지를 비교하는 정확한 방법을 아직 명시하지 않았는데, 이 경우에는 32 x 32 x 3 크기의 두 블록이다. 가장 간단한 방법 중 하나는 이미지를 각각의 픽셀값으로 비교하고, 그 차이를 더해 모두 더하는 것이다. 다시 말해서 두 개의 이미지가 주어지고 그 것들을 $$ I_1, I_2 $$ 벡터로 나타냈을 때, 벡터 간의 **L1 distance** 를 계산하는 것이 적절한 방법이다:
 
 $$
 d_1 (I_1, I_2) = \sum_{p} \left| I^p_1 - I^p_2 \right|
 $$
 
-Where the sum is taken over all pixels. Here is the procedure visualized:
+결과는 모든 픽셀값 차이의 합이다. 아래에 시각적인 절차가 있다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nneg.jpeg">
