@@ -41,7 +41,7 @@ permalink: /classification/
 좋은 이미지 분류기는 각 클래스간의 감도를 유지하면서 동시에 이런 다양한 문제들에 대해 변함 없이 분류할 수 있는 성능을 유지해야 한다.
 
 <div class="fig figcenter fighighlight">
-  <img src="{{site.baseurl}}/assets/challenges.jpeg">
+  <img src="{assets/challenges.jpeg">
   <div class="figcaption"></div>
 </div>
 
