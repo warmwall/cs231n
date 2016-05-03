@@ -239,23 +239,26 @@ CNN 구조 내에 컨볼루션 레이어들 중간중간에 주기적으로 풀�
 <a name='fc'></a>
 #### Fully-connected 레이어
 
-Neurons in a fully connected layer have full connections to all activations in the previous layer, as seen in regular Neural Networks. Their activations can hence be computed with a matrix multiplication followed by a bias offset. See the *Neural Network* section of the notes for more information.
+Fully connected 레이어 내의 뉴런들은 일반 신경망 챕터에서 보았듯이이전 레이어의 모든 액티베이션들과 연결되어 있다. 그러므로 Fully connected레이어의 액티베이션은 매트릭스 곱을 한 뒤 바이어스를 더해 구할 수 있다. 더 많은 정보를 위해 강의 노트의 "신경망" 섹션을 보기 바란다.
 
-<a name='convert'><어/a>
-#### Converting FC layers to CONV layers
+<a name='convert'></a>
+#### FC 레이어를 CONV 레이어로 변환하기
 
-It is worth noting that the only difference between FC and CONV layers is that the neurons in the CONV layer are connected only to a local region in the input, and that many of the neurons in a CONV volume share parameters. However, the neurons in both layers still compute dot products, so their functional form is identical. Therefore, it turns out that it's possible to convert between FC and CONV layers:
+FC 레이어와 CONV 레이어의 차이점은, CONV 레이어는 입력의 일부 영역에만 연결되어 있고, CONV 볼륨의 많은 뉴런들이 파라미터를 공유한다는 것 뿐이라는 것을 알아 둘 필요가 있다. 두 레이어 모두 내적 연산을 수행하므로 실제 함수 형태는 동일하다. 그러므로 FC 레이어를 CONV 레이어로 변환하는 것이 가능하다:
 
-- For any CONV layer there is an FC layer that implements the same forward function. The weight matrix would be a large matrix that is mostly zero except for at certian blocks (due to local connectivity) where the weights in many of the blocks are equal (due to parameter sharing).
-- Conversely, any FC layer can be converted to a CONV layer. For example, an FC layer with $$K = 4096$$ that is looking at some input volume of size $$7 \times 7 \times 512$$ can be equivalently expressed as a CONV layer with $$F = 7, P = 0, S = 1, K = 4096$$. In other words, we are setting the filter size to be exactly the size of the input volume, and hence the output will simply be $$1 \times 1 \times 4096$$ since only a single depth column "fits" across the input volume, giving identical result as the initial FC layer.
+- 모든 CONV 레이어는 동일한 forward 함수를 수행하는 FC 레이어 짝이 있다. 이 경우의 가중치 매트릭스는 몇몇 블록을 제외하고 모두 0으로 이뤄지며 (local connectivity: 입력의 일부 영역에만 연결된 특성), 이 블록들 중 여러개는 같은 값을 지니게 된다 (파라미터 공유).
 
-**FC->CONV conversion**. Of these two conversions, the ability to convert an FC layer to a CONV layer is particularly useful in practice. Consider a ConvNet architecture that takes a 224x224x3 image, and then uses a series of CONV layers and POOL layers to reduce the image to an activations volume of size 7x7x512 (in an *AlexNet* architecture that we'll see later, this is done by use of 5 pooling layers that downsample the input spatially by a factor of two each time, making the final spatial size 224/2/2/2/2/2 = 7). From there, an AlexNet uses two FC layers of size 4096 and finally the last FC layers with 1000 neurons that compute the class scores. We can convert each of these three FC layers to CONV layers as described above:
+- 반대로, 모든 FC 레이어는 CONV 레이어로 변환될 수 있다. 예를 들어, $$7 \times 7 \times 512$$ 크기의 입력을 받고 $$K= 4906$$ 인 FC 레이어는 $$F = 7, P = 0, S = 1, K = 4096$$인 CONV 레이어로 표현 가능하다. 바꿔 말하면, 필터의 크기를 입력 볼륨의 크기와 동일하게 만들고  $$1 \times 1 \times 4906$$ 크기의 아웃풋을 출력할 수 있다. 각 depth에 대해 하나의 값만 구해지므로 (필터의 가로/세로가 입력 볼륨의 가로/세로와 같으므로) FC 레이어와 같은 결과를 얻게 된다.
 
-- Replace the first FC layer that looks at [7x7x512] volume with a CONV layer that uses filter size $$F = 7$$, giving output volume [1x1x4096].
-- Replace the second FC layer with a CONV layer that uses filter size $$F = 1$$, giving output volume [1x1x4096]
-- Replace the last FC layer similarly, with $$F=1$$, giving final output [1x1x1000]
+**FC->CONV 변환**. 이 두 변환 중, FC 레이어를 CONV 레이어로의 변환은 매우 실전에서 매우 유용하다. 224x224x3의 이미지를 입력으로 받고 일련의 CONV레이어와 POOL 레이어를 이용해 7x7x512의 액티베이션을 만드는 컨볼루션넷 아키텍쳐를 생각해 보자 (뒤에서 살펴 볼 *AlexNet* 아키텍쳐에서는 입력의 spatial(가로/세로) 크기를 반으로 줄이는 풀링 레이어 5개를 사용해 7x7x512의 액티베이션을 만든다. 224/2/2/2/2/2 = 7이기 때문이다). AlexNet은 여기에 4096의 크기를 갖는 FC 레이어 2개와 클래스 스코어를 계산하는 1000개 뉴런으로 이뤄진 마지막 FC 레이어를 사용한다. 이 마지막 3개의 FC 레이어를 CONV 레이어로 변환하는 방법을 아래에서 배우게 된다:
 
-Each of these conversions could in practice involve manipulating (e.g. reshaping) the weight matrix $$W$$ in each FC layer into CONV layer filters. It turns out that this conversion allows us to "slide" the original ConvNet very efficiently across many spatial positions in a larger image, in a single forward pass.
+- [7x7x512]의 입력 볼륨을 받는 첫 번째 FC 레이어를 $$F = 7$$의 필터 크기를 갖는 CONV 레이어로 바꾼다. 이 때 출력 볼륨의 크기는 [1x1x4096] 이 된다.
+- 두 번째 FC 레이어를 $$F = 1$$ 필터 사이즈의 CONV 레이어로 바꾼다. 이 때 출력 볼륨의 크기는 [1x1s4096]이 된다.
+- 같은 방식으로 마지막 FC 레이어를 $$F = 1$$의 CONV 레이어를 바꾼다. 출력 볼륨의 크기는 [1x1x1000]이 된다.
+
+각각의 변환은 일반적으로 FC 레이어의 가중치 $$W$$를 CONV 레이어의 필터로 변환하는 과정을 수반한다. 이런 변환을 하고 나면, 큰 이미지 (가로/세로가 224보다 큰 이미지)를 단 한번의 forward pass만으로 마치 이미지를 "슬라이딩"하면서 여러 영역을 읽은 것과 같은 효과를 준다.
+
+예를 들어,224x224 크기의 이미지를 입력으로 받으면 [7x7x512]의 볼륨을 출력하는 이 아키텍쳐에, ( 224/7 = 32배 줄어듦 ) 된 아키텍쳐에 384x384 크기의 이미지를 넣으면 [12x12x512] 크기의 볼륨을 출력하게 된다 (384/32 = 12 이므로). 이후 3개 CONV 레이어
 
 For example, if 224x224 image gives a volume of size [7x7x512] - i.e. a reduction by 32, then forwarding an image of size 384x384 through the converted architecture would give the equivalent volume in size [12x12x512], since 384/32 = 12. Following through with the next 3 CONV layers that we just converted from FC layers would now give the final volume of size [6x6x1000], since (12 - 7)/1 + 1 = 6. Note that instead of a single vector of class scores of size [1x1x1000], we're now getting and entire 6x6 array of class scores across the 384x384 image.
 
