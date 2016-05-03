@@ -19,9 +19,9 @@ Table of Contents:
   - [Computational Considerations](#comp)
 - [Additional References](#add)
 
-## 컨볼루셔널 신경망 (CNN/ConvNets)
+## 컨볼루션 신경망 (CNN/ConvNets)
 
-컨볼루셔널 신경망 (Convolutional Neural Network, 이하 CNN)은 앞 장에서 다룬 일반 신경망과 매우 유사하다. CNN은 학습 가능한 가중치 (weight)와 바이어스(bias)로 구성되어 있다. 각 뉴런은 입력을 받아 내적 연산( dot product )을 한 뒤 선택에 따라 비선형 (non-linear) 연산을 한다. 전체 네트워크는 일반 신경망과 마찬가지로 미분 가능한 하나의 스코어 함수 (score function)을 갖게 된다 (맨 앞쪽에서 로우 이미지 (raw image)를 읽고 맨 뒤쪽에서 각 클래스에 대한 점수를 구하게 됨). 또한 CNN은 마지막 레이어에 (SVM/Softmax와 같은) 손실 함수 (loss function)을 가지며, 우리가 일반 신경망을 학습시킬 때 사용하던 각종 기법들을 동일하게 적용할 수 있다.
+컨볼루션 신경망 (Convolutional Neural Network, 이하 CNN)은 앞 장에서 다룬 일반 신경망과 매우 유사하다. CNN은 학습 가능한 가중치 (weight)와 바이어스(bias)로 구성되어 있다. 각 뉴런은 입력을 받아 내적 연산( dot product )을 한 뒤 선택에 따라 비선형 (non-linear) 연산을 한다. 전체 네트워크는 일반 신경망과 마찬가지로 미분 가능한 하나의 스코어 함수 (score function)을 갖게 된다 (맨 앞쪽에서 로우 이미지 (raw image)를 읽고 맨 뒤쪽에서 각 클래스에 대한 점수를 구하게 됨). 또한 CNN은 마지막 레이어에 (SVM/Softmax와 같은) 손실 함수 (loss function)을 가지며, 우리가 일반 신경망을 학습시킬 때 사용하던 각종 기법들을 동일하게 적용할 수 있다.
 
 CNN과 일반 신경망의 차이점은 무엇일까? CNN 아키텍쳐는 입력 데이터가 이미지라는 가정 덕분에 이미지 데이터가 갖는 특성들을 인코딩 할 수 있다. 이러한 아키텍쳐는 포워드 함수 (forward function)을 더욱 효과적으로 구현할 수 있고 네트워크를 학습시키는데 필요한 모수 (parameter)의 수를 크게 줄일 수 있게 해준다.
 
@@ -94,60 +94,61 @@ CONV 레이어는 CNN을 이루는 핵심 요소이다. CONV 레이어의 출력
   <img src="{{site.baseurl}}/assets/cnn/depthcol.jpeg" width="40%">
   <img src="{{site.baseurl}}/assets/nn1/neuron_model.jpeg" width="40%" style="border-left: 1px solid black;">
   <div class="figcaption">
-    <b>Left:</b> An example input volume in red (e.g. a 32x32x3 CIFAR-10 image), and an example volume of neurons in the first Convolutional layer. Each neuron in the convolutional layer is connected only to a local region in the input volume spatially, but to the full depth (i.e. all color channels). Note, there are multiple neurons (5 in this example) along the depth, all looking at the same region in the input - see discussion of depth columns in text below. <b>Right:</b> The neurons from the Neural Network chapter remain unchanged: They still compute a dot product of their weights with the input followed by a non-linearity, but their connectivity is now restricted to be local spatially.
+    <b>좌:</b> 입력 볼륨(붉은색, 32x32x3 크기의 CIFAR-10 이미지)과 첫번째 컨볼루션 레이어 볼륨. 컨볼루션 레이어의 각 뉴런은 입력 볼륨의 일부 영역에만 연결된다 (가로/세로 공간 차원으로는 일부 연결, 깊이(컬러 채널) 차원은 모두 연결). 컨볼루션 레이어의 깊이 차원의 여러 뉴런 (그림에서 5개)들이 모두 입력의 같은 영역을 처리한다는 것을 기억하자 (깊이 차원과 관련해서는 아래에서 더 자세히 알아볼 것임). 우: 입력의 일부 영역에만 연결된다는 점을 제외하고는, 이전 신경망 챕터에서 다뤄지던 뉴런들과 똑같이 내적 연산과 비선형 함수로 이뤄진다.
   </div>
 </div>
 
-**Spatial arrangement**. We have explained the connectivity of each neuron in the Conv Layer to the input volume, but we haven't yet discussed how many neurons there are in the output volume or how they are arranged. Three hyperparameters control the size of the output volume: the **depth, stride** and **zero-padding**. We discuss these next:
+**공간적 배치**. 지금까지는 컨볼루션 레이어의 한 뉴런과 입력 볼륨의 연결에 대해 알아보았다. 그러나 아직 출력 볼륨에 얼마나 많은 뉴런들이 있는지, 그리고 그 뉴런들이 어떤식으로 배치되는지는 다루지 않았다. 3개의 hyperparameter들이 출력 볼륨의 크기를 결정하게 된다. 그 3개 요소는 바로 **깊이, stride, 그리고 제로 패딩 (zero-padding)** 이다. 이들에 대해 알아보자:
 
-1. First, the **depth** of the output volume is a hyperparameter that we can pick; It controls the number of neurons in the Conv layer that connect to the same region of the input volume. This is analogous to a regular Neural Network, where we had multiple neurons in a hidden layer all looking at the exact same input. As we will see, all of these neurons will learn to activate for different features in the input. For example, if the first Convolutional Layer takes as input the raw image, then different neurons along the depth dimension may activate in presence of various oriented edged, or blobs of color. We will refer to a set of neurons that are all looking at the same region of the input as a **depth column**.
-2. Second, we must specify the **stride** with which we allocate depth columns around the spatial dimensions (width and height). When the stride is 1, then we will allocate a new depth column of neurons to spatial positions only 1 spatial unit apart. This will lead to heavily overlapping receptive fields between the columns, and also to large output volumes. Conversely, if we use higher strides then the receptive fields will overlap less and the resulting output volume will have smaller dimensions spatially.
-3. As we will soon see, sometimes it will be convenient to pad the input with zeros spatially on the border of the input volume. The size of this **zero-padding** is a hyperparameter. The nice feature of zero padding is that it will allow us to control the spatial size of the output volumes. In particular, we will sometimes want to exactly preserve the spatial size of the input volume.
+1. 먼저, 출력 볼륨의 **깊이** 는 우리가 결정할 수 있는 요소이다. 컨볼루션 레이어의 뉴런들 중 입력 볼륨 내 동일한 영역과 연결된 뉴런의 개수를 의미한다. 마치 일반 신경망에서 히든 레이어 내의 모든 뉴런들이 같은 입력값과 연결된 것과 비슷하다. 앞으로 살펴보겠지만, 이 뉴런들은 입력에 대해 서로 다른 특징 (feature)에 활성화된다 (activate). 예를 들어, 이미지를 입력으로 받는 첫 번째 컨볼루션 레이어의 경우, 깊이 축에 따른 각 뉴런들은 이미지의 서로 다른 엣지, 색깔, 블롭(blob) 등에 활성화된다. 앞으로는 인풋의 서로 같은 영역을 바라보는 뉴런들을 **깊이 컬럼 (depth column)**이라고 부르겠다.
+2. 두 번째로 어떤 간격 (가로/세로의 공간적 간격) 으로 깊이 컬럼을 할당할 지를 의미하는 **stride**를 결정해야 한다. 만약 stride가 1이라면, 깊이 컬럼을 1칸마다 할당하게 된다 (한 칸 간격으로 깊이 컬럼 할당). 이럴 경우 각 깊이 컬럼들은 receptive field 상 넓은 영역이 겹치게 되고, 출력 볼륨의 크기도 매우 커지게 된다. 반대로, 큰 stride를 사용한다면 receptive field끼리 좁은 영역만 겹치게 되고 출력 볼륨도 작아지게 된다 (깊이는 작아지지 않고 가로/세로만 작아지게 됨).
+3. 조만간 살펴보겠지만, 입력 볼륨의 가장자리를 0으로 패딩하는 것이 좋을 때가 있다. 이 **zero-padding**은 hyperparamter이다. zero-padding을 사용할 때의 장점은, 출력 볼륨의 공간적 크기(가로/세로)를 조절할 수 있다는 것이다. 특히 입력 볼륨의 공간적 크기를 유지하고 싶은 경우 (입력의 가로/세로 = 출력의 가로/세로) 사용하게 된다.
 
-We can compute the spatial size of the output volume as a function of the input volume size ($$W$$), the receptive field size of the Conv Layer neurons ($$F$$), the stride with which they are applied ($$S$$), and the amount of zero padding used ($$P$$) on the border. You can convince yourself that the correct formula for calculating how many neurons "fit" is given by $$(W - F + 2P)/S + 1$$. If this number is not an integer, then the strides are set incorrectly and the neurons cannot be tiled so that they "fit" across the input volume neatly, in a symmetric way. An example might help to get intuitions for this formula:
+출력 볼륨의 공간적 크기 (가로/세로)는 입력 볼륨 크기 ($$W$$), CONV 레이어의 리셉티브 필드 크기($$F$$)와 stride ($$S$$), 그리고 제로 패딩 (zero-padding) 사이즈 ($$P$$) 의 함수로 계산할 수 있다. $$(W - F + 2P)/S + 1$$. I을 통해 알맞은 크기를 계산하면 된다. 만약 이 값이 정수가 아니라면 stride가 잘못 정해진 것이다. 이 경우 뉴런들이 대칭을 이루며 깔끔하게 배치되는 것이 불가능하다. 다음 예제를 보면 이 수식을 좀 더 직관적으로 이해할 수 있을 것이다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/cnn/stride.jpeg">
   <div class="figcaption">
-    Illustration of spatial arrangement. In this example there is only one spatial dimension (x-axis), one neuron with a receptive field size of F = 3, the input size is W = 5, and there is zero padding of P = 1. <b>Left:</b> The neuron strided across the input in stride of S = 1, giving output of size (5 - 3 + 2)/1+1 = 5. <b>Right:</b> The neuron uses stride of S = 2, giving output of size (5 - 3 + 2)/2+1 = 3. Notice that stride S = 3 could not be used since it wouldn't fit neatly across the volume. In terms of the equation, this can be determined since (5 - 3 + 2) = 4 is not divisible by 3.
-    <br>The neuron weights are in this example [1,0,-1] (shown on very right), and its bias is zero. These weights are shared across all yellow neurons (see parameter sharing below).
+  공간적 배치에 관한 그림. 이 예제에서는 가로/세로 공간적 차원 중 하나만 고려한다 (x축). 리셉티브 필드 F=3, 입력 사이즈 W=5, 제로 패딩 P=1. <b>좌</b>: 뉴런들이 stride S=1을 갖고 배치된 경우,  출력 사이즈는 (5-3+2)/1 +1 = 5이다. <b>우</b>: stride S=2인 경우 (5-3+2)/2 + 1 = 3의 출력 사이즈를 가진다. Stride S=3은 사용할 수 없다. (5-3+2) = 4가 3으로 나눠지지 않기 때문에 출력 볼륨의 뉴런들이 깔끔히 배치되지 않는다. 
+  이 예에서 뉴런들의 가중치는 [1,0,-1] (가장 오른쪽) 이며 bias는 0이다. 이 가중치는 노란 뉴런들 모두에게 공유된다 (아래에서 parameter sharing에 대해 살펴보라).
   </div>
 </div>
 
-*Use of zero-padding*. In the example above on left, note that the input dimension was 5 and the output dimension was equal: also 5. This worked out so because our receptive fields were 3 and we used zero padding of 1. If there was no zero-padding used, then the output volume would have had spatial dimension of only 3, because that it is how many neurons would have "fit" across the original input. In general, setting zero padding to be $$P = (F - 1)/2$$ when the stride is $$S = 1$$ ensures that the input volume and output volume will have the same size spatially. It is very common to use zero-padding in this way and we will discuss the full reasons when we talk more about ConvNet architectures.
+*제로 패딩 사용*. 위 예제의 왼쪽 그림에서, 입력과 출력의 차원이 모두 5라는 것을 기억하자. 리셉티브 필드가 3이고 제로 패딩이 1이기 때문에 이런 결과가 나오는 것이다. 만약 제로 패딩이 사용되지 않았다면 출력 볼륨의 크기는 3이 될 것이다. 일반적으로, 제로 패딩을 $$P = (F - 1)/2$$ , stride $$S = 1$$로 세팅하면 입/출력의 크기가 같아지게 된다. 이런 방식으로 사용하는 것이 일반적이며, 앞으로 컨볼루션 신경망에 대해 다루면서 그 이유에 대해 더 알아볼 것이다.
 
-*Constraints on strides*. Note that the spatial arrangement hyperparameters have mutual constraints. For example, when the input has size $$W = 10$$, no zero-padding is used $$P = 0$$, and the filter size is $$F = 3$$, then it would be impossible to use stride $$S = 2$$, since $$(W - F + 2P)/S + 1 = (10 - 3 + 0) / 2 + 1 = 4.5$$, i.e. not an integer, indicating that the neurons don't "fit" neatly and symmetrically across the input. Therefore, this setting of the hyperparameters is considered to be invalid, and a ConvNet library would likely throw an exception. As we will see in the ConvNet architectures section, sizing the ConvNets appropriately so that all the dimensions "work out" can be a real headache, which the use of zero-padding and some design guidelines will significantly alleviate.
+*Stride에 대한 constraints*. 공간적 배치와 관련된 hyperparameter들은 상호 constraint들이 존재한다는 것을 기억하자. 예를 들어, 입력 사이즈 $$W=10$$이고 제로 패딩이 사용되지 않았고 $$P=0$$, 필터 사이즈가 $$F=3$$이라면, stride $$S=2$$를 사용하는 것이 불가능하다. $$(W - F + 2P)/S + 1 = (10 - 3 + 0) / 2 + 1 = 4.5$$이 정수가 아니기 때문이다. 그러므로 hyperparameter를 이런 식으로 설정하면 컨볼루션 신경망 관련 라이브러리들은 exception을 낸다. 컨볼루션 신경망의 구조 관련 섹션에서 확인하겠지만, 전체 신경망이 잘 돌아가도록 이런 숫자들을 설정하는 과정은 매우 골치 아프다. 제로 패딩이나 다른 신경망 디자인 비법들을 사용하면 훨씬 수월하게 진행할 수 있다.
 
-*Real-world example*. The [Krizhevsky et al.](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks) architecture that won the ImageNet challenge in 2012 accepted images of size [227x227x3]. On the first Convolutional Layer, it used neurons with receptive field size $$F = 11$$, stride $$S = 4$$ and no zero padding $$P = 0$$. Since (227 - 11)/4 + 1 = 55, and since the Conv layer had a depth of $$K = 96$$, the Conv layer output volume had size [55x55x96]. Each of the 55\*55\*96 neurons in this volume was connected to a region of size [11x11x3] in the input volume. Moreover, all 96 neurons in each depth column are connected to the same [11x11x3] region of the input, but of course with different weights.
+*실제 예제*. 이미지넷 대회에서 우승한 [Krizhevsky et al.](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks) 의 모델의 경우 [227x227x3] 크기의 이미지를 입력으로 받는다. 첫 번째 컨볼루션 레이어에서는 리셉티브 필드 $$F=11$$, stride $$S=4$$를 사용했고 제로 패딩은 사용하지 않았다 $$P=0$$. (227 - 11)/4 +1=55 이고 컨볼루션 레이어의 깊이는 $$K=96$$이므로 이 컨볼루션 레이어의 크기는 [55x55x96]이 된다. 각각의 55\*55\*96개 뉴런들은 입력 볼륨의 [11x11x3]개 뉴런들과 연결되어 있다. 그리고 각 깊이의 모든 96개 뉴런들은 입력 볼륨의 같은 [11x11x3] 영역에 서로 다른 가중치를 가지고 연결된다.
 
-**Parameter Sharing.** Parameter sharing scheme is used in Convolutional Layers to control the number of parameters. Using the real-world example above, we see that there are 55\*55\*96 = 290,400 neurons in the first Conv Layer, and each has 11\*11\*3 = 363 weights and 1 bias. Together, this adds up to 290400 * 364 = 105,705,600 parameters on the first layer of the ConvNet alone. Clearly, this number is very high.
+**파라미터 공유**. 파라미터 공유 기법은 컨볼루션 레이어의 파라미터 개수를 조절하기 위해 사용된다. 위의 실제 예제에서 보았듯, 첫 번째 컨볼루션 레이어에는 55\*55\*96 = 290,400 개의 뉴런이 있고 각각의 뉴런은 11\*11\*3 = 363개의 가중치와 1개의 바이어스를 가진다. 첫 번째 컨볼루션 레이어만 따져도 총 파라미터 개수는  290400*364=105,705,600개가 된다. 분명히 이 숫자는 너무 크다.
 
-It turns out that we can dramatically reduce the number of parameters by making one reasonable assumption: That if one patch feature is useful to compute at some spatial position (x,y), then it should also be useful to compute at a different position (x2,y2). In other words, denoting a single 2-dimensional slice of depth as a **depth slice** (e.g. a volume of size [55x55x96] has 96 depth slices, each of size [55x55]), we are going to constrain the neurons in each depth slice to use the same weights and bias. With this parameter sharing scheme, the first Conv Layer in our example would now have only 96 unique set of weights (one for each depth slice), for a total of 96\*11\*11\*3 = 34,848 unique weights, or 34,944 parameters (+96 biases). Alternatively, all 55*55 neurons in each depth slice will now be using the same parameters. In practice during backpropagation, every neuron in the volume will compute the gradient for its weights, but these gradients will be added up across each depth slice and only update a single set of weights per slice.
+사실 적절한 가정을 통해 파라미터 개수를 크게 줄이는 것이 가능하다: (x,y)에서 어떤 patch feature가 유용하게 사용되었다면, 이 feature는 다른 위치 (x2,y2)에서도 유용하게 사용될 수 있다. 3차원 볼륨의 한 슬라이스 (깊이 차원으로 자른 2차원 슬라이스) 를 **depth slice**라고 하자 ([55x55x96] 사이즈의 볼륨은 각각 [55x55]의 크기를 가진 96개의 depth slice임). 앞으로는 각 depth slice 내의 뉴런들이 같은 가중치와 바이어스를 가지도록 제한할 것이다. 이런 파라미터 공유 기법을 사용하면, 예제의 첫 번째 컨볼루션 레이어는 (depth slice 당) 96개의 고유한 가중치를 가져서 총 96\*11\*11\*3 = 34,848개의 고유한 가중치, 또는 바이어스를 합쳐서 34,944개의 파라미터를 갖게 된다. 또는 각 depth slice에 존재하는 55*55개의 뉴런들은 모두 같은 파라미터를 사용하게 된다. 실제로는 backpropagation 과정에서 각 depth slice 내의 모든 뉴런들이 가중치에 대한 gradient를 계산하겠지만, 가중치 업데이트 할 때에는 이 gradient들을 합해 사용한다. 
 
-Notice that if all neurons in a single depth slice are using the same weight vector, then the forward pass of the CONV layer can in each depth slice be computed as a **convolution** of the neuron's weights with the input volume (Hence the name: Convolutional Layer). Therefore, it is common to refer to the sets of weights as a **filter** (or a **kernel**), which is convolved with the input. The result of this convolution is an *activation map* (e.g. of size [55x55]), and the set of activation maps for each different filter are stacked together along the depth dimension to produce the output volume (e.g. [55x55x96]).
+한 depth slice내의 모든 뉴런들이 같은 가중치 벡터를 갖기 때문에 컨볼루션 레이어의 forward pass는 입력 볼륨과 가중치 간의 **컨볼루션**으로 계산될 수 있다 (컨볼루션 레이어라는 이름이 붙은 이유).  그러므로 컨볼루션 레이어의 가중치는 **필터(filter)** 또는 **커널(kernel)**이라고 부른다. 컨볼루션의 결과물은 **액티베이션 맵(activation map, [55x55] 사이즈)** 이 되며 각 깊이에 해당하는 필터의 액티베이션 맵들을 쌓으면 최종 출력 볼륨 ([55x55x96] 사이즈) 가 된다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/cnn/weights.jpeg">
   <div class="figcaption">
-    Example filters learned by Krizhevsky et al. Each of the 96 filters shown here is of size [11x11x3], and each one is shared by the 55*55 neurons in one depth slice. Notice that the parameter sharing assumption is relatively reasonable: If detecting a horizontal edge is important at some location in the image, it should intuitively be useful at some other location as well due to the translationally-invariant structure of images. There is therefore no need to relearn to detect a horizontal edge at every one of the 55*55 distinct locations in the Conv layer output volume.
+    Krizhevsky et al. 에서 학습된 필터의 예. 96개의 필터 각각은 [11x11x3] 사이즈이며, 하나의 depth slice 내 55*55개 뉴런들이 이 필터들을 공유한다. 만약 이미지의 특정 위치에서 가로 엣지 (edge)를 검출하는 것이 중요했다면, 이미지의 다른 위치에서도 같은 특성이 중요할 수 있다 (이미지의 translationally-invariant한 특성 때문). 그러므로 55*55개 뉴런 각각에 대해 가로 엣지 검출 필터를 재학습 할 필요가 없다.
   </div>
 </div>
 
-Note that sometimes the parameter sharing assumption may not make sense. This is especially the case when the input images to a ConvNet have some specific centered structure, where we should expect, for example, that completely different features should be learned on one side of the image than another. One practical example is when the input are faces that have been centered in the image. You might expect that different eye-specific or hair-specific features could (and should) be learned in different spatial locations. In that case it is common to relax the parameter sharing scheme, and instead simply call the layer a **Locally-Connected Layer**.
+가끔은 파라미터 sharing에 대한 가정이 부적절할 수도 있다. 특히 입력 이미지가 중심을 기준으로 찍힌 경우 (예를 들면 이미지 중앙에 얼굴이 있는 이미지), 이미지의 각 영역에 대해 완전히 다른 feature들이 학습되어야 할 수 있다. 눈과 관련된 feature나 머리카락과 관련된 feature 등은 서로 다른 영역에서 학습될 것이다. 이런 경우에는 파라미터 sharing 기법을 접어두고 대신 **Locally-Connected Layer**라는 레이어를 사용하는 것이 좋다.
 
-**Numpy examples.** To make the discussion above more concrete, lets express the same ideas but in code and with a specific example. Suppose that the input volume is a numpy array `X`. Then:
-
+**Numpy 예제.** 위에서 다룬 것들을 더 확실히 알아보기 위해 코드를 작성해보자. 입력 볼륨을 numpy 배열 `X`라고 하면: 
 - A *depth column* at position `(x,y)` would be the activations `X[x,y,:]`.
+- `(x,y)`위치에서의 *depth column*은 액티베이션 `X[x,y,:]`이 된다.
 - A *depth slice*, or equivalently an *activation map* at depth `d` would be the activations `X[:,:,d]`.
+- depth `d`에서의 *depth slice*, 또는 *액티베이션 맵 (activation map)*은 `X[:,:,d]`가 된다.
 
-*Conv Layer Example*. Suppose that the input volume `X` has shape `X.shape: (11,11,4)`. Suppose further that we use no zero padding ($$P = 0$$), that the filter size is $$F = 5$$, and that the stride is $$S = 2$$. The output volume would therefore have spatial size (11-5)/2+1 = 4, giving a volume with width and height of 4. The activation map in the output volume (call it `V`), would then look as follows (only some of the elements are computed in this example):
+*컨볼루션 레이어 예제*. 입력 볼륨 `X`의 모양이 `X.shape: (11,11,4)`이고 제로 패딩은 사용하지 않으며($$P = 0$$) 필터 크기는 $$F = 5$$, stride $$S = 2$$라고 하자. 출력 볼륨의 spatial 크기 (가로/세로)는 (11-5)/2 + 1 = 4가 된다. 출력 볼륨의 액티베이션 맵 (`V`라고 하자) 는 아래와 같은 것이다 (아래에는 일부 요소만 나타냄).
 
 - `V[0,0,0] = np.sum(X[:5,:5,:] * W0) + b0`
 - `V[1,0,0] = np.sum(X[2:7,:5,:] * W0) + b0`
 - `V[2,0,0] = np.sum(X[4:9,:5,:] * W0) + b0`
 - `V[3,0,0] = np.sum(X[6:11,:5,:] * W0) + b0`
 
-Remember that in numpy, the operation `*` above denotes elementwise multiplication between the arrays. Notice also that the weight vector `W0` is the weight vector of that neuron and `b0` is the bias. Here, `W0` is assumed to be of shape `W0.shape: (5,5,4)`, since the filter size is 5 and the depth of the input volume is 4. Notice that at each point, we are computing the dot product as seen before in ordinary neural networks. Also, we see that we are using the same weight and bias (due to parameter sharing), and where the dimensions along the width are increasing in steps of 2 (i.e. the stride). To construct a second activation map in the output volume, we would have:
+Numpy에서 `*`연산은 두 배열 간의 elementwise 곱셈이라는 것을 기억하자. 또한 `W0`는 가중치 벡터이고 `b0`은 바이어스라는 것도 기억하자. 여기에서 `W0`의 모양은 `W0.shape: (5,5,4)`라고 가정하자 (필터 사이즈는 5, depth는 4). 각 위치에서 일반 신경망에서와 같이 내적 연산을 수행하게 된다. 또한 파라미터 sharing 기법으로 같은 가중치, 바이어스가 사용되고 가로 차원에 대해 2 (stride)칸씩 옮겨가며 연산이 이뤄진다는 것을 볼 수 있다. 출력 볼륨의 두 번째 액티베이션 맵을 구성하는 방법은:
 
 - `V[0,0,1] = np.sum(X[:5,:5,:] * W1) + b1`
 - `V[1,0,1] = np.sum(X[2:7,:5,:] * W1) + b1`
@@ -156,91 +157,91 @@ Remember that in numpy, the operation `*` above denotes elementwise multiplicati
 - `V[0,1,1] = np.sum(X[:5,2:7,:] * W1) + b1` (example of going along y)
 - `V[2,3,1] = np.sum(X[4:9,6:11,:] * W1) + b1` (or along both)
 
-where we see that we are indexing into the second depth dimension in `V` (at index 1) because we are computing the second activation map, and that a different set of parameters (`W1`) is now used. In the example above, we are for brevity leaving out some of the other operatations the Conv Layer would perform to fill the other parts of the output array `V`. Additionally, recall that these activation maps are often followed elementwise through an activation function such as ReLU, but this is not shown here.
+위 예제는 `V`의 두 번째 depth 차원 (인덱스 1)을 인덱싱하고 있다. 두 번째 액티베이션 맵을 계산하므로, 여기에서 사용된 가중치는 이전 예제와 달리 `W1`이다. 보통 액티베이션 맵이 구해진 뒤 ReLU와 같은 elementwise 연산이 가해지는 경우가 많은데, 위 예제에서는 다루지 않았다.
 
-**Summary**. To summarize, the Conv Layer:
+**요약**. To summarize, the Conv Layer:
 
-- Accepts a volume of size $$W_1 \times H_1 \times D_1$$
-- Requires four hyperparameters:
-  - Number of filters $$K$$,
-  - their spatial extent $$F$$,
-  - the stride $$S$$,
-  - the amount of zero padding $$P$$.
-- Produces a volume of size $$W_2 \times H_2 \times D_2$$ where:
+- $$W_1 \times H_1 \times D_1$$ 크기의 볼륨을 입력받는다.
+- 4개의 hyperparameter가 필요하다:
+  - 필터 개수 $$K$$,
+  - 필터의 가로/세로 Spatial 크기  $$F$$,
+  - Stride $$S$$,
+  - 제로 패딩 $$P$$.
+- $$W_2 \times H_2 \times D_2$$ 크기의 출력 볼륨을 생성한다:
   - $$W_2 = (W_1 - F + 2P)/S + 1$$
-  - $$H_2 = (H_1 - F + 2P)/S + 1$$ (i.e. width and height are computed equally by symmetry)
+  - $$H_2 = (H_1 - F + 2P)/S + 1$$ (i.e. 가로/세로는 같은 방식으로 계산됨)
   - $$D_2 = K$$
-- With parameter sharing, it introduces $$F \cdot F \cdot D_1$$ weights per filter, for a total of $$(F \cdot F \cdot D_1) \cdot K$$ weights and $$K$$ biases.
-- In the output volume, the $$d$$-th depth slice (of size $$W_2 \times H_2$$) is the result of performing a valid convolution of the $$d$$-th filter over the input volume with a stride of $$S$$, and then offset by $$d$$-th bias.
+- 파라미터 sharing로 인해 필터 당 $$F \cdot F \cdot D_1$$개의 가중치를 가져서 총 $$(F \cdot F \cdot D_1) \cdot K$$개의 가중치와 $$K$$개의 바이어스를 갖게 된다.
+- 출력 볼륨에서 $$d$$번째 depth slice ($$W_2 \times H_2$$ 크기)는 입력 볼륨에 $$d$$번째 필터를 stride $$S$$만큼 옮겨가며 컨볼루션 한 뒤 $$d$$번째 바이어스를 더한 결과이다.
 
-A common setting of the hyperparameters is $$F = 3, S = 1, P = 1$$. However, there are common conventions and rules of thumb that motivate these hyperparameters. See the [ConvNet architectures](#architectures) section below.
+흔한 Hyperparameter기본 세팅은 $$F = 3, S = 1, P = 1$$이다. 뒤에서 다룰 [ConvNet architectures](#architectures)에서 hyperparameter 세팅과 관련된 법칙이나 방식 등을 확인할 수 있다.
 
-**Convolution Demo**. Below is a running demo of a CONV layer. Since 3D volumes are hard to visualize, all the volumes (the input volume (in blue), the weight volumes (in red), the output volume (in green)) are visualized with each depth slice stacked in rows. The input volume is of size $$W_1 = 5, H_1 = 5, D_1 = 3$$, and the CONV layer parameters are $$K = 2, F = 3, S = 2, P = 1$$. That is, we have two filters of size $$3 \times 3$$, and they are applied with a stride of 2. Therefore, the output volume size has spatial size (5 - 3 + 2)/2 + 1 = 3. Moreover, notice that a padding of $$P = 1$$ is applied to the input volume, making the outer border of the input volume zero. The visualization below iterates over the output activations (green), and shows that each element is computed by elementwise multiplying the highlighted input (blue) with the filter (red), summing it up, and then offsetting the result by the bias.
+**컨볼루션 데모**. 아래는 컨볼루션 레이어 데모이다. 3차원 볼륨은 시각화하기 힘드므로 각 행마다 depth slice를 하나씩 배치했다. 각 볼륨은 입력 볼륨(파란색), 가중치 볼륨(빨간색), 출력 볼륨(녹색)으로 이뤄진다. 입력 볼륨의 크기는 $$W_1 = 5, H_1 = 5, D_1 = 3$$이고 컨볼루션 레이어의 파라미터들은 $$K = 2, F = 3, S = 2, P = 1$$이다. 즉, 2개의 $$3 \times 3$$크기의 필터가 각각 stride 2마다 적용된다. 그러므로 출력 볼륨의 spatial 크기 (가로/세로)는 (5 - 3 + 2)/2 + 1 = 3이다. 제로 패딩 $$P = 1$$ 이 적용되어 입력 볼륨의 가장자리가 모두 0으로 되어있다는 것을 확인할 수 있다. 아래의 영상에서 하이라이트 표시된 입력(파란색)과 필터(빨간색)이 elementwise로 곱해진 뒤 하나로 더해지고 bias가 더해지는걸 볼 수 있다. 
 
 <div class="fig figcenter fighighlight">
   <iframe src="{{site.baseurl}}/assets/conv-demo/index.html" width="100%" height="700px;" style="border:none;"></iframe>
   <div class="figcaption"></div>
 </div>
 
-**Implementation as Matrix Multiplication**. Note that the convolution operation essentially performs dot products between the filters and local regions of the input. A common implementation pattern of the CONV layer is to take advantage of this fact and formulate the forward pass of a convolutional layer as one big matrix multiply as follows:
+**매트릭스 곱으로 구현**. 컨볼루션 연산은 필터와 이미지의 로컬한 영역간의 내적 연산을 한 것과 같다. 컨볼루션 레이어의 일반적인 구현 패턴은 이 점을 이용해 컨볼루션 레이어의 forward pass를 다음과 같이 하나의 큰 매트릭스 곱으로 계산된다:
 
-1. The local regions in the input image are stretched out into columns in an operation commonly called **im2col**. For example, if the input is [227x227x3] and it is to be convolved with 11x11x3 filters at stride 4, then we would take [11x11x3] blocks of pixels in the input and stretch each block into a column vector of size 11\*11\*3 = 363. Iterating this process in the input at stride of 4 gives (227-11)/4+1 = 55 locations along both width and height, leading to an output matrix `X_col` of *im2col* of size [363 x 3025], where every column is a stretched out receptive field and there are 55*55 = 3025 of them in total. Note that since the receptive fields overlap, every number in the input volume may be duplicated in multiple distinct columns.
-2. The weights of the CONV layer are similarly stretched out into rows. For example, if there are 96 filters of size [11x11x3] this would give a matrix `W_row` of size [96 x 363].
-3. The result of a convolution is now equivalent to performing one large matrix multiply `np.dot(W_row, X_col)`, which evaluates the dot product between every filter and every receptive field location. In our example, the output of this operation would be [96 x 3025], giving the output of the dot product of each filter at each location.
-4. The result must finally be reshaped back to its proper output dimension [55x55x96].
+1. 이미지의 각 로컬 영역을 열 벡터로 stretch 한다 (이런 연산을 보통 **im2col** 이라고 부름). 예를 들어, 만약 [227x227x3] 사이즈의 입력이 11x11x3 사이즈와 strie 4의 필터와 컨볼루션 한다면, 이미지에서 [11x11x3] 크기의 픽셀 블록을 가져와 11\*11\*3=363 크기의 열 벡터로 바꾸게 된다. 이 과정을 stride 4마다 하므로 가로, 세로에 대해 각각 (227-11)/4+1=55, 총 55\*55=3025 개 영역에 대해 반복하게 되고, 출력물인 `X_col`은 [363x3025]의 사이즈를 갖게 된다. 각각의 열 벡터는 리셉티브 필드를 1차원으로 stretch 한 것이고, 이 리셉티브 필드는 주위 리셉티브 필드들과 겹치므로 입력 볼륨의 여러 값들이 여러 출력 열벡터에 중복되어 나타날 수 있다.
+2. 컨볼루션 레이어의 가중치는 비슷한 방식으로 행 벡터 형태로 stretch된다. 예를 들어 [11x11x3]사이즈의 총 96개 필터가 있다면, [96x363] 사이즈의 W_row가 만들어진다.
+3. 이제 컨볼루션 연산은 하나의 큰 매트릭스 연산 `np.dot(W_row, X_col)`를 계산하는 것과 같다. 이 연산은 모든 필터와 모든 리셉티브 필터 영역들 사이의 내적 연산을 하는 것과 같다. 우리의 예에서는 각 영역에 대한 각각의 필터를 각각의 영역에 적용한 [96x3025] 사이즈의 출력물이 얻어진다.
+4. 결과물은 [55x55x96] 차원으로 reshape 한다.
 
-This approach has the downside that it can use a lot of memory, since some values in the input volume are replicated multiple times in `X_col`. However, the benefit is that there are many very efficient implementations of Matrix Multiplication that we can take advantage of (for example, in the commonly used [BLAS](http://www.netlib.org/blas/) API). Morever, the same *im2col* idea can be reused to perform the pooling operation, which we discuss next.
+이 방식은 입력 볼륨의 여러 값들이 `X_col`에 여러 번 복사되기 때문에 메모리가 많이 사용된다는 단점이 있다. 그러나 매트릭스 연산과 관련된 많은 효율적 구현방식들을 사용할 수 있다는 장점도 있다 ([BLAS](http://www.netlib.org/blas/) API 가 하나의 예임). 뿐만 아니라 같은 *im2col* 아이디어는 풀링 연산에서 재활용 할 수도 있다 (뒤에서 다루게 된다).
 
-**Backpropagation.** The backward pass for a convolution operation (for both the data and the weights) is also a convolution (but with spatially-flipped filters). This is easy to derive in the 1-dimensional case with a toy example (not expanded on for now).
+**Backpropagation.** 컨볼루션 연산의 backward pass 역시 컨볼루션 연산이다 (가로/세로가 뒤집어진 필터를 사용한다는 차이점이 있음). 간단한 1차원 예제를 가지고 쉽게 확인해볼 수 있다.
 
 <a name='pool'></a>
-#### Pooling Layer
+#### 풀링 레이어 (Pooling Layer)
 
-It is common to periodically insert a Pooling layer in-between successive Conv layers in a ConvNet architecture. Its function is to progressively reduce the spatial size of the representation to reduce the amount of parameters and computation in the network, and hence to also control overfitting. The Pooling Layer operates independently on every depth slice of the input and resizes it spatially, using the MAX operation. The most common form is a pooling layer with filters of size 2x2 applied with a stride of 2 downsamples every depth slice in the input by 2 along both width and height, discarding 75% of the activations. Every MAX operation would in this case be taking a max over 4 numbers (little 2x2 region in some depth slice). The depth dimension remains unchanged. More generally, the pooling layer:
+CNN 구조 내에 컨볼루션 레이어들 중간중간에 주기적으로 풀링 레이어를 넣는 것이 일반적이다. 풀링 레이어가 하는 일은 네트워크의 파라미터의 개수나 연산량을 줄이기 위해 representation의 spatial한 사이즈를 줄이는 것이다. 이는 오버피팅을 조절하는 효과도 가지고 있다. 풀링 레이어는 MAX 연산을 각 depth slice에 대해 독립적으로 적용하여 spatial한 크기를 줄인다. 사이즈 2x2와 stride 2가 가장 많이 사용되는 풀링 레이어이다. 각 depth slice를 가로/세로축을 따라 1/2로 downsampling해 75%의 액티베이션은 버리게 된다. 이 경우 MAX 연산은 4개 숫자 중 최대값을 선택하게 된다 (같은 depth slice 내의 2x2 영역). Depth 차원은 변하지 않는다. 풀링 레이어의 특징들은 일반적으로 아래와 같다:
 
-- Accepts a volume of size $$W_1 \times H_1 \times D_1$$
-- Requires three hyperparameters:
-  - their spatial extent $$F$$,
-  - the stride $$S$$,
-- Produces a volume of size $$W_2 \times H_2 \times D_2$$ where:
+- $$W_1 \times H_1 \times D_1$$ 사이즈의 입력을 받는다
+- 3가지 hyperparameter를 필요로 한다.
+  - Spatial extent $$F$$
+  - Stride $$S$$
+- $$W_2 \times H_2 \times D_2$$ 사이즈의 볼륨을 만든다
   - $$W_2 = (W_1 - F)/S + 1$$
   - $$H_2 = (H_1 - F)/S + 1$$
   - $$D_2 = D_1$$
-- Introduces zero parameters since it computes a fixed function of the input
-- Note that it is not common to use zero-padding for Pooling layers
+- 입력에 대해 항상 같은 연산을 하므로 파라미터는 따로 존재하지 않는다
+- 풀링 레이어에는 보통 제로 패딩을 하지 않는다
 
-It is worth noting that there are only two commonly seen variations of the max pooling layer found in practice: A pooling layer with $$F = 3, S = 2$$ (also called overlapping pooling), and more commonly $$F = 2, S = 2$$. Pooling sizes with larger receptive fields are too destructive.
+일반적으로 실전에서는 두 종류의 max 풀링 레이어만 널리 쓰인다. 하나는 overlapping 풀링이라고도 불리는 $$F = 3, S = 2$$ 이고 하나는 더 자주 쓰이는 $$F = 2, S = 2$$ 이다. 큰 리셉티브 필드에 대해서 풀링을 하면 보통 너무 많은 정보를 버리게 된다.
 
-**General pooling**. In addition to max pooling, the pooling units can also perform other functions, such as *average pooling* or even *L2-norm pooling*. Average pooling was often used historically but has recently fallen out of favor compared to the max pooling operation, which has been shown to work better in practice.
+**일반적인 풀링**. Max 풀링 뿐 아니라 *average 풀링*, *L2-norm 풀링* 등 다른 연산으로 풀링할 수도 있다. Average 풀링은 과거에 많이 쓰였으나 최근에는 Max 풀링이 더 좋은 성능을 보이며 점차 쓰이지 않고 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/cnn/pool.jpeg" width="36%">
   <img src="{{site.baseurl}}/assets/cnn/maxpool.jpeg" width="59%" style="border-left: 1px solid black;">
   <div class="figcaption">
-    Pooling layer downsamples the volume spatially, independently in each depth slice of the input volume. <b>Left:</b> In this example, the input volume of size [224x224x64] is pooled with filter size 2, stride 2 into output volume of size [112x112x64]. Notice that the volume depth is preserved. <b>Right:</b> The most common downsampling operation is max, giving rise to <b>max pooling</b>, here shown with a stride of 2. That is, each max is taken over 4 numbers (little 2x2 square).
+    풀링 레이어는 입력 볼륨의 각 depth slice를 spatial하게 downsampling한다. <b>좌:</b> 이 예제에서는 입력 볼륨이 [224x224x64]이며 필터 크기 2, stride 2로 풀링해 [112x112x64] 크기의 출력 볼륨을 만든다. 볼륨의 depth는 그대로 유지된다는 것을 기억하자. <b>Right:</b> 가장 널리 쓰이는 <b>max 풀링</b>. 2x2의 4개 숫자에 대해 max를 취하게된다. 
   </div>
 </div>
 
-**Backpropagation**. Recall from the backpropagation chapter that the backward pass for a max(x, y) operation has a simple interpretation as only routing the gradient to the input that had the highest value in the forward pass. Hence, during the forward pass of a pooling layer it is common to keep track of the index of the max activation (sometimes also called *the switches*) so that gradient routing is efficient during backpropagation.
+**Backpropagation**. Backpropagation 챕터에서 max(x,y)의 backward pass는 그냥 forward pass에서 가장 큰 값을 가졌던 입력의 gradient를 보내는 것과 같다고 배운 것을 기억하자. 그러므로 forward pass 과정에서 보통 max 액티베이션의 위치를 저장해두었다가 backpropagation 때 사용한다.
 
-**Recent developments**.
+**최근의 발전된 내용들**.
 
-- [Fractional Max-Pooling](http://arxiv.org/abs/1412.6071) suggests a method for performing the pooling operation with filters smaller than 2x2. This is done by randomly generating pooling regions with a combination of 1x1, 1x2, 2x1 or 2x2 filters to tile the input activation map. The grids are generated randomly on each forward pass, and at test time the predictions can be averaged across several grids.
-- [Striving for Simplicity: The All Convolutional Net](http://arxiv.org/abs/1412.6806) proposes to discard the pooling layer in favor of architecture that only consists of repeated CONV layers. To reduce the size of the representation they suggest using larger stride in CONV layer once in a while.
+- [Fractional Max-Pooling](http://arxiv.org/abs/1412.6071) 2x2보다 더 작은 필터들로 풀링하는 방식. 1x1, 1x2, 2x1, 2x2 크기의 필터들을 임의로 조합해 풀링한다. 매 forward pass마다 grid들이 랜덤하게 생성되고, 테스트 때에는 여러 grid들의 예측 점수들의 평균치를 사용하게 된다. 
+- [Striving for Simplicity: The All Convolutional Net](http://arxiv.org/abs/1412.6806) 라는 논문은 컨볼루션 레이어만 반복하며 풀링 레이어를 사용하지 않는 방식을 제안한다. Representation의 크기를 줄이기 위해 가끔씩 큰 stride를 가진 컨볼루션 레이어를 사용한다.
 
-Due to the aggressive reduction in the size of the representation (which is helpful only for smaller datasets to control overfitting), the trend in the literature is towards discarding the pooling layer in modern ConvNets.
+풀링 레이어가 보통 representation의 크기를 심하게 줄이기 때문에 (이런 효과는 작은 데이터셋에서만 오버피팅 방지 효과 등으로 인해 도움이 됨), 최근 추세는 점점 풀링 레이어를 사용하지 않는 쪽으로 발전하고 있다.
 
 <a name='norm'></a>
-#### Normalization Layer
+#### Normalization 레이어
 
-Many types of normalization layers have been proposed for use in ConvNet architectures, sometimes with the intentions of implementing inhibition schemes observed in the biological brain. However, these layers have recently fallen out of favor because in practice their contribution has been shown to be minimal, if any. For various types of normalizations, see the discussion in Alex Krizhevsky's [cuda-convnet library API](http://code.google.com/p/cuda-convnet/wiki/LayerParams#Local_response_normalization_layer_(same_map)).
+실제 두뇌의 억제 메커니즘 구현 등을 위해 많은 종류의 normalization 레이어들이 제안되었다. 그러나 이런 레이어들이 실제로 주는 효과가 별로 없다는 것이 알려지면서 최근에는 거의 사용되지 않고 있다. Normalization에 대해 알고 싶다면 Alex Krizhevsky의 글을 읽어보기 바란다 [cuda-convnet library API](http://code.google.com/p/cuda-convnet/wiki/LayerParams#Local_response_normalization_layer_(same_map)).
 
 <a name='fc'></a>
-#### Fully-connected layer
+#### Fully-connected 레이어
 
 Neurons in a fully connected layer have full connections to all activations in the previous layer, as seen in regular Neural Networks. Their activations can hence be computed with a matrix multiplication followed by a bias offset. See the *Neural Network* section of the notes for more information.
 
-<a name='convert'></a>
+<a name='convert'><어/a>
 #### Converting FC layers to CONV layers
 
 It is worth noting that the only difference between FC and CONV layers is that the neurons in the CONV layer are connected only to a local region in the input, and that many of the neurons in a CONV volume share parameters. However, the neurons in both layers still compute dot products, so their functional form is identical. Therefore, it turns out that it's possible to convert between FC and CONV layers:
