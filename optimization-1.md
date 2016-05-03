@@ -337,7 +337,7 @@ while True:
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/dataflow.jpeg">
   <div class="figcaption">
-    정보 흐름 요약. <b>(x,y)</b>라는 고정된 데이터 쌍이 주어져 있다. 처음에는 무작위로 뽑은 파라미터(parameter/weight)값으로 시작해서 바꿔나간다. 왼쪽에서 오른쪽으로 가면서, 스코어함수(score function)가 각 클래스의 점수를 계산하고 그 값이 <b>f</b> 벡터에 저장된다. 손실함수(loss function)는 두 부분으로 나뉘어 있다. 첫째, 데이터 손실(data loss)은 파라미터(parameter/weight)만으로 계산하는 함수이다. 그라디언트 하강(Gradient Descent) 과정에서, 파라미터(parameter/weight)로 미분한 (혹은 원한다면 데이터 값으로 추가로 미분한... ??? 역자 주: 이 괄호안의 내용은 무슨 소린지 모르겠음.) 그라디언트(gradient)를 계산하고, 이것을 이용해서 파라미터(parameter/weight)값을 업데이트한다.
+    정보 흐름 요약. <b>(x,y)</b>라는 고정된 데이터 쌍이 주어져 있다. 처음에는 무작위로 뽑은 파라미터(parameter/weight)값으로 시작해서 바꿔나간다. 왼쪽에서 오른쪽으로 가면서, 스코어함수(score function)가 각 클래스의 점수를 계산하고 그 값이 <b>f</b> 벡터에 저장된다. 손실함수(loss function)는 두 부분으로 나뉘어 있다. 첫째, 데이터 손실(data loss)은 파라미터(parameter/weight)만으로 계산하는 함수이다. 그라디언트 하강(Gradient Descent) 과정에서, 파라미터(parameter/weight)로 미분한 (혹은 원한다면 데이터 값으로 추가로 미분한. 역자 주: 필요에 따라 데이터 값으로도 미분하는 경우가 있다고 함. 문맥상 몰라도 되는 듯.) 그라디언트(gradient)를 계산하고, 이것을 이용해서 파라미터(parameter/weight)값을 업데이트한다.
   </div>
 </div>
 
