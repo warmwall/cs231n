@@ -3,36 +3,36 @@ layout: page
 title: Terminal.com Tutorial
 permalink: /terminal-tutorial/
 ---
-For the assignments, we offer an option to use [Terminal](https://www.stanfordterminalcloud.com) for developing and testing your implementations. Notice that we're not using the main Terminal.com site but a subdomain which has been assigned specifically for this class. [Terminal](https://www.stanfordterminalcloud.com) is an online computing platform that allows us to access pre-configured command line environments. Note that, it's not required to use [Terminal](https://www.stanfordterminalcloud.com) for your assignments; however, it might make life easier with all the required dependencies and development toolkits configured for you.
+과제를 진행하기 위해서, [Terminal](https://www.stanfordterminalcloud.com)을 사용하는 옵션을 제공합니다. Terminal에서 여러분들의 결과물을 개발하고 테스트 할 수 있습니다. 한가지 유의해야할 것은 Terminal.com의 메인페이지를 사용하지 않고 cs231n 수업을 위해 특별히 할당된 서브도메인에 등록된 사이트를 사용합니다. [Terminal](https://www.stanfordterminalcloud.com)은 미리 설정된 커맨드 라인 환경(command line environment)에 접근할수 있는 온라인 컴퓨팅 플랫폼입니다. 여러분들의 과제를 진행하기 위해서 반드시 [Terminal](https://www.stanfordterminalcloud.com) 을 사용할 필요는 없습니다. 그러나 개발을 위한 필요사항들과 개발도구들이 미리 설정되어 있기 때문에 수고를 덜 수 있습니다.
 
-This tutorial lists the necessary steps of working on the assignments using Terminal. First of all, [sign up your own account](https://www.stanfordterminalcloud.com/signup). Log in [Terminal](https://www.stanfordterminalcloud.com) with the account that you have just created.
+이 튜토리얼은 Terminal을 사용하여 과제를 진행하기 위한 필수적인 과정들을 설명합니다. 가장 먼저, [여러분의 계정을 만듭니다.](https://www.stanfordterminalcloud.com/signup). 방금전에 만든 계정으로 [Terminal](https://www.stanfordterminalcloud.com)에 로그인 합니다.
 
-For each assignment, we will provide you a link to a shared terminal snapshot. These snapshots are pre-configured command line environments with the starter code, where you can write your implementations and execute the code.
+각각의 과제마다 Terminal 스냅샷 링크를 제공합니다. 이 스냅샷들은 여러분들의 결과물을 작성하고 실행할 시작코드와 미리 설정된 커맨드 라인 환경이 포함되어 있습니다.
 
-Here's an example of what a snapshot page looked like for an assignment in 2015:
+여기 2015년 과제처럼 보이는 스냅샷을 통해 예를 들어보겠습니다.
 
 <div class='fig figcenter fighighlight'>
   <img src='{{site.baseurl}}/assets/terminal-shared.jpg'>
 </div>
 
-Yours will look similar. Click the "Start" button on the lower right corner. This will clone the shared snapshot to your own account. Now you should be able to find the terminal under the [My Terminals](https://www.stanfordterminalcloud.com/terminals) tab.
+여러분의 스냅샷도 이와 비슷할 것입니다. 오른쪽 아래의 "Start" 버튼을 클릭합니다. 그럼 여러분의 계정에 공유된 스냅샷이 복사됩니다. 이제 [My Terminals](https://www.stanfordterminalcloud.com/terminals) 탭에서 복사된 터미널을 찾을 수 있습니다.
 
 <div class='fig figcenter fighighlight'>
   <img src='{{site.baseurl}}/assets/terminal-my.jpg'>
 </div>
 
-Yours will look similar. You are all set! To work on the assignments, click the link to your terminal (shown in the red box in the above image). This link will open up the user interface layer over an AWS machine. It will look something similar to this:
+여러분의 화면도 이와 비슷할 것입니다. 이제 과제를 진행하기 위한 준비가 되었습니다! 링크를 클릭하여 terminal을 열어봅시다. (위 이미지의 빨간색 상자) 이 링크는 AWS 머신상의 유저인터페이스를 계층을 엽니다. 다음과 비슷한 화면이 나타납니다.
 
 <div class='fig figcenter fighighlight'>
   <img src='{{site.baseurl}}/assets/terminal-development.jpg'>
 </div>
 
-We have set up the Jupyter Notebook and other dependencies in the terminal. Launch a new console window with the small + sign (if you don't already have one), navigate around and look for the assignment folder and code. Launch a Jupyer notebook and work on the assignment. If your're a student enrolled in the class you will submit your assignment through Coursework:
+terminal에 Jupyter Notebook과 다른 필요요소들이 설치되어 있습니다. 조그마한 + 버튼을 눌러 콘솔을 실행합니다.(콘솔이 없을 경우), 그리고 과제폴더와 코드를 찾습니다. 그리고 Jupyper Notebook을 실행하고 과제를 진행합니다. 만약 당신이 cs231n에 등록한 학생이면 코스워크를 통해 과제를 제출해야합니다.
 
 <div class='fig figcenter fighighlight'>
   <img src='{{site.baseurl}}/assets/terminal-coursework.jpg'>
 </div>
 
-For more information about [Terminal](https://www.stanfordterminalcloud.com), check out the [FAQ](https://www.stanfordterminalcloud.com/faq) page.
+[Terminal](https://www.stanfordterminalcloud.com)에 대한 더 많은 정보를 원하시면 [FAQ](https://www.stanfordterminalcloud.com/faq)페이지를 방문해주세요
 
-**Important Note:** the usage of Terminal is charged on an hourly rate based on the instance type. A medium type instance costs $0.124 per hour. If you are enrolled in the class email Serena Yeung (syyeung@cs.stanford.edu) to request Terminal credits. We will send you $3 the first time around, and you can request more funds on a rolling basis when you run out. Please be responsible with the funds we allocate you.
+**중요** 터미널 사용시 사용하는 인스턴스 타입에 따라 시간당 사용요금이 부과됩니다. 미디엄 타입의 인스턴스 요금은 시간당 $0.124 입니다.
