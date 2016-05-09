@@ -26,7 +26,7 @@ permalink: /terminal-tutorial/
 <div class='fig figcenter fighighlight'>
   <img src='{{site.baseurl}}/assets/terminal-development.jpg'>
 </div>
-ㅇㅇ
+
 terminal에 Jupyter Notebook과 다른 필요요소들이 설치되어 있습니다. 조그마한 + 버튼을 눌러 콘솔을 실행합니다. (콘솔이 없으면 ), 그리고 과제 폴더와 코드를 찾습니다. 그리고 Jupyper Notebook을 실행하고 과제를 진행합니다. 만약 당신이 cs231n에 등록한 학생이면 코스워크를 통해 과제를 제출해야 합니다.
 
 <div class='fig figcenter fighighlight'>
