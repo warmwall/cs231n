@@ -323,7 +323,7 @@ bat
 while True:
   data_batch = sample_training_data(data, 256) # 예제 256개짜리 미니배치(mini-batch)
   weights_grad = evaluate_gradient(loss_fun, data_batch, weights)
-  weights += - step_size * weights_grad # 파라미터 업데이트(parameter update) 
+  weights += - step_size * weights_grad # 파라미터 업데이트(parameter update)
 ~~~
 
 이 방법이 먹히는 이유는 학습데이터들의 예시들이 서로 상관관계가 있기 때문이다. 이것에 대해 알아보기위해, ILSVRC의 120만개 이미지들이 사실은 1천개의 서로 다른 이미지들의 복사본이라는 극단적인 경우를 생각해보자. (즉, 한 클래스 당 하나이고, 이 하나가 1천2백번 복사된 것) 그러면 명백한 것은, 이 1천2백개의 이미지에서의 그라디언트(gradient)값 (역자 주: 이 1천2백개에 해당하는 $i$에 대한 $L_i$값)은 다 똑같다는 점이다. 그렇다면 이 1천2백개씩 똑같은 값들 120만개를 평균내서 손실값(loss)를 구하는 것이나, 서로 다른 1천개의 이미지당 하나씩 1000개의 값을 평균내서 손실값(loss)을 구하는 것이나 똑같다. 실제로는 당연히 중복된 데이터를 주지는 않겠지만, 미니배치(mini-batch)에서만 계산하는 그라디언트(gradient)는 모든 데이터를 써서 구하는 것의 근사값으로 괜찮게 쓰일 수 있을 것이다. 따라서, 미니배치(mini-batch)에서 그라디언트(gradient)를 구해서 더 자주자주 파라미터(parameter/weight)을 업데이트하면 실제로 더 빠른 수렴하게 된다.
@@ -352,3 +352,8 @@ while True:
 - 반복적으로 루프(loop)를 돌려서 그라디언트(gradient)를 계산하고 파라미터(parameter/weight)를 업데이트하는 **그라디언트 하강 (Gradient Descent)** 알고리즘을 소개했다.
 
 **예고:** 이 섹션에서 핵심은, 손실함수(loss function)를 파라미터(parameter/weight)로 미분하여 그라디언트(gradient)를 계산하는 법(과 그에 대한 직관적인 이해)가 신경망(neural network)를 디자인하고 학습시키고 이해하는데 있어 가장 중요한 기술이라는 점이다. 다음 섹션에서는, 그라디언(gradient)를 해석적으로 구할 때 연쇄법칙을 이용한, **backpropagation**이라고도 불리는 효율적인 방법에 대해 알아보겠다. 이 방법을 쓰면 컨볼루션 신경망 (Convolutional Neural Networks)을 포함한 모든 종류의 신경망(Neural Networks)에서 쓰이는 상대적으로 일반적인 손실함수(loss function)를 효율적으로 최적화시킬 수 있다.
+
+---
+<p style="text-align:right"><b>
+번역: 임준구 <a href="https://github.com/stats2ml" style="color:black">(stats2ml)</a>
+</b></p>

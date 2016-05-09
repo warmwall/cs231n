@@ -289,3 +289,8 @@ Here are some (optional) links you may find interesting for further reading:
 - [A Few Useful Things to Know about Machine Learning](http://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf), where especially section 6 is related but the whole paper is a warmly recommended reading.
 
 - [Recognizing and Learning Object Categories](http://people.csail.mit.edu/torralba/shortCourseRLOC/index.html), a short course of object categorization at ICCV 2005.
+
+---
+<p style="text-align:right"><b>
+번역: 이옥민 <a href="https://github.com/OkminLee" style="color:black">(OkminLee)</a>
+</b></p>

@@ -18,7 +18,7 @@ permalink: /assignments2016/assignment1/
 ## 설치
 여러분은 다음 두가지 방법으로 숙제를 시작할 수 있습니다: Terminal.com을 이용한 가상 환경 또는 로컬 환경.
 
-### Termianl에서의 가상 환경.
+### Terminal에서의 가상 환경.
 Terminal에는 우리의 수업을 위한 서브도메인이 만들어져 있습니다. [www.stanfordterminalcloud.com](https://www.stanfordterminalcloud.com) 계정을 등록하세요. 이번 숙제에 대한 스냅샷은 [여기](https://www.stanfordterminalcloud.com/snapshot/49f5a1ea15dc424aec19155b3398784d57c55045435315ce4f8b96b62819ef65)에서 찾아볼 수 있습니다. 만약 수업에 등록되었다면, TA(see Piazza for more information)에게 이 수업을 위한 Terminal 예산을 요구할 수 있습니다. 처음 스냅샷을 실행시키면, 수업을 위한 모든 것이 설치되어 있어서 바로 숙제를 시작할 수 있습니다. [여기](/terminal-tutorial)에 Terminal을 위한 간단한 튜토리얼을 작성해 뒀습니다.
 
 ### 로컬 환경
@@ -79,3 +79,8 @@ IPython Notebook **features.ipynb**을 사용하여 단순한 이미지 픽셀(�
 
 ### Q6: 추가 과제: 뭔가 더 해보세요! (+10 points)
 이번 과제와 관련된 다른 것들을 작성한 코드로 분석하고 연구해보세요. 예를 들어, 질문하고 싶은 흥미로운 질문이 있나요? 통찰력 있는 시각화를 작성할 수 있나요? 아니면 다른 재미있는 살펴볼 거리가 있나요? 또는 손실 함수(loss function)을 조금씩 변형해가며 실험해볼 수도 있을 것입니다. 만약 다른 멋있는 것을 시도해본다면 추가로 10 points를 얻을 수 있고 강의에 수행한 결과가 실릴 수 있습니다.
+
+---
+<p style="text-align:right"><b>
+번역: 배지운 <a href="https://github.com/MaybeS" style="color:black">(MaybeS)</a>
+</b></p>

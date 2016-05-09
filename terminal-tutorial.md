@@ -36,3 +36,8 @@ terminal에 Jupyter Notebook과 다른 필요요소들이 설치되어 있습니
 [Terminal](https://www.stanfordterminalcloud.com)에 대한 더 많은 정보를 원하시면 [FAQ](https://www.stanfordterminalcloud.com/faq)페이지를 방문해주세요
 
 **중요** 터미널 사용시 사용하는 인스턴스 타입에 따라 시간당 사용요금이 부과됩니다. 미디엄 타입의 인스턴스 요금은 시간당 $0.124 입니다.
+
+---
+<p style="text-align:right"><b>
+번역: 김우정 <a href="https://github.com/gnujoow" style="color:black">(gnujoow)</a>
+</b></p>
