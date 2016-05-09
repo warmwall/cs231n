@@ -355,5 +355,5 @@ while True:
 
 ---
 <p style="text-align:right"><b>
-번역: 임준구 <a href="https://github.com/stats2ml" style="color:black">(stats2ml)</a>
+번역: <a href="https://github.com/stats2ml" style="color:black">stats2ml</a>
 </b></p>
