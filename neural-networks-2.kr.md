@@ -155,7 +155,7 @@ $$
   <div class="figcaption">Figure taken from the <a href="http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf">Dropout paper</a> that illustrates the idea. During training, Dropout can be interpreted as sampling a Neural Network within the full Neural Network, and only updating the parameters of the sampled network based on the input data. (However, the exponential number of possible sampled networks are not independent because they share the parameters.) During testing there is no dropout applied, with the interpretation of evaluating an averaged prediction across the exponentially-sized ensemble of all sub-networks (more about ensembles in the next section).</div>
 </div>
 
-Vanilla dropout in an example 3-layer Neural Network would be implemented as follows:
+3-레이어 신경망 회로에 적용된 Vanilla dropout 예제를 아래 구현하였다.
 
 ~~~python
 """ Vanilla Dropout: Not recommended implementation (see notes below) """
@@ -184,11 +184,11 @@ def predict(X):
   out = np.dot(W3, H2) + b3
 ~~~
 
-In the code above, inside the `train_step` function we have performed dropout twice: on the first hidden layer and on the second hidden layer. It is also possible to perform dropout right on the input layer, in which case we would also create a binary mask for the input `X`. The backward pass remains unchanged, but of course has to take into account the generated masks `U1,U2`.
+train_step 함수를 보면 첫번째 히든 레이어와 두번째 히든레이어 총 2 부분에서 dropout이 적용된 것을 볼 수 있다. 물론 입력 데이터 `X`를 위한 p=0.5 마스크를 만들어 입력 단에도 dropout을 적용할 수 있다. 역전파(backward pass) 과정에서는 forward에서 사용된 `U1, U2`를 사용하여 수행한다.
 
-Crucially, note that in the `predict` function we are not dropping anymore, but we are performing a scaling of both hidden layer outputs by $p$. This is important because at test time all neurons see all their inputs, so we want the outputs of neurons at test time to be identical to their expected outputs at training time. For example, in case of $p = 0.5$, the neurons must halve their outputs at test time to have the same output as they had during training time (in expectation). To see this, consider an output of a neuron $x$ (before dropout). With dropout, the expected output from this neuron will become $px + (1-p)0$, because the neuron's output will be set to zero with probability $1-p$. At test time, when we keep the neuron always active, we must adjust $x \rightarrow px$ to keep the same expected output. It can also be shown that performing this attenuation at test time can be related to the process of iterating over all the possible binary masks (and therefore all the exponentially many sub-networks) and computing their ensemble prediction.
+`predict` 함수을 보면 dropout을 적용하지 않았지만 히든 레이어 출력 데이터에 $$p$$ 만큼 스케일링 한 것을 주목할 필요가 있다. 테스트 과정에서 모든 뉴런은 모든 입력 데이터를 받기 때문에 학습 과정에서 얻을 수 있는 출력값과 동일한 조건으로 맞추어 보정해야한다. dropout 확률 $$p = 0.5$$ 인 경우를 가정해 보자. 테스트 과정 동안 뉴런의 출력 값은 모두 1/2만큼 줄어들어야 하는데 이는 학습 과정 동안 뉴런 출력 데이터의 기대값과 동일하게 맞추기 위함이다. 뉴런 $$x$$가 있을때 dropout 적용하지 않은 출력 데이터가 있다고 가정하자. dropout을 적용하면 이 뉴런에서의 기대값은 $$px + (1-p)0$$가 되는데 이는 $$1-p$$의 확률로 뉴런의 출력 데이터 값이 0이 되기 때문이다. 테스트 과정에서는 모든 뉴런을 사용하기 때문에 동일한 기대값을 갖기 위해서는 $$x \rightarrow px$$로 보정해 주어야 한다. 또 다른 관점에서 보면 $$p$$만큼 값을 줄이는 과정은 모든 가능한 dropout 마스크를 적용한 후 그 결과를 이용하여 ensemble prediction을 수행하는 것으로 해석 할 수 있다.
 
-The undesirable property of the scheme presented above is that we must scale the activations by $p$ at test time. Since test-time performance is so critical, it is always preferable to use **inverted dropout**, which performs the scaling at train time, leaving the forward pass at test time untouched. Additionally, this has the appealing property that the prediction code can remain untouched when you decide to tweak where you apply dropout, or if at all. Inverted dropout looks as follows:
+위에서 소개한 방법은 테스트 과정에서 뉴런 출력에 $$p$$를 곱하는 연산이 수행해야 하는데 이는 원하지 않는 방식인 경우가 많다. 테스트 과정에서의 성능은 매우 중요한 이슈이기 때문에 많은 경우에 **inverted droptou** 방식이 더 선호된다. 이는 스케일링 연산을 학습 과정에서 적용하고 테스트 과정에서는 추가적인 스케일링 연산없이 바로 사용하는 방식이다. 이 기법의 또 다른 장점은 만약 dropout을 수정하기로 했을때 prediction 코드에는 여전히 변화가 없다는 것이다. Inverted dropout은 다음과 같이 구현할 수 있다.
 
 ~~~python
 """
