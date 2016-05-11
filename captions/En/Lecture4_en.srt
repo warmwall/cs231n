@@ -1,42 +1,42 @@
 ﻿1
 00:00:02,740 --> 00:00:07,000
-ok so let me dive into some
-administrator
+Okay, so let me dive into some
+administrative
 
 2
 00:00:07,000 --> 00:00:14,669
-went first so I can recall that
-assignment one is due next Wednesday
+points first. So recall that
+assignment 1 is due next Wednesday.
 
 3
 00:00:14,669 --> 00:00:19,050
-yeah but hundred and fifty hours left
-and I use ours because there's a more
+You have about 150 hours left,
+and I use hours because there's a more
 
 4
 00:00:19,050 --> 00:00:23,320
-common sense of doom and remember that
-third of those hours he'll be
+imminent sense of doom and remember that
+a third of those hours you'll be
 
 5
 00:00:23,320 --> 00:00:29,278
-unconscious so you don't have that much
-time it's really running out and you
+unconscious, so you don't have that much
+time. It's really running out. And you
 
 6
 00:00:29,278 --> 00:00:31,768
-know you might think that you have a
-late day Sun so on but these images get
+know you might think that you have
+late days and so on but these assignments just get
 
 7
 00:00:31,768 --> 00:00:38,640
-harder over time so you want to see
-those and so so start now likely so
+harder over time so you want to save
+those and so on, so start now. Let's see. So
 
 8
 00:00:38,640 --> 00:00:43,109
 there's no office hours or anything like
-that on Monday I'll hold make up office
+that on Monday. I'll hold make up office
 
 9
 00:00:43,109 --> 00:00:45,839
@@ -45,22 +45,22 @@ guys to be able to talk to me about the
 
 10
 00:00:45,840 --> 00:00:49,260
-special projects and so on so I'll be
+especially projects and so on, so I'll be
 moving my office hours from Monday to
 
 11
-00:00:49,259 --> 00:00:52,820
-wednesday usually I had my office starts
-at 6 p.m. instead I'll have them at 5
+00:00:49,260 --> 00:00:52,820
+Wednesday. Usually I had my office hours
+at 6PM. Instead I'll have them at 5PM
 
 12
 00:00:52,820 --> 00:00:59,909
-p.m. and usually think gates 260 but now
-be engaged to 39-1 them both and yeah
+and usually it's in Gates 260 but now
+it'll be in Gates 259, so minus 1 on both and yeah
 
 13
 00:00:59,909 --> 00:01:03,429
-and also to note when you're going to be
+and also to note, when you're going to be
 studying for midterm that's coming up in
 
 14
@@ -74,63 +74,63 @@ notes as well which are really part of
 
 16
 00:01:07,109 --> 00:01:09,819
-this class and a kind of pick and choose
+this class and I kind of pick and choose
 some of the things that I think are most
 
 17
 00:01:09,819 --> 00:01:13,579
-valuable to present a lecture but
-there's quite a bit of a more material
+valuable to present in a lecture but
+there's quite a bit of, you know, more material
 
 18
 00:01:13,579 --> 00:01:16,548
 to beware of that might pop up in the
-mid term even though I'm comin some of
+midterm, even though I'm covering some of
 
 19
 00:01:16,549 --> 00:01:19,610
-the most important stuff usually no
-larger than URI through those lecture
+the most important stuff usually in the lecture,
+so do read through those lecture
 
-20
+20 
 00:01:19,609 --> 00:01:25,618
-notes their complimentary to the actress
-and so the material for the material be
+notes, they're complimentary to the lectures.
+And so the material for the midterm will be
 
 21
 00:01:25,618 --> 00:01:32,269
-drawn from both the lectures and its ok
-so having said all that we're going to
+drawn from both the lectures and the notes. Okay.
+So having said all that, we're going to
 
 22
 00:01:32,269 --> 00:01:36,769
-dive into the material so where we are
-right now just as a reminder we have
+dive into the material. So where we are
+right now, just as a reminder, we have
 
 23
 00:01:36,769 --> 00:01:39,989
-this core function we looked at several
-loss functions such as the SP loss
+the score function, we looked at several
+loss functions such as the SVM loss
 
 24
 00:01:39,989 --> 00:01:44,359
-function last time and we look at the
-full lost that you achieve for any
+function last time, and we look at the
+full loss that you achieve for any
 
 25
 00:01:44,359 --> 00:01:49,379
-particular set of weights on over your
-training data and this loss made up of
+particular set of weights on, over your
+training data, and this loss is made up of
 
 26
 00:01:49,379 --> 00:01:53,509
-two components there's a data loss and
-loss right and really what we want to do
+two components, there's a data loss and
+a regularization loss, right. And really what we want to do
 
 27
 00:01:53,509 --> 00:01:57,200
-is we want to do right now the gradient
-expression of the loss of respect to the
+is we want to derive out the gradient
+expression of the loss function with respect to the
 
 28
 00:01:57,200 --> 00:02:01,118
@@ -139,63 +139,63 @@ we can actually perform the optimization
 
 29
 00:02:01,118 --> 00:02:07,069
-process optimization process we're doing
-in dissent where we iterate in a leading
+process. And in the optimization process we're doing
+gradient descent, where we iterate evaluating
 
 30
 00:02:07,069 --> 00:02:11,030
-the gradient on your weights during a
-primary update and just repeating this
+the gradient on your weights doing a
+parameter update and just repeating this
 
 31
 00:02:11,030 --> 00:02:14,259
-over and over again so that were
+over and over again, so that we're
 converging to
 
 32
 00:02:14,259 --> 00:02:17,929
-the low points on that loss function and
-when we arrived at a loss that's
+the low points of that loss function and
+when we arrive at a low loss, that's
 
 33
 00:02:17,930 --> 00:02:20,799
 equivalent to making good predictions
-over our training data in terms of this
+over our training data in terms of the
 
 34
 00:02:20,799 --> 00:02:25,030
-course that come out now we also saw
-that are too kind of waste evaluate the
+scores that come out. Now we also saw
+that are two kinds of ways to evaluate the
 
 35
 00:02:25,030 --> 00:02:29,019
-gradient there's an American gradient
+gradient. There's a numerical gradient
 and this is very easy to write but it's
 
 36
 00:02:29,019 --> 00:02:32,840
-extremely slow to evaluate and there's
-an elegy gradient which is which you
+extremely slow to evaluate, and there's
+analytic gradient, which is, which you
 
 37
 00:02:32,840 --> 00:02:36,658
-obtained by using calculus and will be
+obtain by using calculus and we'll be
 going into that in this lecture quite a
 
 38
 00:02:36,658 --> 00:02:41,318
-bit more and so it's fast exact which is
-great but it's not you can get it wrong
+bit more and so it's fast, exact, which is
+great, but it's not, you can get it wrong
 
 39
 00:02:41,318 --> 00:02:45,969
-sometimes and so we always the following
-week already in check where we write all
+sometimes, and so we always what we call
+gradient check, where we write all
 
 40
 00:02:45,969 --> 00:02:48,639
-the expressions to complete the analytic
-gradients and then we double check its
+the expressions to compute the analytic
+gradients, and then we double check its
 
 41
 00:02:48,639 --> 00:02:51,828
@@ -204,37 +204,37 @@ so I'm not sure if you're going to see
 
 42
 00:02:51,829 --> 00:02:59,250
-that you're going to see that definitely
-assignments ok so now you might be
+that, you're going to see that definitely the
+assignments. Okay, so, now you might be
 
 43
 00:02:59,250 --> 00:03:04,378
-tempted to when you see the setup we
-just want to drive the gradient of the
+tempted to, when you see this setup, we
+just want to derive the gradient of the
 
 44
 00:03:04,378 --> 00:03:08,459
-loss function back to the weights you
-might be tempted to just you know right
+loss function with respect to the weights. You
+might be tempted to just, you know, right
 
 45
 00:03:08,459 --> 00:03:11,709
 out the full loss and just start to take
-the gradients as you seen your calculus
+the gradients as you see your calculus
 
 46
 00:03:11,709 --> 00:03:16,120
-class but I'd like to make is that you
+class, but the point I'd like to make is that you
 should think much more of this in terms
 
 47
 00:03:16,120 --> 00:03:22,480
-of computational grass instead of just
-taking thinking of one giant expression
+of computational graphs, instead of just
+taking, thinking of one giant expression
 
 48
 00:03:22,479 --> 00:03:25,369
-that you're going to drive content with
+that you're going to derive with
 pen and paper the expression for the
 
 49
@@ -244,77 +244,77 @@ gradient and the reason for that
 50
 00:03:27,549 --> 00:03:31,689
 so here we are thinking about these
-values flow flowing through a
+values flow, flowing through a
 
 51
 00:03:31,689 --> 00:03:35,509
-competition around these operations
-along circles and they transferred to
+computational graph where you have these operations
+along circles and they're
 
 52
 00:03:35,509 --> 00:03:38,979
-basically a function pieces that
+basically little function pieces that
 transform your inputs all the way to the
 
 53
 00:03:38,979 --> 00:03:43,018
-loss function at the end so we start off
+loss function at the end, so we start off
 with our data and our parameters as
 
 54
 00:03:43,019 --> 00:03:46,079
-inputs they feed through this
-competition graph which is just all
+inputs. They feed through this
+computational graph, which is just all
 
 55
 00:03:46,079 --> 00:03:49,790
-these series of functions along the way
-and at the end we get a single number
+these series of functions along the way,
+and at the end, we get a single number
 
 56
 00:03:49,789 --> 00:03:53,590
-which is the loss and the reason that
-I'd like to think about it this way is
+which is the loss. And the reason that
+I'd like you to think about it this way is
 
 57
 00:03:53,590 --> 00:03:57,069
-that these expressions right now look
+that, these expressions right now look
 very small and you might be able to
 
 58
 00:03:57,068 --> 00:04:00,339
-derive these grievance but these
-expressions are in competition grass are
+derive these gradients, but these
+expressions are, in computational graphs, are
 
 59
 00:04:00,340 --> 00:04:04,250
-about to get very big and so for example
+about to get very big and, so for example,
 convolutional neural networks will have
 
 60
 00:04:04,250 --> 00:04:08,829
-hundreds maybe are dozens of operations
+hundreds maybe or dozens of operations,
 so we'll have all these images
 
 61
 00:04:08,829 --> 00:04:12,939
-flow-through like big computational
+flowing through like pretty big computational
 graph to get our loss and so it becomes
 
 62
 00:04:12,939 --> 00:04:16,858
 impractical to just write out these
-expressions and commercial networks are
+expressions, and convolutional networks are
 
 63
 00:04:16,858 --> 00:04:19,370
-not even the worst of it once you
-actually start to for example do
+not even the worst of it. Once you
+actually start to, for example, do
 
 64
 00:04:19,370 --> 00:04:23,509
-something called an alternate sheen
-which is a paper from the mind where
+something called a Neural Turing Machine,
+which is a paper from DeepMind, where
 
 65
 00:04:23,509 --> 00:04:26,329
@@ -323,28 +323,28 @@ machine
 
 66
 00:04:26,329 --> 00:04:30,128
-so the whole thing is differentiable the
+so the whole thing is differentiable, the
 whole procedure that the computer is
 
 67
 00:04:30,129 --> 00:04:33,590
-performing on the tape is made smooth
+performing on a tape is made smooth
 and is differentiable computer basically
 
 68
 00:04:33,589 --> 00:04:39,519
-and the competition graphic this is huge
-and not only is this this is not hit
+and the computational graph of this is huge,
+and not only is this, this is not it
 
 69
 00:04:39,519 --> 00:04:42,478
 because what you end up doing and we're
-going to recurrent neural networks and a
+going to recurrent neural networks in a
 
 70
 00:04:42,478 --> 00:04:45,848
-bit but what you end up doing is you end
-up controlling this graph so think about
+bit, but what you end up doing is you end
+up [??] this graph, so think about
 
 71
 00:04:45,848 --> 00:04:51,658
@@ -358,23 +358,23 @@ nodes and little computational units and
 
 73
 00:04:56,379 --> 00:04:59,819
-so it's impossible to write out you know
-here's the loss for the neural Turing
+so it's impossible to write out, you know,
+here's the loss for the Neural Turing
 
 74
 00:04:59,819 --> 00:05:03,650
-machine it's just impossible it would
-take like billions of pages and so we
+Machine. It's just impossible, it would
+take like billions of pages, and so we
 
 75
 00:05:03,649 --> 00:05:07,068
 have to think about this more in terms
-of the structure so little functions
+of data structures of little functions
 
 76
 00:05:07,069 --> 00:05:11,710
 transforming intermediate variables to
-just lost at the very end so we're going
+guess the loss at the very end. Okay. So we're going
 
 77
 00:05:11,709 --> 00:05:14,318
@@ -384,424 +384,422 @@ competition graphs and how we can derive
 78
 00:05:14,319 --> 00:05:20,560
 the gradient on the inputs with respect
-to the loss function at the very end so
+to the loss function at the very end. Okay.
 
 79
 00:05:20,560 --> 00:05:25,569
-what start-up simple and concrete a very
-small competition graph we have three
+So let's start off simple and concrete. So let's consider a very
+small computational graph we have three
 
 80
 00:05:25,569 --> 00:05:29,778
-scalars as an input to this graph XY and
-Z and they take on these specific about
+scalars as inputs to this graph, x, y and
+z, and they take on these specific values
 
 81
 00:05:29,778 --> 00:05:35,069
-these in this example of negative 25 of
-94 and we have this very small graphic
+in this example of -2, 5 and 
+-4, and we have this very small graph
 
 82
 00:05:35,069 --> 00:05:38,669
-or circuit you'll hear me refer to these
-interchangeably hi there is a graph for
+or circuit, you'll hear me refer to these
+interchangeably either as a graph or
 
 83
 00:05:38,668 --> 00:05:43,038
-a circuit so we have this graph that at
-the end gives us this out the negative
+a circuit, so we have this graph that at
+the end gives us this output
 
 84
 00:05:43,038 --> 00:05:47,288
-12 ok so here's what I've done is up
-over deep refilled look will call the
+-12. Okay. So here what I've done is I've
+already pre-filled what we'll call the
 
 85
 00:05:47,288 --> 00:05:51,120
-forward pass of this graph where I set
-the input and then I compute the outfits
+forward pass of this graph, where I set
+the inputs and then I compute the outfits
 
 86
 00:05:51,120 --> 00:05:56,288
-and I would like to do as we'd like to
-drive the gradients of the expression on
+And now what we'd like to do is, we'd like to
+derive the gradients of the expression on
 
 87
 00:05:56,288 --> 00:06:01,250
-the inputs and what we'll do that is
-introduced this intermediate variable
+the inputs, and, so what we'll do now, is,
+I'll introduced this intermediate variable
 
 88
 00:06:01,250 --> 00:06:07,050
-cue the plus gate so there's a plus gate
-and times gate as I refer to them and
+q after the plus gate, so there's a plus gate
+and times gate, as I'll refer to them, and
 
 89
 00:06:07,050 --> 00:06:10,800
-thus must get this computing this outfit
-cue and Sookie was this intermediate as
+this plus gate is computing this output
+q, and so q is this intermediate as
 
 90
 00:06:10,800 --> 00:06:14,788
-a result of X plus Y and then f is a
-multiplication of qnz what I've written
+a result of x plus y, and then f is a
+multiplication of q and z. And what I've written
 
 91
 00:06:14,788 --> 00:06:19,360
-out here is what we want is the
-gradients the derivative stiff idea if I
+out here is, basically, what we want is the
+gradients, the derivatives, df/dx, df/dy, df/dz
 
 92
 00:06:19,360 --> 00:06:25,598
-do I get my desired and I've written out
-the intermediate please log gradients
+And I've written out
+the intermediate, these little gradients
 
 93
 00:06:25,598 --> 00:06:30,120
 for every one of these two expressions
-separately so now we've performed for
+separately, so now we've performed forward
 
 94
 00:06:30,120 --> 00:06:33,490
-class going from left to right and what
-will do now is will derive the backward
+pass going from left to right, and what
+we'll do now is we'll derive the backward
 
 95
 00:06:33,490 --> 00:06:35,699
-pass will go from the back
+pass, we'll go from the back
 
 96
 00:06:35,699 --> 00:06:39,300
-to the front competing gradients of all
+to the front, computing gradients of all
 the intermediates in our circuit until
 
 97
 00:06:39,300 --> 00:06:43,509
-the very end we're going to build up to
-it the gradients on the inputs and so we
+at the very end, we're going to build up to [??]
+it the gradients on the inputs, and so we
 
 98
 00:06:43,509 --> 00:06:47,680
-start off at the very right and as a
+start off at the very right and, as a
 base case sort of this recursive
 
 99
 00:06:47,680 --> 00:06:52,670
-procedure we're considering the gradient
-of the respective so this is just the
+procedure, we're considering the gradient
+of f with respective to f, so this is just the
 
 100
 00:06:52,670 --> 00:06:56,020
-identity function so what is the
-derivative of it
+identity function, so what is the
+derivative of it,
 
 101
 00:06:56,019 --> 00:07:06,240
-identity mapping the idea it's one right
-so in the identity has a gradient of one
+identity mapping? What is the gradient of df by df? It's one, right?
+So the identity has a gradient of one.
 
 102
 00:07:06,240 --> 00:07:10,329
-so that's our base case we start off
-with the one and now we're going to go
+So that's our base case. We start off
+with a one, and now we're going to go
 
 103
 00:07:10,329 --> 00:07:18,519
-backwards through this graph so we want
-to gradient of with respect is that so
+backwards through this graph. So, we want
+the gradient of f with respect to z.
 
 104
 00:07:18,519 --> 00:07:27,089
-what is that in this competition graph
-ok it's so we have not written out right
+So what is that in this computational graph? (x+1)
+Okay, it's q, so we have that written out right
 
 105
 00:07:27,089 --> 00:07:32,879
-here and what is key in this particular
-example it's three right so the gradient
+here and what is q in this particular
+example? It's 3, right? So the gradient
 
 106
 00:07:32,879 --> 00:07:36,279
-on that according to this will become
-just 3 I'm going to be right ingredients
+on z, according to this will, become
+just 3. So I'm going to be writing the ingredients
 
 107
 00:07:36,279 --> 00:07:42,309
 under the lines in red and the values
-are in green about the lines of the
+are in green above the lines. So with the
 
 108
 00:07:42,310 --> 00:07:48,420
-gradient on the in the front is one and
-not the gradient onset is 33 as telling
+gradient on the, in the front is 1, and
+now the gradient on z is 3, and what red 3 is telling
 
 109
 00:07:48,420 --> 00:07:52,009
-you really intuitively keep in mind the
-interpretation of a gradient is what
+you really intuitively, keep in mind the
+interpretation of a gradient, is what
 
 110
 00:07:52,009 --> 00:07:58,459
 that's saying is that the influence of
-dead on the final value is positive and
+z on the final value is positive and
 
 111
 00:07:58,459 --> 00:08:02,859
-with sort of course of three so if I
-increments Z by a small amount eight
+with, sort of a force of 3. So if I
+increment z by a small amount h
 
 112
 00:08:02,860 --> 00:08:07,759
 then the output of the circuit will
-react by increasing because it's a
+react by increasing, because it's a
 
 113
 00:08:07,759 --> 00:08:13,009
-positive three will increase by three so
+positive 3, will increase by 3h, so
 small change will result in a positive
 
 114
 00:08:13,009 --> 00:08:21,560
-change in the ultimate now the gradient
-upon cue in this case will be so deified
+change in the output. Now the gradient
+on q in this case will be, so df/dq
 
 115
 00:08:21,560 --> 00:08:30,860
-IQ is that what is that before so we get
-a gradient of negative for on that part
+is z. What is z? -4. Okay? So we get
+a gradient of -4 on that path
 
 116
 00:08:30,860 --> 00:08:34,599
-of the circuit and with that saying is
-that if he were to increase the output
+of the circuit, and what that's saying is
+that if q were to increase, then the output
 
 117
 00:08:34,599 --> 00:08:39,740
-of the circuit will decrease ok by if
-you increase by H be up to the circuit
+of the circuit will decrease, okay, by, if
+you increase by h, the output of the circuit
 
 118
 00:08:39,740 --> 00:08:44,789
-will decrease by four age that's the
-slope is negative for ok now we're going
+will decrease by 4h. That's the
+slope, is -4. Okay, now we're going
 
 119
 00:08:44,789 --> 00:08:48,480
-to continue this process through this
+to continue this recursive process through this
 plus gate and this is where things get
 
 120
 00:08:48,480 --> 00:08:49,039
-slightly
+slightly interesting
 
 121
 00:08:49,039 --> 00:08:54,328
-I suppose so we'd like to compute the
-agreement on on why with respect to Y
+I suppose. So we'd like to compute the
+gradient on f on y with respect to y
 
 122
 00:08:54,328 --> 00:09:10,208
-and so the gradient on why would this in
-this particular graph will become
+and so the gradient on y with res, in
+this particular graph, will become
 
 123
 00:09:10,208 --> 00:09:23,979
-glass at it either way I'd like to think
-about this is by applying trainable ok
+Let's just guess and then we'll see how this gets derived properly. So I hear some murmurs of the right answer. It will be -4.
+So let's see how, so there are many ways to derive it at this point, because the expression is very small and you can kind of, glance at it, but the way I'd like to think about it is by applying chain rule, okay.
 
 124
 00:09:23,980 --> 00:09:27,709
-so the chain rule says that if you would
-like to direct the gradient of everyone
+So the chain rule says that if you would
+like to derive the gradient of f on y
 
 125
 00:09:27,708 --> 00:09:33,208
-why then it's equal to the FBI dq times
-the cube ideal i right and so we
+then it's equal to df/dq times
+dq/dy, right? And so we've
 
 126
 00:09:33,208 --> 00:09:36,438
-computed both of those expressions in
-particular IQ might be why we know is
+computed both of those expressions, in
+particular dq/dy, we know, is
 
 127
 00:09:36,438 --> 00:09:42,519
-negative or so that's the effect of the
-influence of coupon is DFID Q which is
+-4, so that's the effect of the
+influence of q on f, is df/dq, which is
 
 128
 00:09:42,519 --> 00:09:46,619
-negative for and now we know the local
-would like to know the local influence
+-4, and now we know the local, 
+we'd like to know the local influence
 
 129
 00:09:46,619 --> 00:09:52,449
-of why on cuba and that local influence
-of light on Q is one that's the locals
+of y on q, and that local influence
+of y on q is 1, because that's the local
 
 130
 00:09:52,448 --> 00:09:58,969
-refer to as the local derivative of Y
-for the prostate and so the general
+as I'll refer to as the local derivative of y
+for the plus gate, and so the chain rule
 
 131
 00:09:58,970 --> 00:10:02,019
 tells us that the correct thing to do to
-change these two gradients the local
+chain these two gradients, the local
 
 132
 00:10:02,019 --> 00:10:06,139
-gradient awful why don't you and the
-kind of global gradient of Q on the
+gradient of y on q, and the,
+kind of global gradient of q on the
 
 133
 00:10:06,139 --> 00:10:10,948
-update of the circuit is to multiply
-them so we'll get made it four times and
+output of the circuit, is to multiply
+them. So we'll get -4 times 1
 
 134
 00:10:10,948 --> 00:10:14,588
-so this kind of the the crux of her back
-propagation works is this is a very
+And so, this is kind of the, the crux of how back
+propagation works. This is a very
 
 135
 00:10:14,589 --> 00:10:18,209
-important to understand here that we had
-at least two pieces that we keep
+important to understand here that, we have
+these two pieces that we keep
 
 136
 00:10:18,208 --> 00:10:24,289
-multiplying through when we performed as
-general we have computed X plus Y and
+multiplying through when we perform the chain rule.
+We have q computed x + y, and
 
 137
 00:10:24,289 --> 00:10:29,379
-the derivative X&Y with respect to that
-single expression is one and one so keep
+the derivative x and y, with respect to that
+single expression is one and one. So keep
 
 138
 00:10:29,379 --> 00:10:32,749
-in mind interpretation of the gradient
-that's saying is that X&Y have a
+in mind the interpretation of the gradient.
+What that's saying is that x and y have a
 
 139
 00:10:32,749 --> 00:10:38,509
-positive influence on cue with a slope
-of 10 increasing X by H
+positive influence on q, with a slope
+of 1. So increasing x by h
 
 140
 00:10:38,509 --> 00:10:44,548
-will increase cue by H and eventually
-like as we'd like to influence of light
+will increase q by h, and what we'd eventually
+like is, we'd like the influence of y
 
 141
 00:10:44,548 --> 00:10:49,980
-on the final out but the circuit and so
-the way this end up working is you take
+on the final output of the circuit, And so
+the way this end up working is, you take
 
 142
 00:10:49,980 --> 00:10:53,480
-the influence of why are you and we know
-the influence of Q on the final loss
+the influence of y on q, and we know
+the influence of q on the final loss
 
 143
 00:10:53,480 --> 00:10:57,058
 which is what we are recursively
-computing here through this graph and
+computing here through this graph, and
 
 144
 00:10:57,058 --> 00:11:00,350
 the correct thing to do is to multiply
-them so we end up with a nickname for 10
+them, so we end up with -4 times 1
 
 145
 00:11:00,350 --> 00:11:05,189
-to 15 negative for and so the way this
-works out is basically what this is
+gets you -4. And so the way this
+works out is, basically what this is
 
 146
 00:11:05,188 --> 00:11:08,649
-saying is that the influence of why on
-the final output circuit is negative or
+saying is that the influence of y on
+the final output of the circuit is -4
 
 147
 00:11:08,649 --> 00:11:14,649
-so increasing why should decrease the
-album circuit by negative four times the
+so increasing y should decrease the
+output of the circuit by -4 times the
 
 148
 00:11:14,649 --> 00:11:18,230
-law change that you've made and the way
-that end up working out is why has a
+little change that you've made. And the way
+that end up working out is y has a
 
 149
 00:11:18,230 --> 00:11:21,810
-positive influence in Cuse increasing
-why slightly increase askew
+positive influence in q, so increasing
+y, slightly increase q
 
 150
 00:11:21,809 --> 00:11:27,959
-which likely decreases in the circuit so
-chain rule is kind of giving us this
+which slightly decreases the output of the circuit, okay?
+So chain rule is kind of giving us this
 
 151
 00:11:27,960 --> 00:11:29,120
-correspondence
+correspondence. Go ahead.
 
 152
 00:11:29,120 --> 00:11:45,259
-we're going to get into this you'll see
-many many many associations of this and
+Yeap, thank you. we're going to get into this. You'll see many, basically this entire class is about this, so you'll see many many instantiations of this and
 
 153
 00:11:45,259 --> 00:11:48,889
-all drill this into you by the end of
-class and you understand it you will not
+I'll drill this into you by the end of this
+class and you'll understand it. You will not
 
 154
 00:11:48,889 --> 00:11:51,870
 have any symbolic expressions anywhere
-once we complete this letter actually
+once we compute this, once we're actually
 
 155
 00:11:51,870 --> 00:11:54,639
 implementing this and you'll see
-implementations of it later in this in
+implementations of it later in this.
 
 156
 00:11:54,639 --> 00:11:57,009
-this it will always be just factors in
-numbers
+It will always be just be vectors and numbers.
 
 157
 00:11:57,009 --> 00:12:02,230
-robert is numbers ok and looking at X we
-have a very smart that happen thing that
+Raw vectors, numbers. Okay, and looking at x, we
+have a very smiliar thing that happens.
 
 158
 00:12:02,230 --> 00:12:05,889
-happens we wonder if IDX that's our
-final objective but we have to combine
+We want df/dx. That's our 
+final objective, but, and we have to combine it.
 
 159
 00:12:05,889 --> 00:12:09,799
-it we know what the exes what is access
-and listen to you and ask you same place
+We know what the x is, what is x's influence on q
+and what is q's influence 
 
 160
 00:12:09,799 --> 00:12:13,979
-on the end of the circuit and so that
-ends up being the chain grow so take a
+on the end of the circuit, and so that
+ends up being the chain rule, so you take
 
 161
 00:12:13,980 --> 00:12:19,240
-negative four times want to give you one
-ok so the way this works to generalize a
+-4 times 1 and gives you -4, okay?
+So the way this works, to generalize a
 
 162
 00:12:19,240 --> 00:12:23,289
-bit from this example and way to think
-about it is as follows you are a gate
+bit from this example and the way to think
+about it is as follows. You are a gate
 
 163
 00:12:23,289 --> 00:12:28,429
@@ -810,67 +808,67 @@ large computational graph or circuit and
 
 164
 00:12:28,429 --> 00:12:32,250
-you receive some templates some
-particular numbers X&Y come in and
+you receive some inputs, some
+particular numbers x and y come in
 
 165
 00:12:32,250 --> 00:12:39,059
-perform some operation on them and
-compute some good set Z and now this
+and you perform some operation f on them and
+compute some output z. And now this
 
 166
 00:12:39,059 --> 00:12:43,019
-magazine goes into competition grass and
+value of z goes into computational graph and
 something happens to it but you're just
 
 167
 00:12:43,019 --> 00:12:46,169
-too great hanging out in a circuit and
-you're not sure what happens but by the
+a gate hanging out in a circuit and
+you're not sure what happens, but by the
 
 168
 00:12:46,169 --> 00:12:50,939
-end of the circuit the loss computed and
+end of the circuit the loss computed, okay? And
 that's the forward pass and then we're
 
 169
 00:12:50,940 --> 00:12:56,250
 proceeding recursively in the reverse
-order backwards but before that actually
+order backwards, but before that actually
 
 170
 00:12:56,250 --> 00:13:01,120
-get to that part right away when I get
-X&Y the thing I'd like to point out that
+Before I get to that part, right away when I get
+x and y, the thing I'd like to point out that
 
 171
 00:13:01,120 --> 00:13:05,279
-during the forward pass if you're this
-gate and you get to your values X&Y you
+during the forward pass, if you're this
+gate and you get to your values x and y
 
 172
 00:13:05,279 --> 00:13:08,500
-computer output said and there's another
-thing you can computer right away and
+you compute your output z, and there's another
+thing you can compute right away and
 
 173
 00:13:08,500 --> 00:13:10,230
-that is the local gradients
+that is the local gradients on x and y.
 
 174
 00:13:10,230 --> 00:13:14,789
-X&Y so I can compute those right away
+So I can compute those right away
 because I'm just a gate and I know what
 
 175
 00:13:14,789 --> 00:13:18,009
-I'm performing like say additional
-application so I know the influence that
+I'm performing, like say additional
+multiplication, so I know the influence that
 
 176
 00:13:18,009 --> 00:13:24,259
-X&Y have won my out the body so I can
-compute those guys right away but then
+x and y have on my output value, so I can
+compute those guys right away, okay? But then
 
 177
 00:13:24,259 --> 00:13:25,389
@@ -878,8 +876,8 @@ what happens
 
 178
 00:13:25,389 --> 00:13:29,769
-near the end so the lawsuits computed
-another going backwards eventually learn
+near the end so the loss gets computed
+and now we're going backwards, I'll eventually learn
 
 179
 00:13:29,769 --> 00:13:32,499
@@ -887,106 +885,106 @@ about what is my influence on
 
 180
 00:13:32,499 --> 00:13:37,839
-the final output of the circuit the loss
-to learn what is DL by these in their
+the final output of the circuit, the loss.
+So I'll learn what is dL/dz in there.
 
 181
 00:13:37,839 --> 00:13:41,419
-ingredient will flow into me and what I
-have to do is I have to change that
+The ingredient will flow into me and what I
+have to do is I have to chain that
 
 182
 00:13:41,418 --> 00:13:45,278
-gradient through this recursive case so
-I have to make sure to change the
+gradient through this recursive case, so
+I have to make sure to chain the
 
 183
 00:13:45,278 --> 00:13:48,778
-gradient through my operation performed
+gradient through my operation that I performed
 and it turns out that the correct thing
 
 184
 00:13:48,778 --> 00:13:52,068
-to do here buy tramadol really what it's
-saying is the correct thing to do is to
+to do here by chain rule, really what it's
+saying, is that the correct thing to do is to
 
 185
 00:13:52,068 --> 00:13:56,068
-multiply your local gradient without
+multiply your local gradient with that
 gradient and that actually gives you the
 
 186
 00:13:56,068 --> 00:13:57,838
-DL IDX
+dL/dx that gives you the
 
 187
 00:13:57,839 --> 00:14:02,739
-employees off X on the final output of
-the circuit so really chain rule is just
+influence of x on the final output of
+the circuit. So really, chain rule is just
 
 188
 00:14:02,739 --> 00:14:08,229
-this added multiplication where we take
-what are called Global gradient of this
+this added multiplication. where we take our,
+what I'll call, global gradient of this
 
 189
 00:14:08,229 --> 00:14:12,669
-gate on the outfit and we've changed
-through the local gradient in the same
+gate on the output, and we chain it
+through the local gradient, and the same
 
 190
 00:14:12,668 --> 00:14:18,509
-thing goes for a while so it's just a
-multiplication of that guy the gradient
+thing goes for y. So it's just a
+multiplication of that guy, that gradient
 
 191
 00:14:18,509 --> 00:14:22,889
-by your local gradient if you're a gate
-and then remember that these X's and Y's
+by your local gradient if you're a gate.
+And then remember that these x's and y's
 
 192
 00:14:22,889 --> 00:14:27,229
-there are coming from different states
-right so you end up with the cursing
+they are coming from different gates, right?
+So you end up with recursing
 
 193
 00:14:27,229 --> 00:14:31,899
-this process through the entire cup
-additional Turkish and so these gates
+this process through the entire computational
+circuit, and so these gates
 
 194
 00:14:31,899 --> 00:14:36,808
 just basically communicate to each other
-the influence on the final loss so they
+the influence on the final loss, so they
 
 195
 00:14:36,808 --> 00:14:39,688
-tell each other ok if this is a positive
+tell each other, okay if this is a positive
 gradient that means you're positively
 
 196
 00:14:39,688 --> 00:14:43,198
-influencing the loss of its negative
-gradient negative influence negatively
+influencing the loss, if it's a negative
+gradient you're negatively
 
 197
 00:14:43,198 --> 00:14:46,788
-influencing loss and he just gets almost
-applied through the circuit by these
+influencing the loss, and these just get all
+multiplied through the circuit by these
 
 198
 00:14:46,788 --> 00:14:51,019
-local gradients and you end up with and
-this process is called back propagation
+local gradients and you end up with, and
+this process is called back propagation.
 
 199
 00:14:51,019 --> 00:14:54,489
-it's a way of computing through a
+It's a way of computing through a
 recursive application of chain rule
 
 200
 00:14:54,489 --> 00:14:58,399
-through competition grab the influence
+through computational graph, the influence
 of every single intermediate value in
 
 201
