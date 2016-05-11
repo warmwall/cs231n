@@ -388,3 +388,8 @@ To train a Neural Network:
 - [Efficient BackProp](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) (pdf) from Yann LeCun
 - [Practical Recommendations for Gradient-Based Training of Deep
 Architectures](http://arxiv.org/pdf/1206.5533v2.pdf) from Yoshua Bengio
+
+---
+<p style="text-align:right"><b>
+번역: 최영근 <a href="https://github.com/ygchoistat" style="color:black">ygchoistat</a>
+</b></p>
