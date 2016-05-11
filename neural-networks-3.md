@@ -5,72 +5,82 @@ permalink: /neural-networks-3/
 
 Table of Contents:
 
-- [Gradient checks](#gradcheck)
+- [그라디언트 점검 (Gradient checks)](#gradcheck)
 - [Sanity checks](#sanitycheck)
-- [Babysitting the learning process](#baby)
-  - [Loss function](#loss)
-  - [Train/val accuracy](#accuracy)
-  - [Weights:Updates ratio](#ratio)
-  - [Activation/Gradient distributions per layer](#distr)
-  - [Visualization](#vis)
-- [Parameter updates](#update)
-  - [First-order (SGD), momentum, Nesterov momentum](#sgd)
-  - [Annealing the learning rate](#anneal)
-  - [Second-order methods](#second)
-  - [Per-parameter adaptive learning rates (Adagrad, RMSProp)](#ada)
-- [Hyperparameter Optimization](#hyper)
-- [Evaluation](#eval)
-  - [Model Ensembles](#ensemble)
-- [Summary](#summary)
-- [Additional References](#add)
+- [학습 과정 돌보기 (Babysitting the learning process)](#baby)
+  - [손실 함수 (Loss function)](#loss)
+  - [훈련/검증 성능 (Train/val accuracy)](#accuracy)
+  - [웨이트의 현재값과 변화량의 비율 (Weights:Updates ratio)](#ratio)
+  - [레이어별 활성값 및 그라디언트값의 분포 (Activation/Gradient distributions per layer)](#distr)
+  - [시각화 (Visualization)](#vis)
+- [파라미터 업데이트 (Parameter updates)](#update)
+  - [일차 근사 방법 (SGD) (First-order (SGD)), 모멘텀 (momentum), Nesterov 모멘텀 (Nesterov momentum)](#sgd)
+  - [학습 속도를 담금질하기 (Annealing the learning rate)](#anneal)
+  - [이차 근사 방법 (Second-order methods)](#second)
+  - [파라미터별로 학습 속도를 데이터가 판단하게 하기 (Adagrad, RMSProp) )Per-parameter adaptive learning rates (Adagrad, RMSProp))](#ada)
+- [초-파라미터 최적화 (Hyperparameter Optimization)](#hyper)
+- [평가 (Evaluation)](#eval)
+  - [모형 앙상블 (Model Ensembles)](#ensemble)
+- [요약](#summary)
+- [추가적인 참고 문헌](#add)
 
 ## Learning
 
-In the previous sections we've discussed the static parts of a Neural Networks: how we can set up the network connectivity, the data, and the loss function. This section is devoted to the dynamics, or in other words, the process of learning the parameters and finding good hyperparameters.
+이전 섹션들에서는 레이어를 몇 층 쌓고 레이어별로 몇 개의 유닛을 준비할지(newwork connectivity), 데이터를 어떻게 준비하고 어떤 손실 함수(loss function)를 선택할지 논하였다. 말하자면 이전 섹션들은 주로 뉴럴 네트워크(Neural Network)의 정적인 부분인데, 본 섹션에서는 동적인 부분들을 소개한다. 파라미터(parameter)를 학습하고 좋은 초-파라미터(hyperparamter)를 찾는 과정 등을 다룰 예정이다.
 
 <a name='gradcheck'></a>
-### Gradient Checks
+### 그라디언트 체크 (Gradient Checks)
 
-In theory, performing a gradient check is as simple as comparing the analytic gradient to the numerical gradient. In practice, the process is much more involved and error prone. Here are some tips, tricks, and issues to watch out for:
+이론적인 그라디언트 체크라 하면, 수치적으로 계산한(numerical) 그라디언트와 수식으로 계산한(analytic) 그라디언트를 비교하는 정도라 매우 간단하다고 생각할 수도 있겠다. 그렇지만 이 작업을 직접 실현해 보면 훨씬 복잡하고 뜬금없이 오차가 발생하기도 쉽다는 것을 깨달을 것이다. 이제 팁, 트릭, 조심할 이슈들 몇 개를 소개하고자 한다.
 
-**Use the centered formula**. The formula you may have seen for the finite difference approximation when evaluating the numerical gradient looks as follows:
+
+**같은 근사라 하여도 이론적으로 더 정확도가 높은 근사 공식이 있다 (Use the centered formula)**. 그라디언트($\frac{df(x)}{dx}$)를 수치적으로 근사한다 하면 보통 다음 유한 차분 근사(finite difference approximation)를 떠올릴 것이다:
 
 $$
 \frac{df(x)}{dx} = \frac{f(x + h) - f(x)}{h} \hspace{0.1in} \text{(bad, do not use)}
 $$
 
-where $h$ is a very small number, in practice approximately 1e-5 or so. In practice, it turns out that it is much better to use the *centered* difference formula of the form:
+여기서 $h$는 아주 작은 수이고 보통 1e-5 정도의 수를 사용한다. 위 식보다는 아래의 *중심화된(centered)* 차분 공식이 경험적으로는 훨씬 낫다:
 
 $$
 \frac{df(x)}{dx} = \frac{f(x + h) - f(x - h)}{2h} \hspace{0.1in} \text{(use instead)}
 $$
 
-This requires you to evaluate the loss function twice to check every single dimension of the gradient (so it is about 2 times as expensive), but the gradient approximation turns out to be much more precise. To see this, you can use Taylor expansion of $f(x+h)$ and $f(x-h)$ and verify that the first formula has an error on order of $O(h)$, while the second formula only has error terms on order of $O(h^2)$ (i.e. it is a second order approximation).
+물론 이 공식은 $f(x+h)$ 말고도 $f(x-h)$도 계산하여야 하므로 최초 식보다 계산량이 두 배 많지만 훨씬 정확한 근사를 제공한다. $f(x+h)$ 및 $f(x-h)$의 ($x$ 근방에서의) 테일러 전개를 고려하면 이유를 금방 알 수 있다. 첫 식은 $O(h)$의 오차가 있는 데 반해 두번째 식은 오차가 $O(h^2)$이다 (즉, 이차 근사이다).  -- 역자 주 : (1) 테일러 전개에서 $f(x + h) = f(x) + hf'(x) + O(h)$로부터 $f'(x) - \frac{(f(x+h)-f(x)}{h} = O(h)$. (2) $h$가 보통 벡터이므로 $O(h)$보다는 $O(\|h\|)$가 더 정확한 표현이나 편의상 $\|\cdot\|$을 생략한 듯 보입니다.
 
-**Use relative error for the comparison**. What are the details of comparing the numerical gradient $f'_n$ and analytic gradient $f'_a$? That is, how do we know if the two are not compatible? You might be temped to keep track of the difference $\mid f'_a - f'_n \mid $ or its square and define the gradient check as failed if that difference is above a threshold. However, this is problematic. For example, consider the case where their difference is 1e-4. This seems like a very appropriate difference if the two gradients are about 1.0, so we'd consider the two gradients to match. But if the gradients were both on order of 1e-5 or lower, then we'd consider 1e-4 to be a huge difference and likely a failure. Hence, it is always more appropriate to consider the *relative error*:
+
+**상대 오차를 사용하라 (Use relative error for the comparison)**. 그라디언트의 (수식으로 계산한, analytic) 참값 $f'_a$와 수치적(numerical) 근사값 $f'_n$을 비교하려면 어떤 디테일을 점검하여야 할까? 이 둘이 비슷하지 않음(not compatible)을 어떻게 알아낼 수 있을까? 가장 쉽게는 둘의 절대 오차 $\mid f'_a - f'_n \mid $ 혹은 그 제곱을 쭉 추적하여 이 값(들)이 언젠가 어느 한계점(threshold)를 넘으면 그라디언트 오류라 할 수도 있겠다. 그렇지만 절대 오차에는 문제가 있는 것이, 가령 절대 오차가 1e-4라 가정하여 보자. 만약 $f'_a$와 $f'_n$ 모두 1.0 언저리라면 1e-4의 오차 정도는 매우 훌륭한 근사이고  $f'_a \approx f'_n$이라 할 수 있다. 그런데 만약 두 그라디언트가 1e-5거나 더 작은 값이라면? 그렇다면 1e-4는 매우 큰 차이가 되고 근사가 실패했다고 보아야 한다. 따라서 절대 오차와 두 그라디언트 값의 비율을 고려하는 *상대 오차*가 더 적절하다. 언제나!: 
+
 
 $$
 \frac{\mid f'_a - f'_n \mid}{\max(\mid f'_a \mid, \mid f'_n \mid)}
 $$
 
-which considers their ratio of the differences to the ratio of the absolute values of both gradients. Notice that normally the relative error formula only includes one of the two terms (either one), but I prefer to max (or add) both to make it symmetric and to prevent dividing by zero in the case where one of the two is zero (which can often happen, especially with ReLUs). However, one must explicitly keep track of the case where both are zero and pass the gradient check in that edge case. In practice:
+보통의 상대 오차 공식은 분모에 $f'_a$ 혹은 $f'_n$ 둘 중 하나만 있지만, 나는 둘의 최대값을 분모로 선호하는 편이다. 그래야 공식에 대칭성이 생기고 둘 중 하나가 exactly 0이 되어 분모가 0이 되는 사태를 방지할 수 있다 (ReLU를 사용하면 자주 일어나는 문제이다). $f'_a$와 $f'_n$가 모두 exact 0이 된다면? 이 때는 상대 오차를 점검할 필요 없이 그라디언트 체크를 통과하여야 한다. 당신의 코드가 이 상황을 감안하여 조직된 코드인지 점검하여 보라.  
 
-- relative error > 1e-2 usually means the gradient is probably wrong
-- 1e-2 > relative error > 1e-4 should make you feel uncomfortable
-- 1e-4 > relative error is usually okay for objectives with kinks. But if there are no kinks (e.g. use of tanh nonlinearities and softmax), then 1e-4 is too high.
-- 1e-7 and less you should be happy.
+실제 상황에서의 유용한 가이드:
 
-Also keep in mind that the deeper the network, the higher the relative errors will be. So if you are gradient checking the input data for a 10-layer network, a relative error of 1e-2 might be okay because the errors build up on the way. Conversely, an error of 1e-2 for a single differentiable function likely indicates incorrect gradient.
+- (상대 오차) > 1e-2 면 그라디언트 계산이 아마 잘못되었을 수도 있다.
+- 1e-2 > (상대 오차) > 1e-4 면 불편함을 느끼기 바란다.
+- 1e-4 > (상대 오차) 는, 꺾임이 있는 목적함수 (objectives with kinks)에서는 괜찮다. 그렇지만 tanh 혹은 softmax를 쓰는 목적함수처럼 꺾임이 없다면 1e-4는 너무 크다.
+- 1e-7 혹은 그보다 작은 상대 오차라면, 행복을 느껴야 한다.
 
-**Use double precision**. A common pitfall is using single precision floating point to compute gradient check. It is often that case that you might get high relative errors (as high as 1e-2) even with a correct gradient implementation. In my experience I've sometimes seen my relative errors plummet from 1e-2 to 1e-8 by switching to double precision.
+하나 더 유념해야 할 것은, 망의 레이어 개수가 많아지면(deeper network) 상대 오차가 커진다. 이를테면 레이어(layer) 10개짜리 망(network)에서 인풋 데이터의 그라디언트를 체크한다면, 에러가 층을 올라가며 축적되므로 1e-2 정도의 상대 오차는 괜찮을 수도 있다. 거꾸로 말하자면, 미분가능한 함수 하나만 갖고 노는데 1e-2의 상대 오차가 발생한다면 이것은 부정확한 그라디언트일 가능성이 매우 높다.
 
-**Stick around active range of floating point**. It's a good idea to read through ["What Every Computer Scientist Should Know About Floating-Point Arithmetic"](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html), as it may demystify your errors and enable you to write more careful code. For example, in neural nets it can be common to normalize the loss function over the batch. However, if your gradients per datapoint are very small, then *additionally* dividing them by the number of data points is starting to give very small numbers, which in turn will lead to more numerical issues. This is why I like to always print the raw numerical/analytic gradient, and make sure that the numbers you are comparing are not extremely small (e.g. roughly 1e-10 and smaller in absolute value is worrying). If they are you may want to temporarily scale your loss function up by a constant to bring them to a "nicer" range where floats are more dense - ideally on the order of 1.0, where your float exponent is 0.
 
-**Kinks in the objective**. One source of inaccuracy to be aware of during gradient checking is the problem of *kinks*. Kinks refer to non-differentiable parts of an objective function, introduced by functions such as ReLU ($max(0,x)$), or the SVM loss, Maxout neurons, etc. Consider gradient checking the ReLU function at $x = -1e6$. Since $x < 0$, the analytic gradient at this point is exactly zero. However, the numerical gradient would suddenly compute a non-zero gradient because $f(x+h)$ might cross over the kink (e.g. if $h > 1e-6$) and introduce a non-zero contribution. You might think that this is a pathological case, but in fact this case can be very common. For example, an SVM for CIFAR-10 contains up to 450,000 $max(0,x)$ terms because there are 50,000 examples and each example yields 9 terms to the objective. Moreover, a Neural Network with an SVM classifier will contain many more kinks due to ReLUs.
+**이중정확성 변수를 사용하라 (Use double precision)**. 흔히들 실수하는 것이, 그라디언트 체크를 계산하는 데 단일정확성 부동소숫점(single precision floating point) 변수를 사용하는 경우가 있다. 단일정확성 변수를 쓰면 그라디언트 계산이 맞다 하더라도 상대 오차가 (1e-2 정도로) 커지는 경우가 종종 있다. 내 경험상으로는 이중정확성 변수를 쓰면 상대 오차가 1e-2에서 1e-8까지 개선되는 경우도 봤다.  
 
-Note that it is possible to know if a kink was crossed in the evaluation of the loss. This can be done by keeping track of the identities of all "winners" in a function of form $max(x,y)$; That is, was x or y higher during the forward pass. If the identity of at least one winner changes when evaluating $f(x+h)$ and then $f(x-h)$, then a kink was crossed and the numerical gradient will not be exact.
 
-**Use only few datapoints**. One fix to the above problem of kinks is to use fewer datapoints, since loss functions that contain kinks (e.g. due to use of ReLUs or margin losses etc.) will have fewer kinks with fewer datapoints, so it is less likely for you to cross one when you perform the finite different approximation. Moreover, if your gradcheck for only ~2 or 3 datapoints then you would almost certainly gradcheck for an entire batch. Using very few datapoints also makes your gradient check faster and more efficient.
+**부동소숫점 연산이 활성화되는 범위에서 계산하라 (Stick around active range of floating point)**. 당신 좀더 세심한 코드를 작성하고 실수를 줄이려면 ["모든 컴퓨터 사이언티스트들이 부동소숫점 연산에 대해 알아야 하는 것들(What Every Computer Scientist Should Know About Floating-Point Arithmetic)"](http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html) 를 읽는 게 좋다. 예를 들어, 신경망에서는 손실함수(loss function)를 배치별로(over batch)로 normalize하는 것이 보통이다 (역자 주 : 그라디언트 합을 배치 사이즈로 나누는 장면을 지칭하는 듯). 그렇지만 한 자료당(per datapoint) 그라디언트가 매우 작다면, 거기에 또 데이터 갯수를 *부가적으로* 나눌 경우 매우 작은 수가 되고 더욱더 많은 수치적인 문제가 생길 수 있다. 그래서 필자는 $f'_a$ 혹은 $f'_n$의 계산값을 계속 찍어보고 두 값이 너무 작지 않은가 확인하는 편이다. (대충 1e-10 혹은 그보다 작은 크기의 값이면 걱정하여라) 만약 두 값이 너무 작다면, 적당히 상수를 곱하여 부동소숫점 표현이 조금 더 "괜찮도록" (부동소숫점 표현에서 지수 부분이 0이 되도록) 만들 수도 있다. 
+
+
+**목적함수에서의 꺾인 점 (Kinks in the objective)**. *꺾인 점(kink)*들에서 부정확한 계산이 발생할 수 있는데  이를  그라디언트 체크 과정에서도 염두에 두고 있어야 한다. 꺾인 점(kink)은 목적함수의 미분 불가능한 부분을 지칭하는 용어이다. ReLU 함수 ($max(0,x)$), 서포트 벡터 머신(SVM) 목적함수나 맥스아웃 뉴런(maxout neuron) 등을 사용하면 발생할 수 있다. 꺾인 점이 야기시킬 수 있는 문제는 대략 이렇다. ReLU 함수의 그라디언트를 $x = -1e6$에서 체크한다고 생각하여 보자. $x < 0$이므로 $f'_a$는 정확히 $0$이다. 그렇지만, 수치적으로 계산된 그라디언트는 $f(x+h)$가 꺾인 점을 넘을 수도 있으므로 (이를테면 $h > 1e-6$인 경우) 갑자기 $0$이 아닌 값을 내놓게 될 수도 있다. 이런 병적인(?) 경우까지 신경써야 하냐고 물을 수도 있겠는데, 사실 매우 흔하다. 예를 들어 CIFAR-10를 위해 서포트 벡터 머신(SVM)을 쓴다고 하면, 데이터가 50,000개이고(50,000 examples) 한 데이터당 $max(0,x)$ 항이 9개씩 있으니 결국 45만개의 ReLU항과 맞닥뜨리게 된다. 게다가 서포트 벡터 머신 분류기(SVM classifier)와 신경망(neural network)을 붙이면 ReLU들 때문에 꺾인 점이 더 늘어날 수도 있다. 
+
+다행히도, 손실함수를 계산할 때 꺾인 점을 넘어서 계산했는지 (a kink was crossed) 여부를 알 수 있다. $max(x,y)$ 꼴 함수에서 $x$, $y$ 중 누가 "이겼는지"를 계속 기록해둔다고 생각해 보자.  $f(x+h)$와 $f(x-h)$를 계산할 때 적어도 하나의 "승자"가 바뀐다면, 꺾인 점을 넘는 현상이 발생한 것이고 그렇다면 수치적인 그라디언트가 정확한 값이 아닐 수도 있다.
+
+**적은 수의 데이터만 써라 (Use only few datapoints)** 꺾인 점과 관련된 하나의 해결책은 더 적은 데이터를 쓰는 것이다. 손실함수가 꺾인 점을 포함하고 있으면 (ReLU나 margin loss등을 썼을 경우처럼) 데이터가 적을수록 더 적은 꺾인 점을 포함할 것이고, 따라서 유한 차분 근사(finite different approximation) 과정에서 꺾인 점을 가로지르는 경우가 더 적을 것이다. 게다가,   ~2 혹은 3개의 데이터에 대해서만 그라디언트 체크를 수행하는 게 거의 배치(batch) 전부에 대해 그라디언트 체크하는 게 될 테니 훨씬 빠르고 효율적이다. (역자 주 : 그렇지만 배치 사이즈가 작아지면 다른 쪽에서 문제가 생길 수도 있을 것 같은데..)
+
+
 
 **Be careful with the step size h**. It is not necessarily the case that smaller is better, because when $h$ is much smaller, you may start running into numerical precision problems. Sometimes when the gradient doesn't check, it is possible that you change $h$ to be 1e-4 or 1e-6 and suddenly the gradient will be correct. This [wikipedia article](http://en.wikipedia.org/wiki/Numerical_differentiation) contains a chart that plots the value of **h** on the x-axis and the numerical gradient error on the y-axis.
 
@@ -378,3 +388,8 @@ To train a Neural Network:
 - [Efficient BackProp](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) (pdf) from Yann LeCun
 - [Practical Recommendations for Gradient-Based Training of Deep
 Architectures](http://arxiv.org/pdf/1206.5533v2.pdf) from Yoshua Bengio
+
+---
+<p style="text-align:right"><b>
+번역: 최영근 <a href="https://github.com/ygchoistat" style="color:black">ygchoistat</a>
+</b></p>
