@@ -302,11 +302,11 @@ For example, if 224x224 image gives a volume of size [7x7x512] - i.e. a reductio
 
 *크기 축소와 관련된 고민들.* 위에서 다룬 전략은 꽤 좋지만 모든 CONV 레이어는 입력의 spatial 크기를 그대로 유지시키고, POOL 레이어만 spatial 차원의 다운샘플링을 책임지게 된다. 또다른 대안은 CONV 레이어에서 1보다 큰 stride를 사용하거나 제로 패딩 주지 않는 것이다. 이 경우에는 전체 ConvNet이 잘 동작하도록 각 레이어의 입력 볼륨들을 잘 살펴봐야 한다.
 
-*Why use stride of 1 in CONV?* Smaller strides work better in practice. Additionally, as already mentioned stride 1 allows us to leave all spatial down-sampling to the POOL layers, with the CONV layers only transforming the input volume depth-wise.
+*왜 CONV 레이어에 stride 1을 사용할까?* 보통 작은 stride가 더 잘 동작한다. 뿐만 아니라, 위에서 언급한 것과 같이 stirde를 1로 놓으면 모든 spatial 다운샘플링을 POOL 레이어에 맡기게 되고 CONV 레이어는 입력 볼륨의 깊이만 변화시키게 된다.
 
-*Why use padding?* In addition to the aforementioned benefit of keeping the spatial sizes constant after CONV, doing this actually improves performance. If the CONV layers were to not zero-pad the inputs and only perform valid convolutions, then the size of the volumes would reduce by a small amount after each CONV, and the information at the borders would be "washed away" too quickly.
+*왜 (제로)패딩을 사용할까?* 앞에서 본 것과 같이 CONV 레이어를 통과하면서 spatial 크기를 그대로 유지하게 해준다는 점 외에도, 패딩을 쓰면 성능도 향상된다. 만약 제로 패딩을 하지 않고 valid convolution (패딩을 하지 않은 convolution)을 한다면 볼륨의 크기는 CONV 레이어를 거칠 때마다 줄어들게 되고, 가장자리의 정보들이 빠르게 사라진다.
 
-*Compromising based on memory constraints.* In some cases (especially early in the ConvNet architectures), the amount of memory can build up very quickly with the rules of thumb presented above. For example, filtering a 224x224x3 image with three 3x3 CONV layers with 64 filters each and padding 1 would create three activation volumes of size [224x224x64]. This amounts to a total of about 10 million activations, or 72MB of memory (per image, for both activations and gradients). Since GPUs are often bottlenecked by memory, it may be necessary to compromise. In practice, people prefer to make the compromise at only the first CONV layer of the network. For example, one compromise might be to use a first CONV layer with filter sizes of 7x7 and stride of 2 (as seen in a ZF net). As another example, an AlexNet uses filer sizes of 11x11 and stride of 4.
+*메모리 제한에 따른 타협.* 어떤 경우에는 (특히 예전에 나온 ConvNet 구조에서), 위에서 다룬 기법들을 사용할 경우 메모리 사용량이 매우 빠른 속도로 늘게 된다. 예를 들어 224x224x3의 이미지를 64개의 필터와 stride 1을 사용하는 3x3 CONV 레이어 3개로 필터링하면 [224x224x64]의 크기를 가진 액티베이션 볼륨을 총 3개 만들게 된다. 이 숫자는 거의 1,000만 개의 액티베이션 값이고, (이미지 1장 당)72MB 정도의 메모리를 사용하게 된다 (액티베이션과 그라디언트 각각에). GPU를 사용하면 보통 메모리에서 병목 현상이 생기므로, 이 부분에서는 어느 정도 현실과 타협을 할 필요가 있다. 실전에서는 보통 첫 번째 CONV 레이어에서 타협점을 찾는다. 예를 들면 첫 번째 CONV 레이어에서 7x7 필터와 stride 2 (ZF net)을 사용하는 케이스가 있다. AlexNet의 경우 11x11 필터와 stride 4를 사용한다.
 
 <a name='case'></a>
 #### Case studies
