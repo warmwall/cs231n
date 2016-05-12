@@ -136,9 +136,7 @@ CONV 레이어는 ConvNet을 이루는 핵심 요소이다. CONV 레이어의 �
 가끔은 파라미터 sharing에 대한 가정이 부적절할 수도 있다. 특히 입력 이미지가 중심을 기준으로 찍힌 경우 (예를 들면 이미지 중앙에 얼굴이 있는 이미지), 이미지의 각 영역에 대해 완전히 다른 feature들이 학습되어야 할 수 있다. 눈과 관련된 feature나 머리카락과 관련된 feature 등은 서로 다른 영역에서 학습될 것이다. 이런 경우에는 파라미터 sharing 기법을 접어두고 대신 **Locally-Connected Layer**라는 레이어를 사용하는 것이 좋다.
 
 **Numpy 예제.** 위에서 다룬 것들을 더 확실히 알아보기 위해 코드를 작성해보자. 입력 볼륨을 numpy 배열 `X`라고 하면:
-- A *depth column* at position `(x,y)` would be the activations `X[x,y,:]`.
 - `(x,y)`위치에서의 *depth column*은 액티베이션 `X[x,y,:]`이 된다.
-- A *depth slice*, or equivalently an *activation map* at depth `d` would be the activations `X[:,:,d]`.
 - depth `d`에서의 *depth slice*, 또는 *액티베이션 맵 (activation map)*은 `X[:,:,d]`가 된다.
 
 *컨볼루션 레이어 예제*. 입력 볼륨 `X`의 모양이 `X.shape: (11,11,4)`이고 제로 패딩은 사용하지 않으며($$P = 0$$) 필터 크기는 $$F = 5$$, stride $$S = 2$$라고 하자. 출력 볼륨의 spatial 크기 (가로/세로)는 (11-5)/2 + 1 = 4가 된다. 출력 볼륨의 액티베이션 맵 (`V`라고 하자) 는 아래와 같은 것이다 (아래에는 일부 요소만 나타냄).
