@@ -5,64 +5,67 @@ permalink: /optimization-2/
 
 Table of Contents:
 
-- [Introduction](#intro)
-- [Simple expressions, interpreting the gradient](#grad)
-- [Compound expressions, chain rule, backpropagation](#backprop)
-- [Intuitive understanding of backpropagation](#intuitive)
-- [Modularity: Sigmoid example](#sigmoid)
-- [Backprop in practice: Staged computation](#staged)
-- [Patterns in backward flow](#patters)
-- [Gradients for vectorized operations](#mat)
-- [Summary](#summary)
+- [소개(Introduction)](#intro)
+- [그라디언트(Gradient)에 대한 간단한 표현과 이해](#grad)
+- [복합적인 표현(Compound Expression), 체인룰(chain rule), Backpropagation)](#backprop)
+- [역전파(Backpropation)에 대한 직관적인 이해](#intuitive)
+- [모듈성 : 시그모이(Sigmoid)드 예제](#sigmoid)
+- [역전파(Backprop) 실제: 단계별 계산](#staged)
+- [역박향 흐름의 패턴](#patters)
+- [벡터 기반의 그라디언트(Gradient) 계산)](#mat)
+- [요약](#summary)
 
 <a name='intro'></a>
+
 ### Introduction
 
-**Motivation**. In this section we will develop expertise with an intuitive understanding of **backpropagation**, which is a way of computing gradients of expressions through recursive application of **chain rule**. Understanding of this process and its subtleties is critical for you to understand, and effectively develop, design and debug Neural Networks.
+**Motivation**. 이번 섹션에서 우리는 **역전파(Backpropagation)**에 대한 직관적인 이해를 바탕으로 전문지식을 더 키우고자 한다. Backpropagation은 Network 전체에 대해 반복적인 **체인룰(Chain rule)**을 적용하여 그라디언트(Gradient)를 계산하는 방법 중 하나이다. Backpropagation 과정과 세부 요소들에 대한 이해는 여러분에게 있어서 Neural Networks를 효과적으로 개발하고, 디자인하고 디버그하는데 중요하다고 볼 수 있다. 
 
-**Problem statement**. The core problem studied in this section is as follows: We are given some function $f(x)$ where $x$ is a vector of inputs and we are interested in computing the gradient of $f$ at $x$ (i.e. $\nabla f(x)$ ).
+**Problem statement**. 이번 섹션에서 공부할 핵심 문제는 다음과 같다 : 주어진 함 $$f(x)$$ 가 있고, $$x$$ 는 입력 값으로 이루어진 벡터이고, 주어진 입력 $$x$$에 대해서 함수 $$f$$의 그라디언트를 계산하고자 한다. (i.e. $$\nabla f(x)$$ ).
 
-**Motivation**. Recall that the primary reason we are interested in this problem is that in the specific case of Neural Networks, $f$ will correspond to the loss function ( $L$ ) and the inputs $x$ will consist of the training data and the neural network weights. For example, the loss could be the SVM loss function and the inputs are both the training data $(x_i,y_i), i=1 \ldots N$ and the weights and biases $W,b$. Note that (as is usually the case in Machine Learning) we think of the training data as given and fixed, and of the weights as variables we have control over. Hence, even though we can easily use backpropagation to compute the gradient on the input examples $x_i$, in practice we usually only compute the gradient for the parameters (e.g. $W,b$) so that we can use it to perform a parameter update. However, as we will see later in the class the gradient on $x_i$ can still be useful sometimes, for example for purposes of visualization and interpreting what the Neural Network might be doing.
+**Motivation**. 우리가 이 문제에 관심을 기울이는 이유에 대해 Neural Network관점에서 좀더 구체적으로 살펴 보자. $$f$$는 Loss 함수 ( $$L$$ ) 에 해당하고 입력 값 $$x$$ 는 학습 데이터(Training data)와 Neural Network의 Weight라고 볼 수 있다. 예를 들면, Loss는 SVM Loss 함수가 될 수 있고, 입력 값은 학습 데이터 $$(x_i,y_i), i=1 \ldots N$$ 와 Weight, Bias $$W,b$$ 으로 볼 수 있다. 여기서 학습데이터는 미리 주어져서 고정 되어있는 값으로 볼 수 있고 (보통의 기계 학습에서 그러하듯..), Weight는 Neural Network의 학습을 위해 실제로 컨트롤 하는 값이다. 따라서 입력 값 $$x_i$$ 에 대한 그라디언트 계산이 쉬울지라도, 실제로는 파라미터(Parameter, Neural Network의 Weight) 값에 대한 Gradient를 일반적으로 계산하고, Gradient값을 활용하여 Parameter를 업데이트 할 수 있다. 하지만, Neural Network이 어떻게 작동하는지 해석하고, 시각화 하는 부분에서 입력 값 $x_i$에 대한 Gradient도 유용하게 활용 될 수 있는데, 이 부분은 본 강의의 뒷부분에 다룰 예정이다. 
 
-If you are coming to this class and you're comfortable with deriving gradients with chain rule, we would still like to encourage you to at least skim this section, since it presents a rarely developed view of backpropagation as backward flow in real-valued circuits and any insights you'll gain may help you throughout the class.
+
+여러분이 이미 Chain Rule을 통해 Gradient를 도출하는데 익숙하더라도 이 섹션을 간략히 훑어보기를 권장한다. 왜냐하면 이 섹션에서는 다른데서는 보기 힘든 Backpropagation에 대한 실제 숫자를 활용한 역방향 흐름(Backward Flow)에 대해 설명을 할 것이고, 이를 통해 여러분이 얻게 될 통찰력은 이번 강의 전체에 있어 도움이 될 것이라 생각하기 때문이다.
 
 <a name='grad'></a>
-### Simple expressions and interpretation of the gradient
 
-Lets start simple so that we can develop the notation and conventions for more complex expressions. Consider a simple multiplication function of two numbers $f(x,y) = x y$. It is a matter of simple calculus to derive the partial derivative for either input:
+### 그라디언트(Gradient)에 대한 간단한 표현과 이해
+
+복잡한 모델에 대한 수식등을 만들기에 앞서 간단하게 시작을 해보자. x와 y 두 숫자의 곱을 계산하는 간단한 함수 f를 정의하자. $$f(x,y) = x y$$. 각각의 입력 변수에 대한 편미분은 간단한 수학으로 아래와 같이 구해 진다. : 
 
 $$
 f(x,y) = x y \hspace{0.5in} \rightarrow \hspace{0.5in} \frac{\partial f}{\partial x} = y \hspace{0.5in} \frac{\partial f}{\partial y} = x 
 $$
 
-**Interpretation**. Keep in mind what the derivatives tell you: They indicate the rate of change of a function with respect to that variable surrounding an infinitesimally small region near a particular point:
+**Interpretation**. 미분이 여러분에게 시사하는 바를 명심하자 : 미분은 입력 변수 부근의 아주 작은(0에 매우 가까운) 변화에 대한 해당 함수 값의 변화량이다. : 
 
 $$
 \frac{df(x)}{dx} = \lim_{h\ \to 0} \frac{f(x + h) - f(x)}{h}
 $$
 
-A technical note is that the division sign on the left-hand sign is, unlike the division sign on the right-hand sign, not a division. Instead, this notation indicates that the operator $  \frac{d}{dx} $ is being applied to the function $f$, and returns a different function (the derivative). A nice way to think about the expression above is that when $h$ is very small, then the function is well-approximated by a straight line, and the derivative is its slope. In other words, the derivative on each variable tells you the sensitivity of the whole expression on its value. For example, if $x = 4, y = -3$ then $f(x,y) = -12$ and the derivative on $x$ $\frac{\partial f}{\partial x} = -3$. This tells us that if we were to increase the value of this variable by a tiny amount, the effect on the whole expression would be to decrease it (due to the negative sign), and by three times that amount. This can be seen by rearranging the above equation ( $ f(x + h) = f(x) + h \frac{df(x)}{dx} $ ). Analogously, since $\frac{\partial f}{\partial y} = 4$, we expect that increasing the value of $y$ by some very small amount $h$ would also increase the output of the function (due to the positive sign), and by $4h$.
+위에 수식을 기술적인 관점에서 보면, 왼쪽에 있는 분수 기호(가로바)는 오른쪽 분수 기호와 달리 나누기를 뜻하지는 않는다. 대신 연산자 $$  \frac{d}{dx} $$ 가 함수 $$f$$에 적용 되어 미분 된 함수를 의미 하는 것이다. 위의 수식을 이해하는 가장 좋은 방법은 $$h$$가 매우 작으면 함수 $$f$$는 직선으로 근사(Approximated) 될 수 있고, 미분 값은 그 직선의 기울기를 뜻한다. 다시말해, 만약 $$x = 4, y = -3$$ 이면 $$f(x,y) = -12$$ 가 되고, $$x$$에 대한 편미분 값은 $$x$$ $$\frac{\partial f}{\partial x} = -3$$ 으로 얻어진다. 이말은 즉슨, 우리가 x를 아주 조금 증가 시키면 전체 함수 값은 3배로 작아진다는 의미이다. (미분 값이 음수이므로). 이 것은 위의 수식을 재구성하면 이와 같이 간단히 보여 줄 수 있다 ( $$ f(x + h) = f(x) + h \frac{df(x)}{dx} $$ ).비슷하게, $$\frac{\partial f}{\partial y} = 4$$, 이므로, $$y$$ 값을 아주 작은 $$h$$ 만큼 증가 시킨다면 $$4h$$ 만큼 전체 함수 값은 증가하게 될 것이다. (이번에는 미분 값이 양수)
 
-> The derivative on each variable tells you the sensitivity of the whole expression on its value.
+> 미분은 각 변수가 해당 값에서 전체 함수(Expression)의 결과 값에 영향을 미치는 민감도와 같은 개념이다.
 
-As mentioned, the gradient $\nabla f$ is the vector of partial derivatives, so we have that $\nabla f = [\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}] = [y, x]$. Even though the gradient is technically a vector, we will often use terms such as *"the gradient on x"* instead of the technically correct phrase *"the partial derivative on x"* for simplicity.
+앞서 말했듯이, 그라디언트 $$\nabla f$$는 편미분 값들의 벡터이다. 따라서 수식으로 표현하면 다음과 같다: $$\nabla f = [\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}] = [y, x]$$, 그라디언트가 기술적으로 벡터일지라도 심플한 표현을 위해 *"X에 대한 편미분"* 이라는 정확한 표현 대신 *"X에 대한 그라디언트"* 와 같은 표현을 종종 쓰게 될 예정이다. 
 
-We can also derive the derivatives for the addition operation:
+다음과 같은 수식에 대해서도 미분값(그라디언트)을 한번 구해보자:
 
 $$
 f(x,y) = x + y \hspace{0.5in} \rightarrow \hspace{0.5in} \frac{\partial f}{\partial x} = 1 \hspace{0.5in} \frac{\partial f}{\partial y} = 1
 $$
 
-that is, the derivative on both $x,y$ is one regardless of what the values of $x,y$ are. This makes sense, since increasing either $x,y$ would increase the output of $f$, and the rate of that increase would be independent of what the actual values of $x,y$ are (unlike the case of multiplication above). The last function we'll use quite a bit in the class is the *max* operation:
+위의 수식에서 볼 수 있듯이, $$x,y$$에 대한 미분은 $$x,y$$ 값에 관계 없이 1이다. 당연히, $$x,y$$ 값이 증가하면 $$f$$가 증가하기 때문이다. 그리고 $$f$$ 값의 증가율 또한 $$x,y$$ 값에 관계 없이 일정하다 (앞서 살펴본 곱셈의 경우와 다름). 마지막으로 살펴볼 함수는 우리가 수업에서 자주 다루는 *Max* 함수 이다 :
 
 $$
 f(x,y) = \max(x, y) \hspace{0.5in} \rightarrow \hspace{0.5in} \frac{\partial f}{\partial x} = \mathbb{1}(x >= y) \hspace{0.5in} \frac{\partial f}{\partial y} = \mathbb{1}(y >= x)
 $$
 
-That is, the (sub)gradient is 1 on the input that was larger and 0 on the other input. Intuitively, if the inputs are $x = 4,y = 2$, then the max is 4, and the function is not sensitive to the setting of $y$. That is, if we were to increase it by a tiny amount $h$, the function would keep outputting 4, and therefore the gradient is zero: there is no effect. Of course, if we were to change $y$ by a large amount (e.g. larger than 2), then the value of $f$ would change, but the derivatives tell us nothing about the effect of such large changes on the inputs of a function; They are only informative for tiny, infinitesimally small changes on the inputs, as indicated by the $\lim_{h \rightarrow 0}$ in its definition.
-
+입력 값이 더 큰 값에 대한 (서브)그라디언트는 1이고, 다른 입력 값의 그라디언트는 0이 된다. 직관적으로 보면, $$x = 4,y = 2$$ 인 경우 max 값은 4 이고, 이 함수는 현재의 $$y$$ 값에 영향을 받지 않는다. 바꾸어말하면, $$y$$값을 아주 작은 값인 $$h$$ 만큼 증가시키더라도 이 함수의 결과 값은 4로 유지된다. 따라서 그라디언트는 0이다 (y값의 영향이 없다). 물론 $$y$$값을 매우 크게 증가 시킨다면 (예를 들면 2이상) 함수 $$f$$ 값은 바뀌겠지만, 미분은 이런 큰 변화 값과는 관련이 없다. 미분이라는 것이 본래 그 정의에도 있듯($$\lim_{h \rightarrow 0}$$) 아주 작은 입력 값 변화에 대해서 의미를 갖는 값이기 때문이다.
 
 <a name='backprop'></a>
+
 ### Compound expressions with chain rule
 
 Lets now start to consider more complicated expressions that involve multiple composed functions, such as $f(x,y,z) = (x + y) z$. This expression is still simple enough to differentiate directly, but we'll take a particular approach to it that will be helpful with understanding the intuition behind backpropagation. In particular, note that this expression can be broken down into two expressions: $q = x + y$ and $f = q z$. Moreover, we know how to compute the derivatives of both expressions separately, as seen in the previous section. $f$ is just multiplication of $q$ and $z$, so $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, and $q$ is addition of $x$ and $y$ so $ \frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1 $. However, we don't necessarily care about the gradient on the intermediate value $q$ - the value of $\frac{\partial f}{\partial q}$ is not useful. Instead, we are ultimately interested in the gradient of $f$ with respect to its inputs $x,y,z$. The **chain rule** tells us that the correct way to "chain" these gradient expressions together is through multiplication. For example, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $. In practice this is simply a multiplication of the two numbers that hold the two gradients. Lets see this with an example:
