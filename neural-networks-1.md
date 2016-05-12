@@ -3,13 +3,13 @@ layout: page
 permalink: /neural-networks-1/
 ---
 
-Table of Contents:
+목차:
 
-- [Quick intro without brain analogies](#quick)
-- [Modeling one neuron](#intro)
-  - [Biological motivation and connections](#bio)
-  - [Single neuron as a linear classifier](#classifier)
-  - [Commonly used activation functions](#actfun)
+- [간단한 소개: 뇌에 비유하지 않고](#quick)
+- [뉴런 하나 모델링하기](#intro)
+  - [생물학적 동기와 연결](#bio)
+  - [선형분류기로서의 뉴런 1개](#classifier)
+  - [흔하게 사용되는 활성함수](#actfun)
 - [Neural Network architectures](#nn)
   - [Layer-wise organization](#layers)
   - [Example feed-forward computation](#feedforward)
@@ -20,16 +20,16 @@ Table of Contents:
 
 <a name='quick'></a>
 
-## Quick intro
+## 간단한 소개
 
-It is possible to introduce neural networks without appealing to brain analogies. In the section on linear classification we computed scores for different visual categories given the image using the formula $ s = W x $, where $W$ was a matrix and $x$ was an input column vector containing all pixel data of the image. In the case of CIFAR-10, $x$ is a [3072x1] column vector, and $W$ is a [10x3072] matrix, so that the output scores is a vector of 10 class scores.
+뇌에 비유하지 않고도 신경망(neural networks)를 소개할 수 있다. 이 선형분류에 관한 섹션에서, $W$가 행렬이고 $x$가 입력 열벡터(column vector)로서 이미지의 모든 픽셀 정보값을 가질 때, $ s = W x $ 형태의 공식을 이용하여 주어진 이미지를 가지고 각 카테고리에 해당하는 스코어를 계산했었다. CIFAR-10의 경우, $x$는 크기가 [3072x1]인 열벡터이고, $W$는 크기가 [10x3072]인 행렬이었다. 따라서, 출력 스코어는 크기가 [10x1]인 벡터가 된다. (역자 주: 숫자 1개가 클래스 1개랑 관련있음.)
 
-An example neural network would instead compute $ s = W_2 \max(0, W_1 x) $. Here, $W_1$ could be, for example, a [100x3072] matrix transforming the image into a 100-dimensional intermediate vector. The function $max(0,-) $ is a non-linearity that is applied elementwise. There are several choices we could make for the non-linearity (which we'll study below), but this one is a common choice and simply thresholds all activations that are below zero to zero. Finally, the matrix $W_2$ would then be of size [10x100], so that we again get 10 numbers out that we interpret as the class scores. Notice that the non-linearity is critical computationally - if we left it out, the two matrices could be collapsed to a single matrix, and therefore the predicted class scores would again be a linear function of the input. The non-linearity is where we get the *wiggle*. The parameters $W_2, W_1$ are learned with stochastic gradient descent, and their gradients are derived with chain rule (and computed with backpropagation).
+신경망(neural network)는 그 대신, 예컨대 이런 류의 것을 계산한다: $ s = W_2 \max(0, W_1 x) $. 여기서 $W_1$는, 역시 예를 들자면, 크기가 [100x3072]인 행렬로서 이미지를 100차원짜리 중간단계 벡터로 전환하는 것일 수도 있겠다. $max(0,-) $ 함수는 비선형함수로서 $W_1 x $의 각 원소에 적용된다. (밑에서 다루겠지만), 이러한 비선형성을 구현하기 위한 방법은 여러 개 있지만, 이 함수는 흔히 쓰이는 것이고 단순히 모든 0 이하값을 0으로 막아버린다. 끝으로, 행렬 $W_2$은 크기 [10x100]짜리 행렬일 수도 있겠다. 그래서 결국에는 클래스 스코어(class score)로 쓰일 숫자 10개를 내놓게 된다. 비선형성이 계산에 있어 결정적이라는 점을 주목하자. 만약에 비선형성이 없다면, 이 행렬들은 서로 곱해져서 결국에는 하나의 행렬이 되고, 예측 스코어(score)도 역시나 입력값의 선형 함수(linear function)이 되고 만다. 이 비선형성에서 우리는 *wiggle*을 찾는다. 파라미터 $W_2, W_1$는 확률그라디언트로 학습시키고, 그 그라디언트들은 연쇄법칙(과 backpropagation)으로 계산하여 구한다.
 
-A three-layer neural network could analogously look like $ s = W_3 \max(0, W_2 \max(0, W_1 x)) $, where all of $W_3, W_2, W_1$ are parameters to be learned. The sizes of the intermediate hidden vectors are hyperparameters of the network and we'll see how we can set them later. Lets now look into how we can interpret these computations from the neuron/network perspective.
+3단계 신경망(neural network)는 $ s = W_3 \max(0, W_2 \max(0, W_1 x)) $랑 비슷하다. 이 때, $W_3, W_2, W_1$들은 모두 파라미터(parameter)들이고 추후에 학습시킨다. 중간 단계 벡터의 크기들은 하이퍼파라미터(hyperparameter)로서 나중에 어떻게 정하는지 알아보겠다. 이제 뉴런(neuron) 혹은 네트워크의 입장에서 이 계산들을 어떻게 해석해야하는지 알아보자.
 
 <a name='intro'></a>
-## Modeling one neuron
+## 뉴런 하나 모델링하기 
 
 The area of Neural Networks has originally been primarily inspired by the goal of modeling biological neural systems, but has since diverged and become a matter of engineering and achieving good results in Machine Learning tasks. Nonetheless, we begin our discussion with a very brief and high-level description of the biological system that a large portion of this area has been inspired by.
 
