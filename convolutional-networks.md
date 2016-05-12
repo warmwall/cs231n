@@ -320,8 +320,8 @@ For example, if 224x224 image gives a volume of size [7x7x512] - i.e. a reductio
 - **VGGNet**. ILSVRC 2014에서 2등을 한 네트워크는 Karen Simonyan과 Andrew Zisserman이 만든 [VGGNet](http://www.robots.ox.ac.uk/~vgg/research/very_deep/)이라고 불리우는 모델이다. 이 모델의 가장 큰 기여는 네트워크의 깊이가 좋은 성능에 있어 매우 중요한 요소라는 것을 보여준 것이다. 이들이 제안한 여러 개 모델 중 가장 좋은 것은 16개의 CONV/FC 레이어로 이뤄지며, 모든 컨볼루션은 3x3, 모든 풀링은 2x2만으로 이뤄져 있다. 비록 GoogLeNet보다 이미지 분류 성능은 약간 낮지만, 여러 Transfer Learning 과제에서 더 좋은 성능을 보인다는 것이 나중에 밝혀졌다. 그래서 VGGNet은 최근에 이미지 feature 추출을 위해 가장 많이 사용되고 있다. Caffe를 사용하면 Pretrained model을 받아 바로 사용하는 것도 가능하다. VGGNet의 단점은, 매우 많은 메모리를 사용하며 (140M) 많은 연산을 한다는 것이다.
  - **ResNet**. Kaiming He et al.이 만든 [Residual Network](http://arxiv.org/abs/1512.03385)가 ILSVRC 2015에서 우승을 차지했다. Skip connection이라는 특이한 구조를 사용하며 batch normalizatoin을 많이 사용했다는 특징이 있다. 이 아키텍쳐는 또한 마지막 부분에서 FC 레이어를 사용하지 않는다. Kaiming의 발표자료 ([video](https://www.youtube.com/watch?v=1PGLj-uKT1w), [slides](http://research.microsoft.com/en-us/um/people/kahe/ilsvrc15/ilsvrc2015_deep_residual_learning_kaiminghe.pdf))나 Torch로 구현된 [최근 실험들](https://github.com/gcr/torch-residual-networks) 들도 확인할 수 있다.
  
-**VGGNet in detail**.
-Lets break down the [VGGNet](http://www.robots.ox.ac.uk/~vgg/research/very_deep/) in more detail. The whole VGGNet is composed of CONV layers that perform 3x3 convolutions with stride 1 and pad 1, and of POOL layers that perform 2x2 max pooling with stride 2 (and no padding). We can write out the size of the representation at each step of the processing and keep track of both the representation size and the total number of weights:
+**VGGNet의 세부 사항들**.
+[VGGNet](http://www.robots.ox.ac.uk/~vgg/research/very_deep/)에 대해 좀 더 자세히 파헤쳐 보자. 전체 VGGNet은 필터 크기 3x3, stride 1, 제로패딩 1로 이뤄진 CONV 레이어들과 2x2 필터 크기 (패딩은 없음)의 POOL 레이어들로 구성된다. 아래에서 각 단계의 처리 과정을 살펴보고, 각 단계의 결과 크기와 가중치 개수를 알아본다.
 
 ~~~
 INPUT: [224x224x3]        memory:  224*224*3=150K   weights: 0
@@ -351,13 +351,13 @@ TOTAL memory: 24M * 4 bytes ~= 93MB / image (only forward! ~*2 for bwd)
 TOTAL params: 138M parameters
 ~~~
 
-As is common with Convolutional Networks, notice that most of the memory is used in the early CONV layers, and that most of the parameters are in the last FC layers. In this particular case, the first FC layer contains 100M weights, out of a total of 140M.
-
+ConvNet에서 자주 볼 수 있는 특징으로써, 대부분의 메모리가 앞쪽에서 소비된다는 점과, 마지막 FC 레이어들이 가장 많은 파라미터들을 갖고 있다는 점을 기억하자. 이 예제에서는, 첫 번째 FC 레이어가 총 140M개 중 100M개의 가중치를 갖는다.
 
 <a name='comp'></a>
 
-#### Computational Considerations
+#### 계산 관련 고려사항들 Computational Considerations
 
+ConvNet을 만들 때 일어나는 가장 큰 병목 현상은 메모리 병목이다. 최신 GPU들은 3/4/6GB의 메모리를 내장하고 있다. 가장 좋은 GPU들의 경우 12GB를 갖고 있다. 메모리와 관련해 주의깊게 살펴 볼 것은 크게 3가지이다. 
 The largest bottleneck to be aware of when constructing ConvNet architectures is the memory bottleneck. Many modern GPUs have a limit of 3/4/6GB memory, with the best GPUs having about 12GB of memory. There are three major sources of memory to keep track of:
 
 - From the intermediate volume sizes: These are the raw number of **activations** at every layer of the ConvNet, and also their gradients (of equal size). Usually, most of the activations are on the earlier layers of a ConvNet (i.e. first Conv Layers). These are kept around because they are needed for backpropagation, but a clever implementation that runs a ConvNet only at test time could in principle reduce this by a huge amount, by only storing the current activations at any layer and discarding the previous activations on layers below.
