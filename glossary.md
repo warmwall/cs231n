@@ -21,7 +21,6 @@ permalink: /glossary/
     <tr><td>Batch</td><td>배치</td></tr>
     <tr><td>Batch normalization</td><td>배치 정규화</td></tr>
     <tr><td>Bias</td><td>(영어 그대로)</td></tr>
-    <tr><td>Binary</td><td>(?)</td></tr>
     <tr><td>Chain rule</td><td>연쇄 법칙</td></tr>
     <tr><td>Class</td><td>클래스</td></tr>
     <tr><td>Classification</td><td>분류</td></tr>
@@ -37,7 +36,7 @@ permalink: /glossary/
     <tr><td>Dropout</td><td>(영어 그대로)</td></tr>
     <tr><td>Error</td><td>에러, 오차</td></tr>
     <tr><td>Evaluate</td><td>평가하다</td></tr>
-    <tr><td>Feature</td><td>특징, 표현(?)</td></tr>
+    <tr><td>Feature</td><td>특징, 표현, 피쳐</td></tr>
     <tr><td>Filter</td><td>필터</td></tr>
     <tr><td>Forward propagation</td><td>(영어 그대로)</td></tr>
     <tr><td>Fully-connected</td><td>(영어 그대로)</td></tr>

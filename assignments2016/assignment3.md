@@ -18,7 +18,7 @@ permalink: assignments2016/assignment3/
 ## 설치
 다음 두가지 방법으로 숙제를 시작할 수 있습니다: Terminal.com을 이용한 가상 환경 또는 로컬 환경.
 
-### Termianl에서의 가상 환경.
+### Terminal에서의 가상 환경.
 Terminal에는 우리의 수업을 위한 서브도메인이 만들어져 있습니다. [www.stanfordterminalcloud.com](https://www.stanfordterminalcloud.com) 계정을 등록하세요. 이번 숙제에 대한 스냅샷은 [여기](https://www.stanfordterminalcloud.com/snapshot/49f5a1ea15dc424aec19155b3398784d57c55045435315ce4f8b96b62819ef65)에서 찾아볼 수 있습니다. 만약 수업에 등록되었다면, TA(see Piazza for more information)에게 이 수업을 위한 Terminal 예산을 요구할 수 있습니다. 처음 스냅샷을 실행시키면, 수업을 위한 모든 것이 설치되어 있어서 바로 숙제를 시작할 수 있습니다. [여기](/terminal-tutorial)에 Terminal을 위한 간단한 튜토리얼을 작성해 뒀습니다.
 
 ### 로컬 환경
@@ -81,3 +81,8 @@ IPython notebook `ImageGeneration.ipynb`에서는 미리 학습된 TinyImageNet 
 
 ### Q5: 추가 과제: 뭔가 더 해보세요! (+10 points)
 이번 과제에서 제공된 것들을 활용해서 무언가 멋있는 것들을 시도해볼 수 있을 것입니다. 과제에서 구현하지 않은 다른 방식으로 이미지들을 생성하는 방법이 있을 수도 있어요!
+
+---
+<p style="text-align:right"><b>
+번역: 최명섭 <a href="https://github.com/myungsub" style="color:black">(myungsub)</a>
+</b></p>

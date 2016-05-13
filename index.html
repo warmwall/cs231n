@@ -16,26 +16,39 @@ layout: default
       <a href="glossary/">Glossary</a>
     </div>
 
-    <div class="module-header">Winter 2016 Assignments</div>
+    <div class="module-header">
+      <a href="video-lectures/">강의 동영상</a>
+    </div>
+
+    <div class="module-header">Winter 2016 과제</div>
 
     <div class="materials-item">
       <a href="assignments2016/assignment1/">
-        Assignment #1: Image Classification, kNN, SVM, Softmax, Neural Network
+        Assignment #1: 이미지 분류, kNN, SVM, Softmax, 뉴럴 네트워크
       </a>
+      <span style="float:right">
+        <progress value="50" max="100"></progress>
+      </span>
     </div>
 
     <div class="materials-item">
       <a href="assignments2016/assignment2/">
-        Assignment #2: Fully-Connected Nets, Batch Normalization, Dropout,
-        Convolutional Nets
+        Assignment #2: Fully-Connected 네트워크, 배치 정규화(Batch Normalization), Dropout,
+        컨볼루션 신경망
       </a>
+      <span style="float:right">
+        <progress value="0" max="100"></progress>
+      </span>
     </div>
 
     <div class="materials-item">
       <a href="assignments2016/assignment3/">
-        Assignment #3: Recurrent Neural Networks, Image Captioning,
-        Image Gradients, DeepDream
+        Assignment #3: 회귀신경망(Recurrent Neural Networks), 이미지 캡셔닝(Captioning),
+        이미지 그라디언트, DeepDream
       </a>
+      <span style="float:right">
+        <progress value="20" max="100"></progress>
+      </span>
     </div>
 
     <!--
@@ -60,30 +73,42 @@ layout: default
     </div>
   -->
 
-    <div class="module-header">Module 0: Preparation</div>
+    <div class="module-header">Module 0: 준비</div>
 
     <div class="materials-item">
       <a href="python-numpy-tutorial/">
         Python / Numpy Tutorial
       </a>
+      <span style="float:right" class="progress">
+        <progress value="0" max="100"></progress>
+      </span>
     </div>
 
     <div class="materials-item">
       <a href="ipython-tutorial/">
         IPython Notebook Tutorial
       </a>
+      <span style="float:right;" class="progress">
+        Complete! <progress value="100" max="100"></progress>
+      </span>
     </div>
 
     <div class="materials-item">
       <a href="terminal-tutorial/">
         Terminal.com Tutorial
       </a>
+      <span style="float:right" class="progress">
+        Complete! <progress value="100" max="100"></progress>
+      </span>
     </div>
 
     <div class="materials-item">
       <a href="aws-tutorial/">
         AWS Tutorial
       </a>
+      <span style="float:right" class="progress">
+        Complete! <progress value="100" max="100"></progress>
+      </span>
     </div>
 
 	 <!-- hardcoding items here to force a specific order -->
@@ -91,10 +116,13 @@ layout: default
 
     <div class="materials-item">
       <a href="classification/">
-        영상 분류: 데이터 기반 방법론, k-Nearest Neighbor, train/val/test 구분
+        이미지 분류: 데이터 기반 방법론, k-Nearest Neighbor, train/val/test 구분
       </a>
+      <span style="float:right" class="progress">
+        <progress value="150" max="291"></progress>
+      </span>
       <div class="kw">
-        L1/L2 거리, hyperparameter 탐색, cross-validation
+        L1/L2 거리, hyperparameter 탐색, 교차검증(cross-validation)
       </div>
     </div>
 
@@ -102,17 +130,23 @@ layout: default
       <a href="linear-classify/">
          선형 분류: Support Vector Machine, Softmax
       </a>
+      <span style="float:right" class="progress">
+        <progress value="0" max="100"></progress>
+      </span>
       <div class="kw">
-        parameteric approach, bias trick, hinge loss, cross-entropy loss, L2 regularization, web demo
+        parameteric 접근법, bias 트릭, hinge loss, cross-entropy loss, L2 regularization, 웹 데모
       </div>
     </div>
 
     <div class="materials-item">
       <a href="optimization-1/">
-        최적화: Stochastic Gradient Descent
+        최적화: 확률 그라디언트 하강(Stochastic Gradient Descent)
       </a>
+      <span style="float:right" class="progress">
+        Complete! <progress value="100" max="100"></progress>
+      </span>
       <div class="kw">
-        optimization landscapes, local search, learning rate, analytic/numerical gradient
+        '지형'으로서의 최적화 목적 함수 (optimization landscapes), 국소 탐색(local search), 학습 속도(learning rate), 해석적(analytic)/수치적(numerical) 그라디언트
       </div>
     </div>
 
@@ -120,26 +154,35 @@ layout: default
       <a href="optimization-2/">
         Backpropagation, Intuition
       </a>
+      <span style="float:right" class="progress">
+        <progress value="70" max="300"></progress>
+      </span>
       <div class="kw">
-        연쇄 법칙 (chain rule) 해석, real-valued circuits, patterns in gradient flow
+        연쇄 법칙 (chain rule) 해석, real-valued circuits, 그라디언트 흐름의 패턴
       </div>
     </div>
 
     <div class="materials-item">
       <a href="neural-networks-1/">
-          신경망 파트 1: Setting up the Architecture
+          신경망 파트 1: 네트워크 구조 정하기
       </a>
+      <span style="float:right" class="progress">
+        <progress value="32" max="220"></progress>
+      </span>
       <div class="kw">
-        생물학적 뉴런 모델, activation functions, 신경망 구조, representational power
+        생물학적 뉴런 모델, 활성 함수(activation functions), 신경망 구조, 표현력(representational power)
       </div>
     </div>
 
     <div class="materials-item">
-      <a href="neural-networks-2/">
+      <a href="neural-networks-2-kr/">
           신경망 파트 2: 데이터 준비 및 Loss
       </a>
+      <span style="float:right" class="progress">
+        <progress value="232" max="308"></progress>
+      </span>
       <div class="kw">
-          전처리, weight 초기값 설정, batch normalization, regularization (L2/dropout), loss 함수
+          전처리, weight 초기값 설정, 배치 정규화(batch normalization), regularization (L2/dropout), 손실함수
       </div>
     </div>
 
@@ -147,8 +190,11 @@ layout: default
       <a href="neural-networks-3/">
         신경망 파트 3: 학습 및 평가
       </a>
+      <span style="float:right" class="progress">
+        <progress value="81" max="390"></progress>
+      </span>
       <div class="kw">
-        gradient checks, sanity checks, babysitting the learning process, momentum (+nesterov), second-order methods, Adagrad/RMSprop, hyperparameter optimization, model ensembles
+        그라디언트 체크, 버그 점검, 학습 과정 모니터링, momentum (+nesterov), 2차(2nd-order) 방법, Adagrad/RMSprop, hyperparameter 최적화, 모델 ensemble
       </div>
     </div>
 
@@ -167,19 +213,25 @@ layout: default
 
     <div class="materials-item">
       <a href="convolutional-networks/">
-        Convolutional Neural Networks: Architectures, Convolution / Pooling Layers
+        컨볼루션 신경망: 구조, Convolution / Pooling 레이어들
       </a>
+      <span style="float:right" class="progress">
+        Complete! <progress value="100" max="100"></progress>
+      </span>
       <div class="kw">
-          layers, spatial arrangement, layer patterns, layer sizing patterns, AlexNet/ZFNet/VGGNet case studies, computational considerations
+        레이어(층), 공간적 배치, 레이어 패턴, 레이어 사이즈, AlexNet/ZFNet/VGGNet 사례 분석, 계산량에 관한 고려 사항들
       </div>
     </div>
 
     <div class="materials-item">
       <a href="understanding-cnn/">
-        Understanding and Visualizing Convolutional Neural Networks
+        컨볼루션 신경망 분석 및 시각화
       </a>
+      <span style="float:right" class="progress">
+        <progress value="14" max="107"></progress>
+      </span>
       <div class="kw">
-        tSNE embeddings, deconvnets, data gradients, fooling ConvNets, human comparisons
+        tSNE embeddings, deconvnets, 데이터에 대한 그라디언트, ConvNet 속이기, 사람과의 비교
       </div>
     </div>
 
@@ -187,6 +239,13 @@ layout: default
       <a href="transfer-learning/">
         Transfer Learning and Fine-tuning Convolutional Neural Networks
       </a>
+      <span style="float:right" class="progress">
+        <progress value="0" max="100"></progress>
+      </span>
+    </div>
+
+    <div class="module-header">
+      <a href="acknowledgement/">Acknowledgement</a>
     </div>
 
   </div>

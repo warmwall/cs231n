@@ -4,9 +4,9 @@ mathjax: true
 permalink: /classification/
 ---
 
-본 강의노트는 컴퓨터비전 외의 분야를 공부하던 사람들에게 영상 분류 (Image Classification) 문제와, 데이터 기반 방법론(data-driven approach)을 소개하고자 함이다. 목차는 다음과 같다.
+본 강의노트는 컴퓨터비전 외의 분야를 공부하던 사람들에게 Image Classification(이미지 분류) 문제와,  data-driven approach(데이터 기반 방법론)을 소개한다. 목차는 다음과 같다.
 
-- [영상 분류, 데이터 기반 방법론, 파이프라인](#intro)
+- [Image Classification(이미지 분류), data-driven approach(데이터 기반 방법론), pipeline(파이프라인)](#intro)
 - [Nearest Neighbor 분류기](#nn)
   - [k-Nearest Neighbor 알고리즘](#knn)
 - [Validation sets, Cross-validation, hyperparameter 튜닝](#val)
@@ -16,84 +16,89 @@ permalink: /classification/
 - [읽을 자료](#reading)
 
 <a name='intro'></a>
-## 영상 분류
 
-**동기**. 이 섹션에서는 영상 분류 문제에 대해 다룰 것이다. 영상 분류 문제란, 입력 이미지를 미리 정해진 카테고리 중 하나로 분류하는 문제로, 문제 정의는 매우 간단하지만 다양한 활용 가능성이 있는 컴퓨터 비전 분야의 핵심적인 문제 중의 하나이다. 강의의 나중 파트에서도 살펴보겠지만, 영상 분류와 멀어보이는 다른 컴퓨터 비전 분야의 여러 문제들 (물체 검출, 영상 분할 등)이 영상 분류 문제를 푸는 것으로 인해 해결될 수 있다.
+## Image Classification(이미지 분류)
 
-**예시**. 예를 들어, 아래 이미지
-For example, in the image below an image classification model takes a single image and assigns probabilities to 4 labels, *{cat, dog, hat, mug}*. As shown in the image, keep in mind that to a computer an image is represented as one large 3-dimensional array of numbers. In this example, the cat image is 248 pixels wide, 400 pixels tall, and has three color channels Red,Green,Blue (or RGB for short). Therefore, the image consists of 248 x 400 x 3 numbers, or a total of 297,600 numbers. Each number is an integer that ranges from 0 (black) to 255 (white). Our task is to turn this quarter of a million numbers into a single label, such as *"cat"*.
+**동기**. 이 섹션에서는 이미지 분류 문제에 대해 다룰 것이다. 이미지 분류 문제란, 입력 이미지를 미리 정해진 카테고리 중 하나인 라벨로 분류하는 문제다. 문제 정의는 매우 간단하지만 다양한 활용 가능성이 있는 컴퓨터 비전 분야의 핵심적인 문제 중의 하나이다. 강의의 나중 파트에서도 살펴보겠지만, 이미지 분류와 멀어보이는 다른 컴퓨터 비전 분야의 여러 문제들 (물체 검출, 영상 분할 등)이 영상 분류 문제를 푸는 것으로 인해 해결될 수 있다.
+
+**예시**. 예를 들어, 아래 그림의 이미지 분류 모델은 하나의 이미지와 4개의 분류가능한 라벨 *{cat, dog, hat, mug}*  이 있다. 그림에서 보다시피, 컴퓨터에서 이미지는 3차원 배열로 표현된다. 이 예시에서 고양이 이미지는 가로 248픽셀(모니터의 화면을 구성하는 최소 단위, 역자 주), 세로 400픽셀로 구성되어 있고 3개의 색상 채널이 있는데 각각 Red, Green, Blue(RGB)로 불린다. 따라서 이 이미지는 248 x 400 x 3개(총 297,500개)의 픽셀로 구성되어 있다. 각 픽셀의 값은 0~255 범위의 정수값이다. 이미지 분류 문제는 이 수많은 값들을 *"cat"* 이라는 하나의 라벨로 변경하는 것이다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/classify.png">
-  <div class="figcaption">The task in Image Classification is to predict a single label (or a distribution over labels as shown here to indicate our confidence) for a given image. Images are 3-dimensional arrays of integers from 0 to 255, of size Width x Height x 3. The 3 represents the three color channels Red, Green, Blue.</div>
+  <div class="figcaption">이미지 분류는 이미지가 주어졌을 때 그에 대한 라벨(각 라벨에 대한 신뢰도를 표시하는 분류)을 예측하는 일이다. 이미지는 0~255 정수 범위의 값을 가지는 Width(너비) x Height(높이) x 3의 크기의 3차원 배열이다. 3은 Red, Green, Blue로 구성된 3개의 채널을 의미한다.</div>
 </div>
 
-**Challenges**. Since this task of recognizing a visual concept (e.g. cat) is relatively trivial for a human to perform, it is worth considering the challenges involved from the perspective of a Computer Vision algorithm. As we present (an inexhaustive) list of challenges below, keep in mind the raw representation of images as a 3-D array of brightness values:
+**문제**. 이미지를 분류하는 일(예를들어 *"cat"*)이 사람에게는 대수롭지 않겠지만, 컴퓨터 비전의 관점에서 생각해보면 해결해야 하는 문제들이 있다. 아래에 서술된 해결해야 하는 문제들처럼, 이미지는 3차원 배열의 값으로 나타내는 것을 염두해두어야 한다.
 
-- **Viewpoint variation**. A single instance of an object can be oriented in many ways with respect to the camera.
-- **Scale variation**. Visual classes often exhibit variation in their size (size in the real world, not only in terms of their extent in the image).
-- **Deformation**. Many objects of interest are not rigid bodies and can be deformed in extreme ways.
-- **Occlusion**. The objects of interest can be occluded. Sometimes only a small portion of an object (as little as few pixels) could be visible.
-- **Illumination conditions**. The effects of illumination are drastic on the pixel level.
-- **Background clutter**. The objects of interest may *blend* into their environment, making them hard to identify.
-- **Intra-class variation**. The classes of interest can often be relatively broad, such as *chair*. There are many different types of these objects, each with their own appearance.
+- **Viewpoint variation(시점 변화)**. 객체의 단일 인스턴스는 카메라에 의해 시점이 달라질 수 있다.
+- **Scale variation(크기 변화)**. 비주얼 클래스는 대부분 그것들의 크기의 변화를 나타낸다(이미지의 크기뿐만 아니라 실제 세계에서의 크기까지 포함함).
+- **Deformation(변형)**. 많은 객체들은 고정된 형태가 없고, 극단적인 형태로 변형될 수 있다.
+- **Occlusion(폐색)**. 객체들은 전체가 보이지 않을 수 있다. 때로는 물체의 매우 적은 부분(매우 적은 픽셀)이 보인다.
+- **Illumination conditions(조명 상태)**. 조명의 영향으로 픽셀 값이 변형된다.
+- **Background clutter(배경 분규)**. 객체가 주변 환경에 섞여(*blend*) 알아보기 힘들게 된다.
+- **Intra-class variation(내부클래스의 다양성)**. 분류해야할 클래스는 범위가 큰 것들이 많다. 예를 들어 *의자* 의 경우, 매우 다양한 형태의 객체가 있다.
 
-A good image classification model must be invariant to the cross product of all these variations, while simultaneously retaining sensitivity to the inter-class variations.
+좋은 이미지 분류기는 각 클래스간의 감도를 유지하면서 동시에 이런 다양한 문제들에 대해 변함 없이 분류할 수 있는 성능을 유지해야 한다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/challenges.jpeg">
   <div class="figcaption"></div>
 </div>
 
-**Data-driven approach**. How might we go about writing an algorithm that can classify images into distinct categories? Unlike writing an algorithm for, for example, sorting a list of numbers, it is not obvious how one might write an algorithm for identifying cats in images. Therefore, instead of trying to specify what every one of the categories of interest look like directly in code, the approach that we will take is not unlike one you would take with a child: we're going to provide the computer with many examples of each class and then develop learning algorithms that look at these examples and learn about the visual appearance of each class. This approach is referred to as a *data-driven approach*, since it relies on first accumulating a *training dataset* of labeled images. Here is an example of what such a dataset might look like:
+**Data-driven approach(데이터 기반 방법론)**. 어떻게 하면 이미지를 각각의 카테고리로 분류하는 알고리즘을 작성할 수 있을까? 숫자를 정렬하는 알고리즘 작성과는 달리 고양이를 분별하는 알고리즘을 작성하는 것은 어렵다.
+
+ 그러므로, 코드를 통해 직접적으로 모든 것을 카테고리로 분류하기 보다는 좀 더 쉬운 방법을 사용할 것이다. 먼저 컴퓨터에게 각 클래스에 대해 많은 예제를 주고 나서 이 예제들을 보고 시각적으로 학습할 수 있는 학습 알고리즘을 개발한다.
+ 이런 방법을 *data-driven approach(데이터 기반  아법론)* 이라고 한다. 이 방법은 라벨화가 된 이미지들 *training dataset(트레이닝 데이터 셋)* 이 처음 학습을 위해 필요하다. 아래 그림은 이런 데이터셋의 예이다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/trainset.jpg">
-  <div class="figcaption">An example training set for four visual categories. In practice we may have thousands of categories and hundreds of thousands of images for each category.</div>
+  <div class="figcaption">4개의 카테고리에 대한 트레이닝 셋에 대한 예. 학습과정에서 천여개의 카테고리와 각 카테고리당 수십만개의 이미지가 있을 수 있다.</div>
 </div>
 
-**The image classification pipeline**. We've seen that the task in Image Classification is to take an array of pixels that represents a single image and assign a label to it. Our complete pipeline can be formalized as follows:
+**The image classification pipeline(이미지 분류 파이프라인)**. 이제까지 이미지 분류는 픽셀값을 같고 있는 배열은 하나의 이미지로 표현하고 라벨을 할당하는 것이다라는 것을 살펴봤다. 우리의 완전한 파이프라인은 아래와 같이 공식화할 수 있다:
 
-- **Input:** Our input consists of a set of *N* images, each labeled with one of *K* different classes. We refer to this data as the *training set*.
-- **Learning:** Our task is to use the training set to learn what every one of the classes looks like. We refer to this step as *training a classifier*, or *learning a model*.
-- **Evaluation:** In the end, we evaluate the quality of the classifier by asking it to predict labels for a new set of images that it has never seen before. We will then compare the true labels of these images to the ones predicted by the classifier. Intuitively, we're hoping that a lot of the predictions match up with the true answers  (which we call the *ground truth*).
+- **Input(입력):** 입력은 *N* 개의 이미지로 구성되어 있고, *K* 개의 별개의 클래스로 라벨화 되어 있다. 이 데이터를 *training set* 으로 사용한다.
+- **Learning(학습):** 학습에서 할 일은 트레이닝 셋을 이용해 각각의 클래스를 학습하는 것이다. 이 과정을 *training a classifier* 혹은 *learning a model* 이란 용어를 사용해 표현할 수 있다.
+- **Evaluation(평가):** 마지막으로 새로운 이미지에 대해 어떤 라벨값으로 분류되는지 예측해봄으로써 분류기의 성능을 평가한다. 새로운 이미지의 라벨값과 분류기를 통해 예측된 라벨값을 비교할 수 있다. 직감적으로, 많은 예상치들이 실제 답과 일치하기를 기대한다. 이 것을 *ground truth(실측 자료)* 라고 한다.
 
 <a name='nn'></a>
-### Nearest Neighbor Classifier
-As our first approach, we will develop what we call a **Nearest Neighbor Classifier**. This classifier has nothing to do with Convolutional Neural Networks and it is very rarely used in practice, but it will allow us to get an idea about the basic approach to an image classification problem.
 
-**Example image classification dataset: CIFAR-10.** One popular toy image classification dataset is the <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a>. This dataset consists of 60,000 tiny images that are 32 pixels high and wide. Each image is labeled with one of 10 classes (for example *"airplane, automobile, bird, etc"*). These 60,000 images are partitioned into a training set of 50,000 images and a test set of 10,000 images. In the image below you can see 10 random example images from each one of the 10 classes:
+## Nearest Neighbor Classifier(최근접 이웃 분류기)
+
+첫번째 방법으로써, **Nearest Neighbor Classifier** 라 불리는 분류기를 개발할 것이다. 이 분류기는 컨볼루션 신경망 방법이 사용되지 않고 연습과정애서 매우 드물게 사용된다. 하지만 이 분류기는 이미지 분류 문제에 대한 기본적인 접근방법을 알 수 있다.
+
+**이미지 분류 데이터셋의 예: CIFAR-10.** 하나의 유명한 이미지 분류 데이터셋은 <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 이다. 이 데이터셋은 60,000개의 작은 이미지로 구성되어 있고, 각 이미지는 32x32픽셀 크기있다. 각 이미지는 10개의 클래스중 하나로 라벨화되어 있다(예를 들어, *"airplane, automobile, bird, etc"*). 이 60,000개의 이미지 중에 50,000개는 트레이싱 셋, 10,000개는 트레이닝 셋으로 분류된다. 아래의 그림에서 각 10개의 클래스에 대해 임의로 선정한 10개의 이미지들의 예를 볼 수 있다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn.jpg">
-  <div class="figcaption">Left: Example images from the <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a>. Right: first column shows a few test images and next to each we show the top 10 nearest neighbors in the training set according to pixel-wise difference.</div>
+  <div class="figcaption">좌: <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 의 각 클래스 예. 우: 첫번째 열은 테스트 셋이고 나머지 열은 이 테스트셋에 대해서 트레이닝 셋에 있는 이미지 중 픽셀값 차에 따른 상위 10개의 최근접 이웃 이미지이다.</div>
 </div>
 
-Suppose now that we are given the CIFAR-10 training set of 50,000 images (5,000 images for every one of the labels), and we wish to label the remaining 10,000. The nearest neighbor classifier will take a test image, compare it to every single one of the training images, and predict the label of the closest training image. In the image above and on the right you can see an example result of such a procedure for 10 example test images. Notice that in only about 3 out of 10 examples an image of the same class is retrieved, while in the other 7 examples this is not the case. For example, in the 8th row the nearest training image to the horse head is a red car, presumably due to the strong black background. As a result, this image of a horse would in this case be mislabeled as a car.
+50,000개의 CIFAR-10 트레이닝 셋(하나의 라벨 당 5,000개의 이미지)이 주어진 상태에서 나머지 10,000개의 이미지에 대해 라벨화 하는 것을 가정해보자. 최근접 이웃 분류기는 테스트 이미지를 취해 모든 트레이닝 이미지와 비교를 하고 라벨 값을 예상할 것이다. 상단 이미지의 우측과 같이 10개의 테스트 이미지에 대한 결과를 확인할 수 있다. 10개의 이미지 중 3개만이 같은 클래스로 검색된 반면에, 7개의 이미지는 같은 클래스로 분류되지 않았다. 예를 들어, 8번째 행의 말 학습 이미지에 대한 첫번째 최근접 이웃 이미지는 붉은색의 차이다. 짐작컨데 이 경우는 검은색 배경의 영향이 큰 듯 하다. 결과적으로, 이 말 이미지는 차로 잘 못 분류될 것이다.
 
-You may have noticed that we left unspecified the details of exactly how we compare two images, which in this case are just two blocks of 32 x 32 x 3. One of the simplest possibilities is to compare the images pixel by pixel and add up all the differences. In other words, given two images and representing them as vectors $$ I_1, I_2 $$ , a reasonable choice for comparing them might be the **L1 distance**:
+두개의 이미지를 비교하는 정확한 방법을 아직 명시하지 않았는데, 이 경우에는 32 x 32 x 3 크기의 두 블록이다. 가장 간단한 방법 중 하나는 이미지를 각각의 픽셀값으로 비교하고, 그 차이를 더해 모두 더하는 것이다. 다시 말해서 두 개의 이미지가 주어지고 그 것들을 $$ I_1, I_2 $$ 벡터로 나타냈을 때, 벡터 간의 **L1 distance(L1 거리)** 를 계산하는 것이 적절한 방법이다:
 
 $$
 d_1 (I_1, I_2) = \sum_{p} \left| I^p_1 - I^p_2 \right|
 $$
 
-Where the sum is taken over all pixels. Here is the procedure visualized:
+결과는 모든 픽셀값 차이의 합이다. 아래에 시각적인 절차가 있다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nneg.jpeg">
   <div class="figcaption">An example of using pixel-wise differences to compare two images with L1 distance (for one color channel in this example). Two images are subtracted elementwise and then all differences are added up to a single number. If two images are identical the result will be zero. But if the images are very different the result will be large.</div>
 </div>
 
-Let's also look at how we might implement the classifier in code. First, let's load the CIFAR-10 data into memory as 4 arrays: the training data/labels and the test data/labels. In the code below, `Xtr` (of size 50,000 x 32 x 32 x 3) holds all the images in the training set, and a corresponding 1-dimensional array `Ytr` (of length 50,000) holds the training labels (from 0 to 9):
+분류기를 코드상에서 어떻게 구현하는 과정을 살펴보자. 첫번째로 CIFAR-10 데이터를 4개의 배열을 통해 메모리로 불러온다. 각각은 트레이닝 데이터와 라벨, 테스트 데이터와 라벨이다. 아래 코드에 `Xtr`(크기 50,000 x 32 x 32 x 3)은 트레이닝 셋의 모든 이미지를 저장하고 1차원 배열인 `Ytr`(길이 50,000)은 트레이닝 데이터의 라벨을 저장한다.
 
 ~~~python
-Xtr, Ytr, Xte, Yte = load_CIFAR10('data/cifar10/') # a magic function we provide
-# flatten out all images to be one-dimensional
-Xtr_rows = Xtr.reshape(Xtr.shape[0], 32 * 32 * 3) # Xtr_rows becomes 50000 x 3072
-Xte_rows = Xte.reshape(Xte.shape[0], 32 * 32 * 3) # Xte_rows becomes 10000 x 3072
+Xtr, Ytr, Xte, Yte = load_CIFAR10('data/cifar10/') # 제공되는 함수
+# 모든 이미지가 1차원 배열로 저장된다.
+Xtr_rows = Xtr.reshape(Xtr.shape[0], 32 * 32 * 3) # Xtr_rows는 50000 x 3072 크기의 배열.
+Xte_rows = Xte.reshape(Xte.shape[0], 32 * 32 * 3) # Xte_rows는 10000 x 3072 크기의 배열.
 ~~~
 
-Now that we have all images stretched out as rows, here is how we could train and evaluate a classifier:
+이제 모든 이미지를 배열의 각 행들로 얻었다. 아래에는 분류기를 어떻게 학습시키고 평가하는지에 대한 코드이다:
 
 ~~~python
 nn = NearestNeighbor() # create a Nearest Neighbor classifier class
@@ -104,7 +109,7 @@ Yte_predict = nn.predict(Xte_rows) # predict labels on the test images
 print 'accuracy: %f' % ( np.mean(Yte_predict == Yte) )
 ~~~
 
-Notice that as an evaluation criterion, it is common to use the **accuracy**, which measures the fraction of predictions that were correct. Notice that all classifiers we will build satisfy this one common API: they have a `train(X,y)` function that takes the data and the labels to learn from. Internally, the class should build some kind of model of the labels and how they can be predicted from the data. And then there is a `predict(X)` function, which takes new data and predicts the labels. Of course, we've left out the meat of things - the actual classifier itself. Here is an implementation of a simple Nearest Neighbor classifier with the L1 distance that satisfies this template:
+일반적으로 평가 기준으로서 **accuracy(정확도)** 를 사용한다. 정확도는 예측값이 얼마나 일치한지 비율을 측정한다. 앞으로 만들어 볼 모든 분류기는 공통적인 API를 갖는다: 그것들은 데이터(X)와 데이터가 실제로 속하는 라벨(y)을 입력으로 받는 `train(X,y)` 형태의 함수가 있다. 내부적으로는 클래스는 특정한 종류의 라벨에 대한 모델과 그 값들이 데이터로부터 어떻게 예측될 수 있는지 만들어야 한다. 그 이후에 새로운 데이터로 부터 라벨을 예측하는 `predict(X)` 형태의 함수가 있다. 물론, 아직은 실제로 분류기가 작동하는 부분은 빠져있다. 이제 L1 거리를 이용한 간단한 최근접 이웃 분류기에 대한 구현방법을 소개한다:
 
 ~~~python
 import numpy as np
@@ -136,10 +141,10 @@ class NearestNeighbor(object):
     return Ypred
 ~~~
 
-If you ran this code, you would see that this classifier only achieves **38.6%** on CIFAR-10. That's more impressive than guessing at random (which would give 10% accuracy since there are 10 classes), but nowhere near human performance (which is [estimated at about 94%](http://karpathy.github.io/2011/04/27/manually-classifying-cifar10/)) or near state-of-the-art Convolutional Neural Networks that achieve about 95%, matching human accuracy (see the [leaderboard](http://www.kaggle.com/c/cifar-10/leaderboard) of a recent Kaggle competition on CIFAR-10).
+이 코드를 실행해보면 이 분류기는 CIFAR-10에 대해 정확도가 **38.6%** 밖에 되지 않다는 것을 확인할 수 있다. 임의로 답을 결정하는 것(10개의 클래스가 있을 때 10%의 정확도)보다는 낫지만, 사람의 반응([약 94%](http://karpathy.github.io/2011/04/27/manually-classifying-cifar10/))이나 최신 컨볼루션 신경망의 성능(약 95%)에는 훨씬 미치지 못한다(최근 Kaggle 대회 [순위표](http://www.kaggle.com/c/cifar-10/leaderboard) 참고).
 
-**The choice of distance.**
-There are many other ways of computing distances between vectors. Another common choice could be to instead use the **L2 distance**, which has the geometric interpretation of computing the euclidean distance between two vectors. The distance takes the form:
+**거리 선택**
+벡터간의 거리를 계산하는 방법은 많다. 다른 일반적인 선택으로는 두 벡터간의 유클리디안 거리를 계산하는 기하학적인 방법인 **L2 distance(L2 거리)** 의 사용을 고려해볼 수 있다.  이 거리는 아래의 식으로 얻는다:
 
 $$
 d_2 (I_1, I_2) = \sqrt{\sum_{p} \left( I^p_1 - I^p_2 \right)^2}
@@ -156,7 +161,8 @@ Note that I included the `np.sqrt` call above, but in a practical nearest neighb
 **L1 vs. L2.** It is interesting to consider differences between the two metrics. In particular, the L2 distance is much more unforgiving than the L1 distance when it comes to differences between two vectors. That is, the L2 distance prefers many medium disagreements to one big one. L1 and L2 distances (or equivalently the L1/L2 norms of the differences between a pair of images) are the most commonly used special cases of a [p-norm](http://planetmath.org/vectorpnorm).
 
 <a name='knn'></a>
-### k - Nearest Neighbor Classifier
+
+## k - Nearest Neighbor Classifier
 
 You may have noticed that it is strange to only use the label of the nearest image when we wish to make a prediction. Indeed, it is almost always the case that one can do better by using what's called a **k-Nearest Neighbor Classifier**. The idea is very simple: instead of finding the single closest image in the training set, we will find the top **k** closest images, and have them vote on the label of the test image. In particular, when *k = 1*, we recover the Nearest Neighbor classifier. Intuitively, higher values of **k** have a smoothing effect that makes the classifier more resistant to outliers:
 
@@ -283,3 +289,8 @@ Here are some (optional) links you may find interesting for further reading:
 - [A Few Useful Things to Know about Machine Learning](http://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf), where especially section 6 is related but the whole paper is a warmly recommended reading.
 
 - [Recognizing and Learning Object Categories](http://people.csail.mit.edu/torralba/shortCourseRLOC/index.html), a short course of object categorization at ICCV 2005.
+
+---
+<p style="text-align:right"><b>
+번역: 이옥민 <a href="https://github.com/OkminLee" style="color:black">(OkminLee)</a>
+</b></p>
