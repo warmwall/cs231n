@@ -258,8 +258,6 @@ FC 레이어와 CONV 레이어의 차이점은, CONV 레이어는 입력의 일�
 
 예를 들어,224x224 크기의 이미지를 입력으로 받으면 [7x7x512]의 볼륨을 출력하는 이 아키텍쳐에, ( 224/7 = 32배 줄어듦 ) 된 아키텍쳐에 384x384 크기의 이미지를 넣으면 [12x12x512] 크기의 볼륨을 출력하게 된다 (384/32 = 12 이므로). 이후 FC에서 CONV로 변환한 3개의 CONV 레이어를 거치면 [6x6x1000] 크기의 최종 볼륨을 얻게 된다 ( (12 - 7)/1 +1 =6 이므로). [1x1x1000]크기를 지닌 하나의 클래스 점수 벡터 대신 384x384 이미지로부터 6x6개의 클래스 점수 배열을 구했다는 것이 중요하다.
 
-For example, if 224x224 image gives a volume of size [7x7x512] - i.e. a reduction by 32, then forwarding an image of size 384x384 through the converted architecture would give the equivalent volume in size [12x12x512], since 384/32 = 12. Following through with the next 3 CONV layers that we just converted from FC layers would now give the final volume of size [6x6x1000], since (12 - 7)/1 + 1 = 6. Note that instead of a single vector of class scores of size [1x1x1000], we're now getting and entire 6x6 array of class scores across the 384x384 image.
-
 > 위의 내용은 384x384 크기의 이미지를 32의 stride 간격으로 224x224 크기로 잘라 각각을 원본 ConvNet (뒷쪽 3개 레이어가 FC인)에 적용한 것과 같은 결과를 보여준다.
 
 당연히 (CONV레이어만으로) 변환된 ConvNet을 이용해 한 번에 이미지를 처리하는 것이 원본 ConvNet으로 36개 위치에 대해 반복적으로 처리하는 것 보다 훨씬 효율적이다. 36번의 처리 과정에서 같은 계산이 중복되기 때문이다. 이런 기법은 실전에서 성능 향상을 위해 종종 사용된다. 예를 들어 이미지를 크게 리사이즈 한 뒤 변환된 ConvNet을 이용해 여러 위치에 대한 클래스 점수를 구한 다음 그 점수들의 평균을 취하는 기법 등이 있다.
