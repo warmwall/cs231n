@@ -1,6 +1,6 @@
 ---
 layout: page
-permalink: /convolutional-networks-kr/
+permalink: /convolutional-networks/
 ---
 
 Table of Contents:
@@ -285,7 +285,7 @@ For example, if 224x224 image gives a volume of size [7x7x512] - i.e. a reductio
 - `INPUT -> [CONV -> RELU -> POOL]*2 -> FC -> RELU -> FC`. 이 경우는 POOL 레이어 하나 당 하나의 CONV 레이어가 존재한다.
 - `INPUT -> [CONV -> RELU -> CONV -> RELU -> POOL]*3 -> [FC -> RELU]*2 -> FC` 이 경우는 각각의 POOL 레이어를 거치기 전에 여러 개의 CONV 레이어를 거치게 된다. 크고 깊은 신경망에서는 이런 구조가 적합하다. 여러 층으로 쌓인 CONV 레이어는 pooling 연산으로 인해 많은 정보가 파괴되기 전에 복잡한 feature들을 추출할 수 있게 해주기 때문이다.
 
-*큰 리셉티브 필드를 가지는 CONV 레이어 하나 대신 여러개의 작은 필터를 가진 CONV 레이어를 쌓는 것이 좋다*. 3x3 크기의 CONV 레이어 3개를 쌓는다고 생각해보자 (물론 각 레이어 사이에는 비선형 함수를 넣어준다). 이 경우 첫 번째 CONV 레이어의 각 뉴런은 입력 볼륨의 3x3 영역을 보게 된다. 두 번째 CONV 레이어의 각 뉴런은 첫 번째 CONV 레이어의 3x3 영역을 보게 되어 결론적으로 입력 볼륨의 5x5 영역을 보게 되는 효과가 있다. 비슷하게, 세 번째 CONV 레이어의 각 뉴런은 두 번째 CONV 레이어의 3x3 영역을 보게 되어 입력 볼륨의 7x7 영역을 보는 것과 같아진다. 이런 방식으로 3개의 3x3 CONV 레이어를 사용하는 대신 7x7의 리셉티브 필드를 가지는 CONV 레이어 하나를 사용한다고 생각해 보자. 이 경우에도 각 뉴런은 입력 볼륨의 7x7 영역을 리셉티브 필드로 갖게 되지만 몇 가지 단점이 존재한다. 먼저, CONV 레이어 3개를 쌓은 경우에는 중간 중간 비선형 함수의 영향으로 표현력 높은 feature를 만드는 반면, 하나의 (7x7) CONV 레이어만 갖는 경우 각 뉴런은 입력에 대해 선형 함수를 적용하게 된다. 두 번째로, 모든 볼륨이 $$C$$ 개의 채널(또는 깊이)을 갖는다고 가정한다면, 7x7 CONV 레이어의 경우 $$C \times (7 \times 7 \times C)=49 C^2$$개의 파라미터를 갖게 된다. 반면 3개의 3x3 CONV 레이어의 경우는 $$3 \times (C \times (3 \times 3 \times)) = 27 C^2$$개의 파라미터만 갖게 된다. 직관적으로, 하나의 큰 필터를 갖는 CONV 레이어보다, 작은 필터를 갖는 여러 개의 CONV 레이어를 쌓는 것이 더 적은 파라미터만 사용하면서도 입력으로부터 더 좋은 feature를 추출하게 해준다. 단점이 있다면, backpropagation을 할 때 CONV 레이어의 중간 결과들을 저장하기 위해 더 많은 메모리 공간을 잡고 있어야 한다는 것이다. 
+*큰 리셉티브 필드를 가지는 CONV 레이어 하나 대신 여러개의 작은 필터를 가진 CONV 레이어를 쌓는 것이 좋다*. 3x3 크기의 CONV 레이어 3개를 쌓는다고 생각해보자 (물론 각 레이어 사이에는 비선형 함수를 넣어준다). 이 경우 첫 번째 CONV 레이어의 각 뉴런은 입력 볼륨의 3x3 영역을 보게 된다. 두 번째 CONV 레이어의 각 뉴런은 첫 번째 CONV 레이어의 3x3 영역을 보게 되어 결론적으로 입력 볼륨의 5x5 영역을 보게 되는 효과가 있다. 비슷하게, 세 번째 CONV 레이어의 각 뉴런은 두 번째 CONV 레이어의 3x3 영역을 보게 되어 입력 볼륨의 7x7 영역을 보는 것과 같아진다. 이런 방식으로 3개의 3x3 CONV 레이어를 사용하는 대신 7x7의 리셉티브 필드를 가지는 CONV 레이어 하나를 사용한다고 생각해 보자. 이 경우에도 각 뉴런은 입력 볼륨의 7x7 영역을 리셉티브 필드로 갖게 되지만 몇 가지 단점이 존재한다. 먼저, CONV 레이어 3개를 쌓은 경우에는 중간 중간 비선형 함수의 영향으로 표현력 높은 feature를 만드는 반면, 하나의 (7x7) CONV 레이어만 갖는 경우 각 뉴런은 입력에 대해 선형 함수를 적용하게 된다. 두 번째로, 모든 볼륨이 $$C$$ 개의 채널(또는 깊이)을 갖는다고 가정한다면, 7x7 CONV 레이어의 경우 $$C \times (7 \times 7 \times C)=49 C^2$$개의 파라미터를 갖게 된다. 반면 3개의 3x3 CONV 레이어의 경우는 $$3 \times (C \times (3 \times 3 \times)) = 27 C^2$$개의 파라미터만 갖게 된다. 직관적으로, 하나의 큰 필터를 갖는 CONV 레이어보다, 작은 필터를 갖는 여러 개의 CONV 레이어를 쌓는 것이 더 적은 파라미터만 사용하면서도 입력으로부터 더 좋은 feature를 추출하게 해준다. 단점이 있다면, backpropagation을 할 때 CONV 레이어의 중간 결과들을 저장하기 위해 더 많은 메모리 공간을 잡고 있어야 한다는 것이다.
 
 <a name='layersizepat'></a>
 #### 레이어 크기 결정 패턴
@@ -313,11 +313,11 @@ For example, if 224x224 image gives a volume of size [7x7x512] - i.e. a reductio
 
 - **LeNet**. 최초의 성공적인 ConvNet 애플리케이션들은 1990년대에 Yann LeCun이 만들었다. 그 중에서도 zip 코드나 숫자를 읽는 [LeNet](http://yann.lecun.com/exdb/publis/pdf/lecun-98.pdf) 아키텍쳐가 가장 유명하다.
 - **AlexNet**. 컴퓨터 비전 분야에서 ConvNet을 유명하게 만든 것은 Alex Krizhevsky, Ilya Sutskever, Geoff Hinton이 만든 [AlexNet](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks)이다. AlexNet은 [ImageNet ILSVRC challenge](http://www.image-net.org/challenges/LSVRC/2014/) 2012에 출전해 2등을 큰 차이로 제치고 1등을 했다 (top 5 에러율 16%, 2등은 26%). 아키텍쳐는 LeNet과 기본적으로 유사지만, 더 깊고 크다. 또한 (과거에는 하나의 CONV 레이어 이후에 바로 POOL 레이어를 쌓은 것과 달리) 여러 개의 CONV 레이어들이 쌓여 있다.
-- **ZF Net**. ILSVRC 2013년의 승자는 Matthew Zeiler와 Rob Fergus가 만들었다. 저자들의 이름을 따 [ZFNet](http://arxiv.org/abs/1311.2901)이라고 불린다. AlexNet에서 중간 CONV 레이어 크기를 조정하는 등 하이퍼파라미터들을 수정해 만들었다. 
+- **ZF Net**. ILSVRC 2013년의 승자는 Matthew Zeiler와 Rob Fergus가 만들었다. 저자들의 이름을 따 [ZFNet](http://arxiv.org/abs/1311.2901)이라고 불린다. AlexNet에서 중간 CONV 레이어 크기를 조정하는 등 하이퍼파라미터들을 수정해 만들었다.
 - **GoogLeNet**. ILSVRC 2014의 승자는 [Szegedy et al.](http://arxiv.org/abs/1409.4842) 이 구글에서 만들었다. 이 모델의 가장 큰 기여는 파라미터의 개수를 엄청나게 줄여주는 Inception module을 제안한  것이다 (4M, AlexNet의 경우 60M). 뿐만 아니라, ConvNet 마지막에 FC 레이어 대신 Average 풀링을 사용해 별로 중요하지 않아 보이는 파라미터들을 많이 줄이게 된다.
 - **VGGNet**. ILSVRC 2014에서 2등을 한 네트워크는 Karen Simonyan과 Andrew Zisserman이 만든 [VGGNet](http://www.robots.ox.ac.uk/~vgg/research/very_deep/)이라고 불리우는 모델이다. 이 모델의 가장 큰 기여는 네트워크의 깊이가 좋은 성능에 있어 매우 중요한 요소라는 것을 보여준 것이다. 이들이 제안한 여러 개 모델 중 가장 좋은 것은 16개의 CONV/FC 레이어로 이뤄지며, 모든 컨볼루션은 3x3, 모든 풀링은 2x2만으로 이뤄져 있다. 비록 GoogLeNet보다 이미지 분류 성능은 약간 낮지만, 여러 Transfer Learning 과제에서 더 좋은 성능을 보인다는 것이 나중에 밝혀졌다. 그래서 VGGNet은 최근에 이미지 feature 추출을 위해 가장 많이 사용되고 있다. Caffe를 사용하면 Pretrained model을 받아 바로 사용하는 것도 가능하다. VGGNet의 단점은, 매우 많은 메모리를 사용하며 (140M) 많은 연산을 한다는 것이다.
  - **ResNet**. Kaiming He et al.이 만든 [Residual Network](http://arxiv.org/abs/1512.03385)가 ILSVRC 2015에서 우승을 차지했다. Skip connection이라는 특이한 구조를 사용하며 batch normalizatoin을 많이 사용했다는 특징이 있다. 이 아키텍쳐는 또한 마지막 부분에서 FC 레이어를 사용하지 않는다. Kaiming의 발표자료 ([video](https://www.youtube.com/watch?v=1PGLj-uKT1w), [slides](http://research.microsoft.com/en-us/um/people/kahe/ilsvrc15/ilsvrc2015_deep_residual_learning_kaiminghe.pdf))나 Torch로 구현된 [최근 실험들](https://github.com/gcr/torch-residual-networks) 들도 확인할 수 있다.
- 
+
 **VGGNet의 세부 사항들**.
 [VGGNet](http://www.robots.ox.ac.uk/~vgg/research/very_deep/)에 대해 좀 더 자세히 파헤쳐 보자. 전체 VGGNet은 필터 크기 3x3, stride 1, 제로패딩 1로 이뤄진 CONV 레이어들과 2x2 필터 크기 (패딩은 없음)의 POOL 레이어들로 구성된다. 아래에서 각 단계의 처리 과정을 살펴보고, 각 단계의 결과 크기와 가중치 개수를 알아본다.
 
@@ -353,15 +353,15 @@ ConvNet에서 자주 볼 수 있는 특징으로써, 대부분의 메모리가 �
 
 <a name='comp'></a>
 
-#### 계산 관련 고려사항들 
+#### 계산 관련 고려사항들
 
-ConvNet을 만들 때 일어나는 가장 큰 병목 현상은 메모리 병목이다. 최신 GPU들은 3/4/6GB의 메모리를 내장하고 있다. 가장 좋은 GPU들의 경우 12GB를 갖고 있다. 메모리와 관련해 주의깊게 살펴 볼 것은 크게 3가지이다. 
+ConvNet을 만들 때 일어나는 가장 큰 병목 현상은 메모리 병목이다. 최신 GPU들은 3/4/6GB의 메모리를 내장하고 있다. 가장 좋은 GPU들의 경우 12GB를 갖고 있다. 메모리와 관련해 주의깊게 살펴 볼 것은 크게 3가지이다.
 
 - 중간 단계의 볼륨 크기: 매 레이어에서 발생하는 액티베이션들과 그에 상응하는 그라디언트 (액티베이션과 같은 크기)의 개수이다. 보통 대부분의 액티베이션들은 ConvNet의 앞쪽 레이어들에서 발생된다 (예: 첫 번째 CONV 레이어). 이 값들은 backpropagation에 필요하기 때문에 계속 메모리에 두고 있어야 한다. 학습이 아닌 테스트에만 ConvNet을 사용할 때는 현재 처리 중인 레이어의 액티베이션 값을 제외한 앞쪽 액티베이션들은 버리는 방식으로 구현할 수 있다.
 - 파라미터 크기: 신경망이 갖고 있는 파라미터의 개수이며, backpropagation을 위한 각 파라미터의 그라디언트, 그리고 최적화에 momentum, Adagrad, RMSProp 등을 사용한다면 이와 관련된 파라미터들도 캐싱해 놓아야 한다. 그러므로 파라미터 저장 공간은 기본적으로 (파라미터 개수의)3배 정도 더 필요하다.
-- 모든 ConvNet 구현체는 이미지 데이터 배치 등을 위한 기타 용도의 메모리를 유지해야 한다. 
+- 모든 ConvNet 구현체는 이미지 데이터 배치 등을 위한 기타 용도의 메모리를 유지해야 한다.
 
-일단 액티베이션, 그라디언트, 기타용도에 필요한 값들의 개수를 예상했다면, GB 스케일로 바꿔야 한다. 예측한 개수에 4를 곱해 바이트 수를 구하고 (floating point가 4바이트, double precision의 경우 8바이트 이므로), 1024로 여러 번 나눠 KB, MB, GB로 바꾼다. 만약 신경망의 크기가 너무 크다면, 배치 크기를 줄이는 등의 휴리스틱을 이용해 (대부분의 메모리가 액티베이션에 사용되므로) 가용 메모리에 맞게 만들어야 한다. 
+일단 액티베이션, 그라디언트, 기타용도에 필요한 값들의 개수를 예상했다면, GB 스케일로 바꿔야 한다. 예측한 개수에 4를 곱해 바이트 수를 구하고 (floating point가 4바이트, double precision의 경우 8바이트 이므로), 1024로 여러 번 나눠 KB, MB, GB로 바꾼다. 만약 신경망의 크기가 너무 크다면, 배치 크기를 줄이는 등의 휴리스틱을 이용해 (대부분의 메모리가 액티베이션에 사용되므로) 가용 메모리에 맞게 만들어야 한다.
 
 ### ConvNet의 시각화 및 이해
 
@@ -384,5 +384,3 @@ ConvNet을 만들 때 일어나는 가장 큰 병목 현상은 메모리 병목�
 <p style="text-align:right"><b>
 번역: 김택수 <a href="https://github.com/jazzsaxmafia" style="color:black">(jazzsaxmafia)</a>
 </b></p>
-
-

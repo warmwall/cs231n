@@ -57,7 +57,7 @@ a:visited { color: #205caa; }
 }
 .materials-item a{
   color: #333;
-  display: block;
+  display: inline;
   padding: 3px;
 }
 .materials-item {
@@ -123,6 +123,18 @@ a:visited { color: #205caa; }
 #hor-minimalist-b tbody tr:hover td
 {
 	color: #009;
+}
+
+/* Custom CSS rules for progress bar */
+.progress {
+  position: relative;
+}
+.progress span {
+    font-family: "Arial";
+    position: absolute;
+    text-align:center;
+    top: 0%;
+    font-size: small;
 }
 
 /* Custom CSS rules for content */
