@@ -344,7 +344,7 @@ going to recurrent neural networks in a
 70
 00:04:42,478 --> 00:04:45,848
 bit, but what you end up doing is you end
-up [??] this graph, so think about
+up unrolling this graph, so think about
 
 71
 00:04:45,848 --> 00:04:51,658
@@ -477,8 +477,8 @@ the intermediates in our circuit until
 
 97
 00:06:39,300 --> 00:06:43,509
-at the very end, we're going to build up to [??]
-it the gradients on the inputs, and so we
+at the very end, we're going to build up to
+get the gradients on the inputs, and so we
 
 98
 00:06:43,509 --> 00:06:47,680
@@ -1324,7 +1324,7 @@ So to continue backpropagation
 269
 00:21:12,259 --> 00:21:20,000
 here and apply chain rule, we would
-receive [STUDENT ANSWER] Okay, so these are most of the rhetorical questions so I'm [??]
+receive [STUDENT ANSWER] Okay, so these are most of the rhetorical questions so I'm
 
 270
 00:21:20,000 --> 00:21:25,119
@@ -1431,7 +1431,7 @@ they'll get multiplied and when you multiply by 1
 
 291
 00:23:14,339 --> 00:23:18,129
-something remains unchanged. So a plus [??]
+something remains unchanged. So a plus
 gate, it's kind of like a gradient
 
 292
