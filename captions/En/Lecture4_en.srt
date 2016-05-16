@@ -1973,932 +1973,931 @@ ever flow, they add up in these backward flow
 400
 00:32:00,009 --> 00:32:04,879
 All right. We're going to go into
-implementation very soon. I'll just some more
+implementation very soon. I'll just take some more
 
 401
 00:32:04,880 --> 00:32:05,700
-of questions
+questions.
 
 402
 00:32:05,700 --> 00:32:11,620
-thank you for the question the question
-is is there ever like a loop in these
+Thank you for the question. The question
+is, is there ever, like a loop in these
 
 403
 00:32:11,619 --> 00:32:15,839
-graphs that will never be looks so there
-are never any loops you might think that
+graphs. There will never be loops, so there
+are never any loops. You might think that
 
 404
 00:32:15,839 --> 00:32:18,589
-if you use a recurrent neural network
-that there are loops in there but
+if you use a recurrent neural network,
+that there are loops in there
 
 405
 00:32:18,589 --> 00:32:21,658
-there's actually no because what we'll
+but there are actually no loops because what we'll
 do is we'll take a recurrent neural
 
 406
 00:32:21,659 --> 00:32:26,230
-network and will unfold it through time
-steps and this will all become there
+network and we will unfold it through time
+steps and this will all become, there
 
 407
 00:32:26,230 --> 00:32:31,259
-will never be a loop in the photograph
-copy pasted that small piece or time
+will never be a loop in the unfolded graph
+where we've copied pasted that small recurrent net piece over time.
 
 408
 00:32:31,259 --> 00:32:39,538
-you'll see that more when we actually
-get into it but he's always looked so
+You'll see that more when we actually
+get into it but these are always DAGs, there are no loops. Okay, awesome.
 
 409
 00:32:39,538 --> 00:32:42,220
-let's look at the implementation of this
+So let's look at the implementation of how this
 is actually implemented in practice and
 
 410
 00:32:42,220 --> 00:32:46,860
-I think will help make this more
-concrete as well so we always have these
+I think it will help make this more
+concrete as well. So we always have these
 
 411
 00:32:46,859 --> 00:32:52,038
-graphs graphs these are the best way to
-think about structuring neural networks
+graphs, computational graphs. These are the best way to
+think about structuring neural networks.
 
 412
 00:32:52,038 --> 00:32:56,929
-and so what we end up with is all these
-gates there were going to seem a bit but
+And so what we end up with is, all these
+gates that we're going to see a bit, but
 
 413
 00:32:56,929 --> 00:33:00,059
-on top of the gates there something that
+on top of the gates, there something's that
 needs to maintain connectivity structure
 
 414
 00:33:00,058 --> 00:33:03,490
-of the same paragraph what gates are
-connected to each other and so usually
+of this entire graph, what gates are
+connected to each other. And so usually
 
 415
 00:33:03,490 --> 00:33:09,710
-that's handled by a graph or object
-usually in that the net object has needs
+that's handled by a graph or a net object,
+usually a net, and the net object has these
 
 416
 00:33:09,710 --> 00:33:13,679
-two main pieces which was the forward
-and backward peace and this is just you
+two main pieces, which is the forward
+and the backward piece. And this is just pseudo
 
 417
 00:33:13,679 --> 00:33:19,929
-two coats run but basically roughly the
+code, so this won't run, but basically, roughly the
 idea is that in the forward pass
 
 418
 00:33:19,929 --> 00:33:23,759
-trading overall the gates in the circuit
-that and they're sorted in topological
+we're iterating over all the gates in the circuit
+that, and they're sorted in topological [??]
 
 419
 00:33:23,759 --> 00:33:27,980
-order what that means is that all the
-inputs must come to every note before
+order. What that means is that all the
+inputs must come to every node before
 
 420
 00:33:27,980 --> 00:33:32,099
-the opportunity consumed just ordered
+the output can be consumed. So these are just ordered
 from left to right and we're just
 
 421
 00:33:32,099 --> 00:33:35,969
-boarding will call ya forward on every
+forwarding, we're calling a forward on every
 single gate along the way so we iterate
 
 422
 00:33:35,970 --> 00:33:39,600
-over that graph and just go forward to
-every single piece and this object will
+over that graph and we just go forward in
+every single piece and this net object will
 
 423
 00:33:39,599 --> 00:33:43,189
 just make sure that happens in the
-proper connectivity pattern and backward
+proper connectivity pattern. In backward
 
 424
 00:33:43,190 --> 00:33:46,620
-pass we're going in the exact reverse
+pass, we're going in the exact reversed
 order and we're calling backward on
 
 425
 00:33:46,619 --> 00:33:49,709
 every single gate and these gates will
-end up communicating gradients to each
+end up communicating gradients through each
 
 426
 00:33:49,710 --> 00:33:53,429
-other and the old get changeup and
-computing the analytic gradients it back
+other and they all get chained up and
+computing the analytic gradient at the back.
 
 427
 00:33:53,429 --> 00:33:57,860
-so really an object is a very thin
-wrapper around all these gates or as we
+So really a net object is a very thin
+wrapper around all these gates, or as we
 
 428
 00:33:57,859 --> 00:34:01,879
-will see their cold layers layers or
-gates I'm going to use interchangeably
+will see they're called layers, layers or
+gates. I'm going to use interchangeably
 
 429
 00:34:01,880 --> 00:34:05,700
-and they're just very thin wrapper
-surround connectivity structure of these
+and they're just very thin wrappers
+around connectivity structure of these
 
 430
 00:34:05,700 --> 00:34:09,369
 gates and calling a forward and backward
-function on them and then let's look at
+function on them. And then let's look at
 
 431
 00:34:09,369 --> 00:34:12,950
 a specific example of one of the gates
-and how this might be implemented and
+and how this might be implemented.
 
 432
 00:34:12,949 --> 00:34:16,759
-this is not just a year ago this is
+And this is not just a pseudo code. This is
 actually more like correct
 
 433
 00:34:16,760 --> 00:34:18,730
-implementation something like this might
+implementation something like this might [??]
 run
 
 434
 00:34:18,730 --> 00:34:23,769
-at the end so let us enter and multiply
-gate and how it could be implemented and
+at the end. So let's consider a multiply
+gate and how it could be implemented.
 
 435
 00:34:23,769 --> 00:34:27,690
-multiply gate in this case is just a
-binary multiplies receives two inputs
+A multiply gate, in this case, is just a
+binary multiply who receives two inputs [??]
 
 436
 00:34:27,690 --> 00:34:33,780
-X&Y it computes their multiplication
-that his ex times why and returns and
+x and y. It computes their multiplication,
+z = x * y and it returns z.
 
 437
 00:34:33,780 --> 00:34:38,950
-all these games must be satisfied the
-API of a forward and backward cool how
+And all these gates must basically satisfied this
+API of a forward call and a backward call. How
 
 438
 00:34:38,949 --> 00:34:42,529
-do you behave in a forward pass and how
-they behave in a backward pass and
+do you behave in a forward pass, and how
+do you behave in a backward pass. And
 
 439
 00:34:42,530 --> 00:34:46,019
-repass just computer whatever in a
-backward pass we eventually end up
+in a forward pass, we just compute whatever. In a
+backward pass, we eventually end up
 
 440
 00:34:46,019 --> 00:34:52,639
 learning about what is our gradient on
-the final loss to the old ideas as what
+the final loss. So dL/dz is what
 
 441
 00:34:52,639 --> 00:34:55,628
-we learn that's represented in this
-variable these head and right now
+we learn. That's represented in this
+variable dz, and right now
 
 442
 00:34:55,628 --> 00:35:00,639
-everything is scalars so X Y is that our
-numbers here he said is also a number
+everything here is scalars, so x, y, z are
+numbers here. dz is also a number
 
 443
 00:35:00,639 --> 00:35:07,799
-telling the employers and what this gate
-is charged in this backward pass is
+telling the influence on the end of the circuit. And what this gate
+is in charge of in this backward pass is
 
 444
 00:35:07,800 --> 00:35:11,550
-performing the little piece of general
-so what we have to compute is how do you
+performing the little piece of chain rule.
+So what we have to compute is how do you
 
 445
 00:35:11,550 --> 00:35:16,550
-change this gradient these into your
-inputs X&Y compute the ex NDY and we
+chain this gradient dz into your
+inputs x and y. In other words, we have to compute  dx and dy and we have to
 
 446
 00:35:16,550 --> 00:35:19,820
-turned us into backward pass and then
-the competition on draft will make sure
+returned those in the backward pass, And then
+the computational graph will make sure
 
 447
 00:35:19,820 --> 00:35:23,720
 that these get routed properly to all
-the other bags and if there are any
+the other gates. And if there are any
 
 448
 00:35:23,719 --> 00:35:27,919
-badges that add up the competition grab
-my dad might add all the ingredients
+edges that add up, the computational graph
+might add all those ingredients together.
 
 449
 00:35:27,920 --> 00:35:35,650
-together ok so how would we implement
-the DAX and devices for example what is
+Okay, so how would we implement
+the dx and dy? So for example, what is
 
 450
 00:35:35,650 --> 00:35:42,300
-the X in this case it would be equal to
-the implementation
+dx in this case? What would it be equal to,
+the implementation?
 
 451
 00:35:42,300 --> 00:35:49,460
-why times easy break and a white and
-easy additional point to make here by
+y * dz. Great. And, so y * dz. Additional point to make here by the way,
 
 452
 00:35:49,460 --> 00:35:53,659
-the way that I added some lies in the
-past we have to remember these values of
+note that I've added some lines in the forward
+pass. We have to remember these values of
 
 453
 00:35:53,659 --> 00:35:57,509
-X&Y because we end up using them in a
-backward pass from assigning them to a
+x and y, because we end up using them in a
+backward pass, so I'm assigning them to a
 
 454
 00:35:57,510 --> 00:36:01,000
-sell stop because I need to remember
-what X Y are because I need access to
+'self.' because I need to remember
+what x y are because I need access to
 
 455
 00:36:01,000 --> 00:36:04,949
-them in my back yard pass in general and
-back-propagation when we build these
+them in my backward pass. In general, in
+backpropagation, when we build these,
 
 456
 00:36:04,949 --> 00:36:09,359
-when you actually the forward pass every
-single gate must remember the impetus in
+when you actually do forward pass, every
+single gate must remember the inputs in
 
 457
 00:36:09,360 --> 00:36:13,430
-any kind of intermediate calculations
-performed that it needs to do that needs
+any kind of intermediate calculations that it has
+performed that it needs to do, that needs
 
 458
 00:36:13,429 --> 00:36:17,069
-access to a backward pass so basically
-we end up running these networks at
+access to in the backward pass. So basically
+when we end up running these networks at
 
 459
 00:36:17,070 --> 00:36:20,050
-runtime just always keep in mind that as
-you're doing this forward pass a huge
+runtime, just always keep in mind that as
+you're doing this forward pass, a huge
 
 460
 00:36:20,050 --> 00:36:22,890
-amount of stuff gets cashed in your
-memory and that all has to stick around
+amount of stuff gets cached in your
+memory, and that all has to stick around
 
 461
 00:36:22,889 --> 00:36:25,909
-because during the propagation and I
-need access to some of those variables
+because during backpropagation, you might
+need access to some of those variables.
 
 462
 00:36:25,909 --> 00:36:30,779
-and so your memory and the ballooning up
-during a forward pass backward pass it
+And so, your memory ends up ballooning up
+during the forward pass, and then in backward pass,
 
 463
 00:36:30,780 --> 00:36:33,690
-gets all consumed and we need all those
-intermediaries to actually compete the
+it gets all consumed and we need all those
+intermediates to actually compute the
 
 464
 00:36:33,690 --> 00:36:45,289
-proper backward class so that you can
+proper backward pass. So that's... [STUDENT QUESTION] Yes, so if you don't, if you know you don't want to do backward pass, then you can
 get rid of many of these things and you
 
 465
 00:36:45,289 --> 00:36:49,710
-don't have to compete in going to cash
-them so you can save on memory for sure
+don't have to compute, you don't need to cache
+them. So you can save memory for sure.
 
 466
 00:36:49,710 --> 00:36:54,110
-but I don't think most implementations
-actually worried about that I don't
+But I don't think most implementations
+actually worriy about that. I don't
 
 467
 00:36:54,110 --> 00:36:57,280
 think there's a lot of logic that deals
-with that usually end up remembering it
+with that. Usually we end up remembering it
 
 468
 00:36:57,280 --> 00:37:09,370
-anyway I yes I think if you're in an
-embedded device for example and you were
+anyway. I, yeah. [STUDENT QUESTION] I see. Yes, so I think if you're in the [??]
+embedded device for example, and you worry
 
 469
 00:37:09,369 --> 00:37:11,949
-eerily by the American strains this is
+really about your memory constraints, this is
 something that you might take advantage
 
 470
 00:37:11,949 --> 00:37:15,539
-of it we know that a neural network only
-has to run and test time then you might
+of. If you know that a neural network only
+has to run in test time, then you might
 
 471
 00:37:15,539 --> 00:37:18,750
-want to make sure going to the code to
-make sure nothing gets cashed in case
+want to make sure to go into the code to
+make sure nothing gets cached in case
 
 472
 00:37:18,750 --> 00:37:33,130
-you wanna do a backward pass questions
-yes we remember the local gradients in
+you want to do a backward pass. Questions.
+Yes. [STUDENT QUESTION] You're saying if we remember the local gradients in
 
 473
 00:37:33,130 --> 00:37:39,750
-the forward pass then we don't have to
-remember the other intermediates I think
+the forward pass, then we don't have to
+remember the other intermediates? I think
 
 474
 00:37:39,750 --> 00:37:45,269
-that might only be the case in such in
-some simple expressions like this 1 I'm
+that might only be the case in
+some simple expressions like this one. I'm
 
 475
 00:37:45,269 --> 00:37:49,170
-not actually sure that's true in general
-but I mean you're in charge of remember
+not actually sure if that's true in general.
+But I mean, you're in charge of, remember
 
 476
 00:37:49,170 --> 00:37:54,950
-whatever you need to perform the
-backward pass gate by game basis you
+whatever you need to, perform the
+backward pass, and on a gate-by-gate basis. You
 
 477
 00:37:54,949 --> 00:37:58,509
-don't know if you can remember whatever
-you feel like it has a footprint on
+don't necce, you can remember whatever [memory footprint??]
+you feel like. It has lower footprint and so on.
 
 478
 00:37:58,510 --> 00:38:04,420
-someone and you can be clever with that
-guy's example of what it looks like in
+You can be clever with that. Okay, so just to give
+you guy's example of what this looks like in
 
 479
 00:38:04,420 --> 00:38:08,250
-practice we're going to look at specific
-examples and torture tortures a deep
+practice, we're going to look at specific
+examples, say, in Torch. Torch is a deep
 
 480
 00:38:08,250 --> 00:38:11,480
-learning framework which we might be
-going to a bit near the end of the class
+learning framework, which we might
+go into a bit near the end of the class.
 
 481
 00:38:11,480 --> 00:38:16,750
-that some of you might end up using for
-your projects going to the github repo
+Some of you might end up using for
+your projects. If you go into the Github repo
 
 482
 00:38:16,750 --> 00:38:20,320
-for porridge and you look at the
-musically it's just a giant collection
+for Torch, and you'll look at,
+basically, it's just a giant collection
 
 483
 00:38:20,320 --> 00:38:24,580
-of these later objects and these are the
-gates gates the same thing so there's
+of these layer objects and these are the
+gates. Layers, gates, the same thing. So there's
 
 484
 00:38:24,579 --> 00:38:27,429
-all these layers that's really what a
-deep learning framework is this just a
+all these layers. That's really what a
+deep learning framework is. It's just a
 
 485
 00:38:27,429 --> 00:38:31,559
 whole bunch of layers and a very thin
-competition graph thing that keeps track
+computational graph thing that keeps track
 
 486
 00:38:31,559 --> 00:38:36,420
-of all the connectivity and so really
-the image to have in mind at all these
+of all the layer connectivity. And so really,
+the image to have in mind is all these
 
 487
 00:38:36,420 --> 00:38:42,639
-things are your leg blocks and then
-we're building up these graphs out of
+things are your Lego blocks, and then
+we're building up these computational graphs out of
 
 488
 00:38:42,639 --> 00:38:44,829
-your league in blocks out of the layers
-you're putting them together in various
+your Lego blocks, out of the layers.
+You're putting them together in various
 
 489
 00:38:44,829 --> 00:38:47,549
 ways depending on what you want to
-achieve and the end up building all
+achieve, so you end building all
 
 490
 00:38:47,550 --> 00:38:51,519
-kinds of stuff so that's how you work
-with their own networks so every library
+kinds of stuff. So that's how you work
+with neural networks. So every library is
 
 491
 00:38:51,519 --> 00:38:54,809
 just a whole set of layers that you
-might want to compute and every layer is
+might want to compute, and every layer is
 
 492
 00:38:54,809 --> 00:38:58,840
-implementing a smoky function peace and
-that function keys knows how to move
+just implementing a small function piece, and
+that function piece knows how to do a
 
 493
 00:38:58,840 --> 00:39:02,670
-forward and knows how to do a backward
-so just above a specific example let's
+forward and it knows how to do a backward.
+So just [?? For the?] specific example, let's
 
 494
 00:39:02,670 --> 00:39:10,150
-look at the mall constant layer and
-torch the mall constant layer or chrome
+look at the MulConstant layer in
+Torch. The MulConstant layer performs
 
 495
 00:39:10,150 --> 00:39:16,039
-just a scaling by scalar so it takes
-some tenser X so this is not a scalar
+just a scaling by a scalar. So it takes
+some tensor X. So this is not a scalar
 
 496
 00:39:16,039 --> 00:39:19,300
 but it's actually like an array of
-numbers basically because when we
+numbers basically, because when we
 
 497
 00:39:19,300 --> 00:39:22,410
-actually work with these we do a lot of
-extras operation so we receive a tensor
+actually work with these, we do a lot of
+[??] operation so we receive a tensor
 
 498
 00:39:22,409 --> 00:39:28,289
-which is really just and dimensional
-array and was killed by constant and you
+which is really just a n-dimensional
+array, and we scale it by a constant. And you
 
 499
 00:39:28,289 --> 00:39:31,980
-can see that this actually just a sporty
-lines there some initialization stuff
+can see that this layer actually just has 40
+lines. There's some initialization stuff.
 
 500
 00:39:31,980 --> 00:39:35,940
-this is lula by the way if this is
-looking some foreign to you but there's
+This is Lua, by the way. If this is
+looking some foreign to you, but there's
 
 501
 00:39:35,940 --> 00:39:40,510
-initialisation where you actually
-passing that a that you want to use as
+initialization, where you actually
+pass in that a that you want to use as
 
 502
 00:39:40,510 --> 00:39:44,630
-you are scaling and then during the
-forward pass which they call update out
+your scaling, and then during the
+forward pass which they call updateOutput
 
 503
 00:39:44,630 --> 00:39:49,170
-but in a forward pass all they do is
-they just multiply X and returned it and
+in a forward pass all they do is
+they just multiply aX and return it. And
 
 504
 00:39:49,170 --> 00:39:53,760
-into backward pass which they call
-update grad input there's any statement
+in the backward pass which they call
+updateGradInput, there's an if statement
 
 505
 00:39:53,760 --> 00:39:56,510
 here but really when you look at these
-three live their most important you can
+three lines, they're most important. You can
 
 506
 00:39:56,510 --> 00:39:59,690
-see that all is doing its copying into a
-variable grad
+see that all it's doing is it's copying into a
+variable gradInput
 
 507
 00:39:59,690 --> 00:40:03,539
-would need to compute that's your grade
-in that you're passing up the great
+which you need to compute. That's your gradient [??]
+that you're passing up. The gradInput is,
 
 508
 00:40:03,539 --> 00:40:08,309
-impetus you're copping out but ran up to
-this your your gradient on final loss
+you're copying gradOutput. gradOutput is
+your gradient on final loss.
 
 509
 00:40:08,309 --> 00:40:11,989
-you're copping that over into grad input
-and you're multiplying by the by the
+You're copying that over into gradInput
+and you're multiplying by the scalar,
 
 510
 00:40:11,989 --> 00:40:15,629
-scalar which is what you should be doing
-because you are your local ratings just
+which is what you should be doing
+because your local gradient is just a
 
 511
 00:40:15,630 --> 00:40:19,980
-a and C you take the out but you have to
-take the gradient from above and just
+and so you take the output you have, you
+take the gradient from above and you just
 
 512
 00:40:19,980 --> 00:40:23,150
-killed by AP which is what these three
-lines are doing and that's your grad
+scale it by a, which is what these three
+lines are doing. And that's your gradInput
 
 513
 00:40:23,150 --> 00:40:27,849
-important that's what you return so
+and that's what you return. So
 that's one of the hundreds of layers
 
 514
 00:40:27,849 --> 00:40:32,110
-that are and torture you can also look
-at examples in cafe get there is also a
+that are in Torch. We can also look
+at examples in Caffe. Caffe is also a
 
 515
 00:40:32,110 --> 00:40:36,140
 deep learning framework specifically for
-images might be working with again if
+images that you might be working with. Again, if
 
 516
 00:40:36,139 --> 00:40:39,690
-you go into the layers director just see
-all these layers all of them implement
+you go into the layers directory in GitHub, you just see
+all these layers. All of them implement
 
 517
 00:40:39,690 --> 00:40:43,490
-the forward backward API so just to give
-you an example there's a single layer
+the forward backward API. So just to give
+you an example, there's a sigmoid layer in Caffe.
 
 518
 00:40:43,489 --> 00:40:51,269
-layer takes a blob so comfy likes to
-call these tensors blogs so it takes a
+So sigmoid layer takes a blob. So Caffe likes to
+call these tensors blobs. So it takes a
 
 519
 00:40:51,269 --> 00:40:54,219
-blob is just an international array of
-numbers and it passes
+blob. It's just an n-dimensional array of
+numbers, and it passes it
 
 520
 00:40:54,219 --> 00:40:57,949
-element wise to a single function and so
-its computing in a forward pass a
+elementwise through a sigmoid function. And so
+it's computing in a forward pass a
 
 521
 00:40:57,949 --> 00:41:04,379
-sigmoid which you can see their use my
-printer so they're calling it a lot of
+sigmoid, which you can see there. Let me use my
+pointer. Okay, so there, its calling, so a lot of
 
 522
 00:41:04,380 --> 00:41:07,840
-this stuff is just boilerplate getting
-pointers to all the data and then we
+this stuff is just boilerplate, getting
+pointers to all the data, and then we
 
 523
 00:41:07,840 --> 00:41:11,730
-have a bottom blob and we're calling a
+have a bottom blob, and we're calling a
 sigmoid function on the bottom and
 
 524
 00:41:11,730 --> 00:41:14,829
 that's just a sigmoid function right
-there that's why we compute in a
+there. So that's what we compute. And in a
 
 525
 00:41:14,829 --> 00:41:18,719
-backward pass some boilerplate stuff but
+backward pass, some boilerplate stuff, but
 really what's important is we need to
 
 526
 00:41:18,719 --> 00:41:23,369
 compute the gradient times the chain
-rule here so that's what you see in this
+rule here, so that's what you see in this
 
 527
 00:41:23,369 --> 00:41:26,150
-line that's where the magic happens when
-we take the
+line. That's where the magic happens where
+we take the diff,
 
 528
 00:41:26,150 --> 00:41:32,048
-so they call the greetings dips and you
-compute the bottom diff is the top if
+so they call the gradients diffs. And you
+compute the bottom diff is the top diff
 
 529
 00:41:32,048 --> 00:41:36,869
-times this piece which is really the
-that's the local gradient so this is
+times this piece which is really the,
+that's the local gradient, so this is
 
 530
 00:41:36,869 --> 00:41:41,960
 chain rule happening right here through
-that multiplication so and so every
+that multiplication. So, and that's it. So every
 
 531
 00:41:41,960 --> 00:41:45,179
 single layer just a forward backward API
-and then you have a competition growth
+and then you have a computational graph
 
 532
 00:41:45,179 --> 00:41:52,288
-on top or another object that troubled
-connectivity and questions about some of
+on top or a net object that keeps track of all the
+connectivity. Any questions about some of
 
 533
 00:41:52,289 --> 00:42:00,849
-these implementations and so on
+these implementations and so on?
 
 534
 00:42:00,849 --> 00:42:15,559
-because when you want to do right away
-to a backward and I have a gradient and
+Yes, thank you. [STUDENT QUESTION] So the question is, do we have to go through forward and backward for every update. The answer is yes, because when you want to do update, you need the gradient, and so you need to do forward on your sample minibatch. You do a forward. Right away you do a backward.
+And now you have your analytic gradient.
 
 535
 00:42:15,559 --> 00:42:19,369
-I can do an update right up my alley
-gradient and I change my way it's a tiny
+And now I can do an update, where I take my analytic
+gradient and I change my weights a tiny
 
 536
 00:42:19,369 --> 00:42:24,960
-bit and the direction the negative
-direction of your writing so overcome
+bit in the direction, the negative
+direction of your gradient. So forward computes
 
 537
 00:42:24,960 --> 00:42:28,858
-the loss backward computer gradient and
+the loss, backward computes your gradient, and
 then the update uses the gradient to
 
 538
 00:42:28,858 --> 00:42:33,278
-increment you are a bit so that's what
-keeps happening Lupin III neural network
+increment your weights a bit. So that's what
+keeps happening in the loop. When you train a neural network
 
 539
 00:42:33,278 --> 00:42:36,318
-that's all that's happening forward
-backward update forward backward state
+that's all that's happening. Forward,
+backward, update. Forward, backward, update.
 
 540
 00:42:36,318 --> 00:42:51,808
-will see that you're asking about the
-for loop therefore Lapeer I do notice ok
+We'll see that in a bit. Go ahead. [STUDENT QUESTION] You're asking about a
+for loop. Oh, is there a for loop here? I didn't even notice. Okay.
 
 541
 00:42:51,809 --> 00:42:57,160
-yeah they have a for loop yes you'd like
-us to be better eyes and that actually
+Yeah, they have a for loop. Yes, so you'd like
+this to be vectorized and that actually...
 
 542
 00:42:57,159 --> 00:43:03,679
-sure this is C++ so I think they just go
-for it
+Because this is C++, so I think they just do it.
+Go for it.
 
 543
 00:43:03,679 --> 00:43:10,899
-yeah so this is a CPU implementation by
-the way I should mention that this is a
+Yeah, so this is a CPU implementation by
+the way. I should mention that this is a
 
 544
 00:43:10,900 --> 00:43:14,599
-CPU implementation of a similar there's
-a second file that implement the
+CPU implementation of a sigmoid layer.
+There's a second file that implements the
 
 545
 00:43:14,599 --> 00:43:19,420
-simulator on GPU and that's correct code
-and so that's a separate file its
+sigmoid layer on GPU and that's CUDA code.
+And so that's a separate file. It
 
 546
 00:43:19,420 --> 00:43:21,980
-would-be sigmoid out see you or
-something like that I'm not showing you
+would be sigmoid.cu or
+something like that. I'm not showing you that.
 
 547
 00:43:21,980 --> 00:43:30,349
-that the russians ok great so I like to
-make is will be of course working with
+Any questions? Okay, great. So one point I'd like to
+make is, we'll be of course working with
 
 548
 00:43:30,349 --> 00:43:33,519
-better so these things flowing along our
-grass are not just killers they're going
+vectors, so these things flowing along our
+graphs are not just scalars. They're going
 
 549
 00:43:33,519 --> 00:43:38,449
-to be entire back to us and so nothing
-changes the only thing that is different
+to be entire vectors. And so nothing
+changes. The only thing that is different
 
 550
 00:43:38,449 --> 00:43:43,529
-now since these are vectors XY and Z are
-vectors is that these local gradient
+now since these are vectors, x, y, and z are
+vectors, is that this local gradient
 
 551
 00:43:43,530 --> 00:43:47,530
-which before used to be just a scalar
-now there in general for general
+which before used to be just a scalar,
+now they're in general, for general
 
 552
 00:43:47,530 --> 00:43:51,290
-expressions their full Jacobian matrices
-and so it could be a major exodus
+expressions, they're full Jacobian matrices.
+And so Jacobian matrix is this
 
 553
 00:43:51,289 --> 00:43:54,670
 two-dimensional matrix and basically
-tells me what is the influence of every
+tells you what is the influence of every
 
 554
 00:43:54,670 --> 00:43:58,010
-single element in X on every single
-element of
+single element in x on every single
+element of z,
 
 555
 00:43:58,010 --> 00:44:01,880
-and that's what you can be a major
-source and the gradient the same
+and that's what Jacobian matrix
+stores, and the gradient is the same
 
 556
 00:44:01,880 --> 00:44:08,960
-expression as before but now they hear
-the IDX is a vector and DL Moody said is
+expression as before, but now, say here,
+dz/dx is a vector and dL/dz is... sorry.
 
 557
 00:44:08,960 --> 00:44:16,079
-designed as an actor and designed by Dax
-is an entire Jacobian matrix end up with
+dL/dz is a vector and dz/dx
+is an entire Jacobian matrix, so you end up with
 
 558
 00:44:16,079 --> 00:44:32,130
 an entire matrix-vector multiply to
-actually change the gradient know so
+actually chain the gradient backwards. [STUDENT QUESTION]
 
 559
 00:44:32,130 --> 00:44:36,380
-I'll come back to this point in a bit
-you never actually end up forming the
+No. So I'll come back to this point in a bit.
+You never actually end up forming the full
 
 560
 00:44:36,380 --> 00:44:40,119
-Jacobian you'll never actually do this
-matrix multiply most of the time this is
+Jacobian. You'll never actually do this
+matrix multiply most of the time. This is
 
 561
 00:44:40,119 --> 00:44:43,730
-just a general way of looking at you
-know arbitrary function and I need to
+just a general way of looking at, you
+know, arbitrary function, and I need to
 
 562
 00:44:43,730 --> 00:44:46,260
-keep track of this and I think that
+keep track of this. And I think that
 these two are actually out of order
 
 563
 00:44:46,260 --> 00:44:49,569
-because he said by the exit the Jacobian
-which should be on the left side so
+because dz/dx is the Jacobian
+which should be on the left side, so
 
 564
 00:44:49,568 --> 00:44:53,159
-that's that's a mistaken slide because
-it should be a major factor multiplied
+I think that's a mistaken slide because
+this should be a matrix-vector multiply.
 
 565
 00:44:53,159 --> 00:44:57,618
-so I'll show you why you don't actually
-need to perform those Jacobins so let's
+So I'll show you why you don't actually
+need to ever perform those Jacobians. So let's
 
 566
 00:44:57,619 --> 00:45:02,119
 work with a specific example that is
-relatively common in the works
+relatively common in neural networks.
 
 567
 00:45:02,119 --> 00:45:06,869
-suppose we have this nonlinearity max 50
-index so really what this is operation
+Suppose we have this nonlinearity max(0, x)
+So really what this operation
 
 568
 00:45:06,869 --> 00:45:11,068
-is doing its receiving a vector sale
-4096 numbers which is a typical thing
+is doing is it's receiving a vector, say
+4096 numbers, which is a typical thing
 
 569
 00:45:11,068 --> 00:45:12,308
-you might want to do
+you might want to do.
 
 570
 00:45:12,309 --> 00:45:14,630
-4096 numbers real value
+4096 numbers, real value, come in
 
 571
 00:45:14,630 --> 00:45:19,630
-and your computing an element wise
-threshold 0 so anything that is lower
+and your computing an element-wise
+thresholding at 0, so anything that is lower
 
 572
 00:45:19,630 --> 00:45:24,680
-than 0 gets clamped 20 and that's your
-function that your computing and sew up
+than 0 gets clamped to 0, and that's your
+function that your computing. And so output
 
 573
 00:45:24,679 --> 00:45:28,588
-the victories on the same dimension to
+vector is of the same dimension. So
 the question here I'd like to ask is
 
 574
 00:45:28,588 --> 00:45:40,268
 what is the size of the Jacobian matrix
-for this layer 4096 4096 in principle
+for this layer? 4096 by 4096. In principle,
 
 575
 00:45:40,268 --> 00:45:45,018
 every single number in here could have
-influenced every single number in there
+influenced every single number in there.
 
 576
 00:45:45,018 --> 00:45:49,459
-but that's not the case necessarily
-right to the second question is so this
+But that's not the case necessarily,
+right? So the second question is, so this
 
 577
 00:45:49,460 --> 00:45:52,949
-is a huge measure sixteen million
-numbers but why would you never formed
+is a huge matrix, 16 million
+numbers, but why would you never form it? [??]
 
 578
 00:45:52,949 --> 00:46:02,719
-what does actually look like always be
-matrix because every one of these 4096
+What does the Jacobian actually look like? [STUDENT QUESTION] No, Jacobian will always be
+a matrix, because every one of these 4096
 
 579
 00:46:02,719 --> 00:46:09,949
-could have influenced every it is so the
-communists still a giant 4085 4086
+could have influenced every... It is, so the
+Jacobian is still a giant 4096 by 4096
 
 580
 00:46:09,949 --> 00:46:14,558
-matrix but has special structure right
-and what is that special structure but
+matrix, but has special structure, right?
+And what is that special structure? [STUDENT ANSWER]
 
 581
 00:46:14,559 --> 00:46:27,420
-so is a huge tits 4095 4096 matrix but
-there's only elements on the diagonal
+Yeah, so this Jacobian is huge. So it's 4096 by 4096 matrix, but
+there are only elements on the diagonal
 
 582
 00:46:27,420 --> 00:46:33,700
-because this is an element was operation
-and moreover they're not just once but
+because this is an element-wise operation,
+and moreover, they're not just 1's, but
 
 583
 00:46:33,699 --> 00:46:38,129
-whichever element was less than zero it
-was clamped 20 so some of these ones
+for whichever element that was less than 0,
+it was clamped to 0, so some of these 1's
 
 584
 00:46:38,130 --> 00:46:42,798
-actually are zeros in whichever elements
-had a lower than zero value during the
+actually are zeros, in whichever elements
+had a lower-than-zero value during the
 
 585
 00:46:42,798 --> 00:46:47,429
-forward pass and so the Jacobian would
-just be almost no identity matrix but
+forward pass. And so the Jacobian would
+just be almost an identity matrix but
 
 586
 00:46:47,429 --> 00:46:52,250
-some of them are actually Sarah so you
+some of them are actually zero. So you
 never actually would want to form the
 
 587
@@ -2909,12 +2908,12 @@ so you never actually want to carry out
 588
 00:46:55,429 --> 00:47:00,808
 this operation as a matrix-vector
-multiply because their special structure
+multiply, because (of) their special structure [??]
 
 589
 00:47:00,809 --> 00:47:04,150
-that we want to take advantage of and so
-in particular the gradient the backward
+that we want to take advantage of. And so
+in particular, the gradient, the backward
 
 590
 00:47:04,150 --> 00:47:09,269
@@ -2928,47 +2927,47 @@ less than zero and you want to kill the
 
 592
 00:47:14,159 --> 00:47:17,210
-gradient and those mentioned you want to
-set the gradient 20 in those dimensions
+gradient and those dimensions. You want to
+set the gradient to 0 in those dimensions.
 
 593
 00:47:17,210 --> 00:47:21,650
-so you take the grid out but here and
-whichever numbers were less than zero
+So you take the grid output here, and [??]
+whichever numbers were less than zero,
 
 594
 00:47:21,650 --> 00:47:25,910
-just set them 200 and then you can ask
+just set them to 0. Set those gradients to 0 and then you continue backward pass.
 
 595
 00:47:25,909 --> 00:47:52,230
-so very simple operations in the in the
-end in terms of
+So very simple operations in the
+end in terms of efficiency. [STUDENT QUESTION] That's right. So the question is, the commication between the gates is always just vectors. That's right. So this Jacobian
 
 596
 00:47:52,230 --> 00:47:55,940
-if you want to you can do that but
-that's internal to you and said the gate
+if you wanted to, you can form that but
+that's internal to you inside the gate.
 
 597
 00:47:55,940 --> 00:47:59,670
-and you can use that to do backdrop but
-what's going back to other dates they
+And you can use that to do backprop, but
+what's going back to other gates, they
 
 598
 00:47:59,670 --> 00:48:17,380
-only care about the gradient vector so
+only care about the gradient vector. [STUDENT QUESTION] Yes, so the question is, unless you end up having multiple outputs, because then for each output, we have to do this, so yeah. So
 we'll never actually run into that case
 
 599
 00:48:17,380 --> 00:48:20,430
 because we almost always have a single
-out but skill and rallied in the end
+output, scalar value at the end
 
 600
 00:48:20,429 --> 00:48:24,129
-because we're interested in Los
-functions so we just have a single
+because we're interested in loss
+functions. So we just have a single
 
 601
 00:48:24,130 --> 00:48:27,318
