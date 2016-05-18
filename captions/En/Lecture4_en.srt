@@ -2971,98 +2971,98 @@ functions. So we just have a single
 
 601
 00:48:24,130 --> 00:48:27,318
-number at the end that were interested
-in trading for prospective if we had
+number at the end that we're interested
+in computing gradients respective. If we had [??]
 
 602
 00:48:27,318 --> 00:48:30,949
-multiple outputs then we have to keep
+multiple outputs, then we have to keep
 track of all of those as well
 
 603
 00:48:30,949 --> 00:48:35,769
-imperil when we do the backpropagation
-but we just have to get a rally loss
+in parallel when we do the backpropagation.
+But we just have scalar value loss
 
 604
 00:48:35,769 --> 00:48:45,880
-function so as not to worry about that
-so I want to also make the point that
+function so we don't have to worry about that. Okay, makes sense?
+So I want to also make the point that
 
 605
 00:48:45,880 --> 00:48:51,230
-actually four thousand crazy usually we
-use many batches so say many batch of a
+actually 4096 dimensions is not even crazy. Usually we
+use minibatches, so say, minibatch of a
 
 606
 00:48:51,230 --> 00:48:54,929
-hundred elements going through the same
-time and then you end up with a hundred
+100 elements going through at the same
+time, and then you end up with 100
 
 607
 00:48:54,929 --> 00:48:59,038
-4096 emotional factors that are all
-coming in peril but all the examples
+4096-dimensional vectors that are all
+coming in parallel, but all the examples
 
 608
 00:48:59,039 --> 00:49:02,539
-enemy better processed independently of
-each other in peril and so that you
+in the minibatch are processed independently of
+each other in parallel, and so this Jacobian matrix
 
 609
 00:49:02,539 --> 00:49:08,869
-could really end up being four hundred
-million so huge so you never formally is
+really ends up being 400 million, 400,000 by 400,000.
+So huge so you never form these,
 
 610
 00:49:08,869 --> 00:49:14,160
-basically and you takes to take care to
+basically. And you take, you take care to
 actually take advantage of the sparsity
 
 611
 00:49:14,159 --> 00:49:17,538
 structure in the Jacobian and you hand
-code operations you don't actually right
+code operations, so you don't actually write
 
 612
 00:49:17,539 --> 00:49:25,819
-before the generalized general inside
-any gate implementation ok so I'd like
+fully generalized chain rule inside
+any gate implementation. Okay cool. So I'd like
 
 613
 00:49:25,818 --> 00:49:30,788
-to point out that your assignment he'll
-be writing as Max and so on and I just
+to point out that in your assignment, you'll
+be writing SVMs and Softmax and so on, and I just kind of
 
 614
 00:49:30,789 --> 00:49:33,680
-wanted to give you a hint on the design
+would like to give you a hint on the design [??]
 of how you actually should approach this
 
 615
 00:49:33,679 --> 00:49:39,769
-problem what you should do is just think
-about it as a back propagation even if
+problem. What you should do is just think
+about it as a back propagation, even if
 
 616
 00:49:39,769 --> 00:49:44,108
-you're doing this for classification
-optimization so roughly or structure
+you're doing this for linear classification
+optimization. So roughly, your structure
 
 617
 00:49:44,108 --> 00:49:50,048
-should look something like this where
-against major computation and units that
+should look something like this where...
+again, stage your computation in units that
 
 618
 00:49:50,048 --> 00:49:53,960
-you know the local gradient off and then
-do backdrop when you actually these
+you know the local gradient of and then
+do backprop when you actually evaluate these
 
 619
 00:49:53,960 --> 00:49:57,679
-gradients in your assignment so in the
-top your code will look something like
+gradients in your assignment. So in the
+top, your code will look something like
 
 620
 00:49:57,679 --> 00:49:59,679
@@ -3071,642 +3071,642 @@ structure because you're doing
 
 621
 00:49:59,679 --> 00:50:04,038
-everything in line so no crazy I just
-running like that that you have to do
+everything inline. So no crazy edges
+or anything like that that you have to do.
 
 622
 00:50:04,039 --> 00:50:07,200
-you will do that in a second assignment
-you'll actually come up with a graphic
+You will do that in the second assignment.
+You'll actually come up with a graph
 
 623
 00:50:07,199 --> 00:50:10,509
-object you implement your layers but my
-first assignment you're just doing it in
+object and you'll implement your layers. But in
+the first assignment, you're just doing it inline
 
 624
 00:50:10,510 --> 00:50:15,579
-line just straight up an awesome and so
-complete your scores based on wnx
+just straight up vanilla setup. And so
+compute your scores based on W and X.
 
 625
 00:50:15,579 --> 00:50:21,798
-compute these margins which are Maxim 0
-and the score differences compute the
+Compute these margins which are max of 0
+and the score differences, compute the
 
 626
 00:50:21,798 --> 00:50:26,239
-loss and then do backdrop and in
-particular I would really advise you to
+loss, and then do backprop. And in
+particular, I would really advise you to
 
 627
 00:50:26,239 --> 00:50:30,949
-have this intermediate course let you
-create a matrix and then compute the
+have this intermediate scores that you
+create. It's a matrix. And then compute the
 
 628
 00:50:30,949 --> 00:50:34,769
-gradient on scores before you can view
-the gradient on your weights and so
+gradient on scores before you compute
+the gradient on your weights. And so
 
 629
 00:50:34,769 --> 00:50:40,179
-chain chain rule here like you might be
-tempted to try to just arrived W the
+chain, use chain rule here. Otherwise, you might be
+tempted to try to just derive W, the
 
 630
 00:50:40,179 --> 00:50:43,798
-gradient on W equals and then implement
+gradient on W equals, and then implement [??]
 that and that's an unhealthy way of
 
 631
 00:50:43,798 --> 00:50:47,349
-approaching problem so state your
-competition and do backdrop through this
+approaching the problem. So stage your
+computation and do backdrop through this
 
 632
 00:50:47,349 --> 00:50:55,800
-course and they will help you out so
+scores and that will help you out. Okay. cool.
 
 633
 00:50:55,800 --> 00:51:01,570
-so far are hopelessly large so we end up
-in this competition structures and these
+So, let's see. Summary so far. Neural networks are hopelessly large, so we end up
+in this computational structures and these
 
 634
 00:51:01,570 --> 00:51:05,470
-intermediate nodes forward backward API
-for both the notes and also for the
+intermediate nodes, forward backward API
+for both the nodes and also for the
 
 635
 00:51:05,469 --> 00:51:08,869
-graph structure and infrastructure is
-usually a very thin wrapper on all these
+graph structure. And the graph structure is
+usually a very thin wrapper around all these
 
 636
 00:51:08,869 --> 00:51:12,059
-layers and it can handle the
-communication between him and his
+layers and it handles all the
+communication between them. And this
 
 637
 00:51:12,059 --> 00:51:16,380
 communication is always along like
-doctors being passed around in practice
+vectors being passed around. In practice,
 
 638
 00:51:16,380 --> 00:51:19,289
-when we write these implementations what
-we're passing around our DS and
+when we write these implementations, what
+we're passing around are these
 
 639
 00:51:19,289 --> 00:51:23,079
-dimensional sensors really what that
-means is just an end dimensional array
+n-dimensional tensors. Really what that
+means is just an n-dimensional array.
 
 640
 00:51:23,079 --> 00:51:28,059
-array those are what goes between the
-gates and then internally every single
+So like an numpy array. Those are what goes between the
+gates, and then internally, every single
 
 641
 00:51:28,059 --> 00:51:33,529
 gate knows what to do in the forward and
-backward pass ok so at this point I'm
+the backward pass. Okay, so at this point, I'm
 
 642
 00:51:33,530 --> 00:51:37,690
-going to end with that propagation and
-I'm going to go into neural networks so
+going to end with backpropagation and
+I'm going to go into neural networks. So
 
 643
 00:51:37,690 --> 00:51:49,860
 any questions before we move on from
-background
+backprop? Go ahead. [STUDENT QUESTION]
 
 644
 00:51:49,860 --> 00:52:03,130
-operation challenging assignment almost
-is how do you make sure that you do all
+The summation is Li = blah? Yes, there is a sum there. So you want that to be vectorized operation that you... Yeah so basically, the challenge in your assignment almost
+is, how do you make sure that you do all
 
 645
 00:52:03,130 --> 00:52:06,750
-the sufficiently nicely with operations
-in numpy so that's going to be something
+this efficiently nicely with matrix vector operations
+in numpy, so that's going to be some of the
 
 646
 00:52:06,750 --> 00:52:18,030
-that brings our stuff that you guys are
-going to be like and what you want them
+brain teaser stuff that you guys are
+going to have to do. [STUDENT QUESTION] Yes, so it's up to you what you want your gates to be like, and what you want them
 
 647
 00:52:18,030 --> 00:52:24,490
-to be I don't think he'd want to do that
+to be. [STUDENT QUESTION] Yeah, I don't think you'd want to do that.
 
 648
 00:52:24,489 --> 00:52:30,739
-yeah I'm not sure maybe that works but
-it's up to you to design this and to
+Yeah, I'm not sure. Maybe that works. I don't know.
+But it's up to you to design this and to
 
 649
 00:52:30,739 --> 00:52:38,609
-back up through it so that's that's what
-we're going to go to neural networks is
+backprop through. Yeah, so that's fun. Okay.
+So we're going to go to neural networks. This is
 
 650
 00:52:38,610 --> 00:52:44,010
-exactly what they look like you'll be
-involving me and this is what happens
+exactly what they look like. So you'll be
+implementing me, and this is just what happens
 
 651
 00:52:44,010 --> 00:52:46,770
-when you search on Google Images
-networks this is I think the first
+when you search on Google Images for
+neural networks. This is I think the first
 
 652
 00:52:46,769 --> 00:52:51,590
-result of something like that so let's
-look at the networks and before we dive
+result or something like that. So let's
+look at neural networks. And before we dive
 
 653
 00:52:51,590 --> 00:52:55,100
-into neural networks actually I'd like
+into neural networks actually, I'd like
 to do it first without all the brain
 
 654
 00:52:55,099 --> 00:52:58,329
-stuff so forget that their neural forget
+stuff. So forget that they're neural. Forget
 that they have any relation whatsoever
 
 655
 00:52:58,329 --> 00:53:03,170
-to brain they don't forget if you
-thought that they did but they do let's
+to a brain. They don't, but forget if you
+thought that they did, that they do. Let's
 
 656
 00:53:03,170 --> 00:53:07,309
-just look at school functions well
-before we thought that equals WX is what
+just look at score functions. Well
+before, we saw that f=Wx is what
 
 657
 00:53:07,309 --> 00:53:11,079
-we've been working with so far but now
-as I said we're going to start to make
+we've been working with so far. But now
+as I said, we're going to start to make
 
 658
 00:53:11,079 --> 00:53:14,590
-that F more complex and so if you want
+that f more complex. And so if you wanted
 to use a neural network then you're
 
 659
 00:53:14,590 --> 00:53:20,309
-going to change that equation to this so
-this is a two-layer neural network and
+going to change that equation to this. So
+this is a two-layer neural network, and
 
 660
 00:53:20,309 --> 00:53:24,820
-that's what it looks like and it's just
-a more complex mathematical expression X
+that's what it looks like, and it's just
+a more complex mathematical expression of x.
 
 661
 00:53:24,820 --> 00:53:30,230
-and so what's happening here as you
-receive your input X and you make
+And so what's happening here is, you
+receive your input x, and you
 
 662
 00:53:30,230 --> 00:53:32,369
-multiplied by matrix just like we did
-before
+multiply it by a matrix, just like we did
+before.
 
 663
 00:53:32,369 --> 00:53:36,619
-now what's coming next what comes next
-is a nonlinearity or activation function
+Now, what's coming next, what comes next
+is a nonlinearity or activation function,
 
 664
 00:53:36,619 --> 00:53:39,710
-I'm going to go into several choices
-that you might make for these in this
+and we're going to go into several choices
+that you might make for these. In this
 
 665
 00:53:39,710 --> 00:53:43,800
-case I'm using the threshold 0 as an
-activation function so basically we're
+case, I'm using the thresholding at 0 as an
+activation function. So basically, we're
 
 666
 00:53:43,800 --> 00:53:47,780
-doing matrix multiply we threshold
-everything they get 20 and then we do
+doing matrix multiply, we threshold
+everything negative to 0, and then we do
 
 667
 00:53:47,780 --> 00:53:52,240
-one more major supply and that gives us
-are scarce and so if I was to drop this
+one more matrix multiply, and that gives us
+our scores. And so if I was to draw this,
 
 668
 00:53:52,239 --> 00:53:58,169
-say in case of C for 10 with three South
-3072 numbers going in the pixel values
+say in case of CIFAR-10, with 3072 numbers
+going in, those are the pixel values,
 
 669
 00:53:58,170 --> 00:54:02,110
-and before we just went one single major
-metabolite discourse we went right away
+and before, we just went one single matrix
+multiply to scores. We went right away
 
 670
 00:54:02,110 --> 00:54:02,470
-22
+to 10
 
 671
 00:54:02,469 --> 00:54:05,899
-numbers but now we get to go through
+numbers. But now, we get to go through
 this intermediate representation
 
 672
 00:54:05,900 --> 00:54:13,019
-pendants hidden state will call them
-hidden layers so each of hundred-numbers
+of hidden state. We'll call them
+hidden layers. So hidden vector h of hundred numbers, say
 
 673
 00:54:13,019 --> 00:54:16,849
-or whatever you want your size of the
-network to be so this is a high pressure
+or whatever you want your size of the neural
+network to be. So this is a hyperparameter.
 
 674
 00:54:16,849 --> 00:54:21,109
-that's a a hundred and we go through
-this intermediate representation so make
+that's, say, a hundred, and we go through
+this intermediate representation. So matrix
 
 675
 00:54:21,108 --> 00:54:24,319
-sure to multiply gives us
-hundred-numbers threshold at zero and
+multiply gives us
+hundred numbers, threshold at zero, and
 
 676
 00:54:24,320 --> 00:54:28,559
-then one will make sure that this course
-and since we have more numbers we have
+then one more matrix multiply to get the scores.
+And since we have more numbers, we have
 
 677
 00:54:28,559 --> 00:54:33,820
 more wiggle to do more interesting
-things so I'm or one particular example
+things. So a more, one particular example
 
 678
 00:54:33,820 --> 00:54:36,330
 of something interesting you might want
-to do what you might think that in the
+to, you might think that a neural network
 
 679
 00:54:36,329 --> 00:54:40,210
-latter could do is going back to the
+could do, is going back to this
 example of interpreting linear
 
 680
 00:54:40,210 --> 00:54:45,690
-classifiers on C part 10 and we saw the
+classifiers on CIFAR-10, and we saw that the
 car class has this red car that tries to
 
 681
 00:54:45,690 --> 00:54:51,280
-merge all the modes of different car
-space in different directions and so in
+merge all the modes of different cars
+facing in different directions. And so in
 
 682
 00:54:51,280 --> 00:54:57,980
-this case one single layer one single
-leader crossfire had to go across all
+this case, one single layer, one single
+linear classifier had to go across all
 
 683
 00:54:57,980 --> 00:55:02,250
-those modes and we couldn't deal with
-for example of different colors that
+those modes, and we couldn't deal with
+for example, cars of different colors. That
 
 684
 00:55:02,250 --> 00:55:05,190
-wasn't very natural to do but now we
-have hundred-numbers in this
+wasn't very natural to do. But now we
+have hundred numbers in this
 
 685
 00:55:05,190 --> 00:55:08,289
-intermediate and so you might imagine
-for example that one of those numbers
+intermediate, and so you might imagine
+for example, that one of those numbers
 
 686
 00:55:08,289 --> 00:55:11,539
-could be just picking up on the red
-carpet leasing forward is just gotta
+could be just picking up on red
+car facing forward. It's just classifying,
 
 687
 00:55:11,539 --> 00:55:14,750
-find is there a wrecked car facing
-forward another one could be red car
+is there a red car facing
+forward. Another one could be red car
 
 688
 00:55:14,750 --> 00:55:16,280
-facing slightly to the left
+facing slightly to the left,
 
 689
 00:55:16,280 --> 00:55:20,650
-let carvey seems like the right and
-those elements of age would only become
+left car facing slightly to the right, and
+those elements of h would only become
 
 690
 00:55:20,650 --> 00:55:24,358
 positive if they find that thing in the
-image
+image,
 
 691
 00:55:24,358 --> 00:55:28,029
-otherwise they stay at zero and so
-another age might look for green cards
+otherwise, they stay at zero. And so
+another h might look for green cars
 
 692
 00:55:28,030 --> 00:55:31,180
-or yellow cards or whatever else in
-different orientations so now we can
+or yellow cars or whatever else in
+different orientations. So now we can
 
 693
 00:55:31,179 --> 00:55:35,669
 have a template for all these different
-modes and so these neurons turn on or
+modes. And so these neurons turn on or
 
 694
 00:55:35,670 --> 00:55:41,869
 off if they find the thing they're
-looking for some specific type and then
+looking for. Car of some specific type, and then
 
 695
 00:55:41,869 --> 00:55:46,660
-this W two major scan some across all
-those little card templates and I we
+this W2 matrix scan sum across all
+those little car templates. So now we
 
 696
 00:55:46,659 --> 00:55:50,719
 have like say twenty card templates of
-what you look like and now to complete
+what cars could look like, and now, to compute
 
 697
 00:55:50,719 --> 00:55:54,149
-the scoring classifier there's an
-additional measures so we have a choice
+the score of car classifier, there's an
+additional matrix multiply, so we have a choice
 
 698
 00:55:54,150 --> 00:55:58,700
-of a weighted sum over them and so if
-anyone of them turned on then through my
+of doing a weighted sum over them. And so if
+anyone of them turn on, then through my
 
 699
 00:55:58,699 --> 00:56:02,269
-way it's somewhat positive weights
-presumably I would be adding up and
+weighted sum, with positive weights
+presumably, I would be adding up and
 
 700
 00:56:02,269 --> 00:56:07,358
-getting a higher score and so now I can
-have this multimodal our classifier
+getting a higher score. And so now I can
+have this multimodal car classifier
 
 701
 00:56:07,358 --> 00:56:13,098
 through this additional hidden layer
-between there and wavy reason for why
+between there. So that's handwavy reason for why
 
 702
 00:56:13,099 --> 00:56:14,720
 these would do something more
-interesting
+interesting.
 
 703
 00:56:14,719 --> 00:56:49,509
-was a question for extra points in the
-assignment and do something fun or extra
+Was there a question? [STUDENT QUESTION] So the question is, if h had less than 10 units, would it be inferior to a linear classifier? I think that's... that's acutally not obvious to me. It's an interesting question. I think... you could make that work. I think you could make it work. Yeah, I think that would actually work. Someone should try that for extra points in the
+assignment. So you'll have a section on the assignment do something fun or extra
 
 704
 00:56:49,510 --> 00:56:53,220
-and so you get the carpet whatever you
+and so you get to come up with whatever you
 think is interesting experiment and will
 
 705
 00:56:53,219 --> 00:56:56,699
-give you some bonus points that's good
-candidate for for something you might
+give you some bonus points. So that's good
+candidate for something you might
 
 706
 00:56:56,699 --> 00:56:59,659
-want to investigate whether that works
-or not
+want to investigate, whether that works
+or not.
 
 707
 00:56:59,659 --> 00:57:08,329
-questions
+Any other questions? Go ahead. [STUDENT QUESTION]
 
 708
 00:57:08,329 --> 00:57:34,989
-allocated over the different modes of
+Sorry, I don't think I understood the question. [STUDENT QUESTION] I see. So you're really asking about the layout of the h vector and how it gets allocated over the different modes of
 the dataset and I don't have a good
 
 709
 00:57:34,989 --> 00:57:37,969
-answer for that this since we're going
+answer for that. Since we're going
 to train this fully with
 
 710
 00:57:37,969 --> 00:57:39,500
-back-propagation
+backpropagation,
 
 711
 00:57:39,500 --> 00:57:42,690
-I think it's like a naive to think that
-there will be exact template for sale
+I think it's like naive to think that
+there will be exact template for, say a
 
 712
 00:57:42,690 --> 00:57:46,539
-let carvey seeing red carpet is left you
-probably want to find that you'll find
+left car facing, red car facing left. You
+probably want to find that. You'll find
 
 713
 00:57:46,539 --> 00:57:50,690
-these kind of like mixes and weird
-things intermediates and so on
+these kind of like mixes, and weird
+things, intermediates, and so on.
 
 714
 00:57:50,690 --> 00:57:55,630
-coming animal optimally find a way to
-truncate your data with its boundaries
+So this neural network will come in and it will optimally find a way to
+truncate your data with its linear boundaries
 
 715
 00:57:55,630 --> 00:57:59,809
-and kuwait's relegated just adjust the
-company could come alright so it's
+and these weights will all get adjusted
+just to make it come out right. So it's
 
 716
 00:57:59,809 --> 00:58:10,579
-really hard to say well become tangled
-up I think that's right so that's the
+really hard to say. It will all become tangled
+up I think. Go ahead. That's right. So that's the
 
 717
 00:58:10,579 --> 00:58:14,579
-size of hidden layer and a high
-primarily get to choose that so I chose
+size of a hidden layer, and it's a hyperparameter.
+We get to choose that. So I chose
 
 718
 00:58:14,579 --> 00:58:18,719
-hundred usually that's going to be
-usually you'll see that we're going to
+hundred. Usually that's going to be,
+usually, you'll see that with neural networks. We'll go into
 
 719
 00:58:18,719 --> 00:58:22,739
-this a lot but usually you want them to
-be as big as possible as its your
+this a lot, but usually you want them to
+be as big as possible, as it fits in your
 
 720
 00:58:22,739 --> 00:58:30,659
-computer and so on so more is better I'm
-going to that
+computer and so on, so more is better. So we'll go
+into that. Go ahead. [STUDENT QUESTION]
 
 721
 00:58:30,659 --> 00:58:38,639
-asking do we always take max 10 nature
-and we don't get this like five slides
+So you're asking, do we always take max of 0 and h,
+and we don't, and I'll get, it's like five slides
 
 722
 00:58:38,639 --> 00:58:44,359
-away somewhere to go into neural
-networks I guess maybe I should just go
+away. So I'm going to go into neural
+networks. I guess maybe I should preemtively just go
 
 723
 00:58:44,360 --> 00:58:48,390
-ahead and take questions near the end if
+ahead and take questions near the end. If
 you wanted this to be a three-layer
 
 724
 00:58:48,389 --> 00:58:50,940
-neural network by the way there's a very
+neural network by the way, there's a very
 simple way in which we just extend
 
 725
 00:58:50,940 --> 00:58:53,710
-that's right so we just keep continuing
-the same pattern we have all these
+this, right? So we just keep continuing
+the same pattern where we have all these
 
 726
 00:58:53,710 --> 00:58:57,159
-intermediate hidden nodes and then we
+intermediate hidden nodes, and then we
 can keep making our network deeper and
 
 727
 00:58:57,159 --> 00:58:59,750
-deeper and you can compute more
+deeper, and you can compute more
 interesting functions because you're
 
 728
 00:58:59,750 --> 00:59:03,369
 giving yourself more time to compute
-something interesting and henry VIII way
+something interesting in a handwavy way.
 
 729
 00:59:03,369 --> 00:59:09,559
-up one other slide I want to flash is
-that training a two-layer neural network
+Now, one other slide I wanted to flash is
+that, training a two-layer neural network,
 
 730
 00:59:09,559 --> 00:59:12,690
-I mean it's actually quite simple when
-it comes down to it so this is like
+I mean, it's actually quite simple when
+it comes down to it. So this is a slide
 
 731
 00:59:12,690 --> 00:59:17,349
-borrowed from Blockbuster and basically
-the price is roughly eleven lines of
+borrowed from a blog post I found, and basically
+it suffices roughly eleven lines of
 
 732
 00:59:17,349 --> 00:59:21,980
 Python to implement a two layer neural
-network during binary classification on
+network, doing binary classification on
 
 733
 00:59:21,980 --> 00:59:27,570
-what is this two-dimensional better to
-have a two dimensional data matrix X you
+what is this, two dimensional data. So you
+have a two dimensional data matrix X. You
 
 734
 00:59:27,570 --> 00:59:32,580
-have thirty three dimensional and you
-have a binary labels for why and then
+have, sorry it's three dimensional. And you
+have binary labels for y, and then
 
 735
 00:59:32,579 --> 00:59:36,579
-sin 0 sin 1 are your weight matrices
-wait one way to end so I think they're
+syn0 syn1 are your weight matrices
+weight1 weight2. And so I think they're
 
 736
 00:59:36,579 --> 00:59:41,150
-called central synapse but mature and
-then this is the opposition group here
+called syn for synapse but I'm not sure. And
+then this is the optimization loop here
 
 737
 00:59:41,150 --> 00:59:46,269
-and what you what you're seeing here I
-should use my point for more than just
+and what you're seeing here, I
+should use my pointer for more, what you're
 
 738
 00:59:46,269 --> 00:59:50,139
-being here as we're completing the first
-layer activations but and this is using
+seeing here is we're computing the first
+layer activations, but this is using
 
 739
 00:59:50,139 --> 00:59:54,069
-a signal nonlinearity not a max of 0
-necks and we're going to a bit of what
+a sigmoid nonlinearity not a max of 0 and X.
+And we'll go into a bit of what [??]
 
 740
 00:59:54,070 --> 00:59:58,650
-these nonlinearities might be more than
-one form is reviewing the first layer
+these nonlinearities might be. So sigmoid is
+one form. It's computing the first layer,
 
 741
 00:59:58,650 --> 01:00:03,059
-and the second layer and then its
+and then it's computing second layer, and then its
 computing here right away the backward
 
 742
 01:00:03,059 --> 01:00:08,130
-pass so this adult adult as the gradient
-gel to the gradient ml 1 and the
+pass. So this is the l2_delta. It's the gradient on
+l2, the gradient on l1, and the
 
 743
 01:00:08,130 --> 01:00:13,390
-gradient and this is a major update here
-so right away he's doing an update at
+gradient, and this is an update here.
+So right away he's doing an update at
 
 744
 01:00:13,389 --> 01:00:17,150
 the same time as during the final piece
-of backdrop here where he formulated the
+of backprop here where he formulating the
 
 745
 01:00:17,150 --> 01:00:22,519
-gradient on the W and right away he said
-adding 22 gradient here and some really
+gradient on the W, and right away he's
+adding to gradient here. And so really
 
 746
 01:00:22,519 --> 01:00:24,630
-eleven lines supplies to train the
-neural network
+eleven lines suffice to train a
+neural network to do binary
 
 747
 01:00:24,630 --> 01:00:29,710
-classification the reason that this loss
-may look slightly different from what
+classification. The reason that this loss
+might look slightly different from what
 
 748
 01:00:29,710 --> 01:00:33,500
-you've seen right now is that this is a
-logistic regression loss so you saw a
+you've seen right now, is that this is a
+logistic regression loss. So you saw a
 
 749
 01:00:33,500 --> 01:00:37,159
-generalization of it which is a nice
-classifier into multiple dimensions but
+generalization of it which is softmax
+classifier into multiple dimensions. But
 
 750
 01:00:37,159 --> 01:00:40,149
@@ -3715,57 +3715,57 @@ updated here and you can go through this
 
 751
 01:00:40,150 --> 01:00:43,500
-in more detail by yourself but the
-logistic regression lost look slightly
+in more detail by yourself. But the
+logistic regression loss look slightly
 
 752
 01:00:43,500 --> 01:00:50,539
-different and that's being that's inside
-there but otherwise yes this is not too
+different and that's being, that's inside
+there. But otherwise, yes, so this is not too
 
 753
 01:00:50,539 --> 01:00:55,320
-crazy of a competition and very few
-lines of code suffice actually train
+crazy of a computation, and very few
+lines of code suffice to actually train
 
 754
 01:00:55,320 --> 01:00:58,900
-these networks everything else is plus
-how do you make an official and how do
+these networks. Everything else is fluff.
+How do you make it efficient, how do
 
 755
 01:00:58,900 --> 01:01:03,019
-you there's a cross-validation pipeline
-that you need to have it all this stuff
+you... there's a cross-validation pipeline
+that you need to have and all this stuff
 
 756
 01:01:03,019 --> 01:01:07,050
 that goes on top to actually give these
-large code bases but the kernel of it is
+large code bases, but the kernel of it is
 
 757
 01:01:07,050 --> 01:01:11,019
-quite simple we compute these layers
-forward pass backward pass through an
+quite simple. We compute these layers, do
+forward pass, we do backward pass, we do an
 
 758
 01:01:11,019 --> 01:01:18,840
-update when it rains but the rain is
-creating your personal initial random
+update, we keep iterating this over and over again. Go ahead. [STUDENT QUESTION]
+The random function is creating your first initial random
 
 759
 01:01:18,840 --> 01:01:24,170
-weights so you need to start somewhere
-so you generate a random W
+weights, so you need to start somewhere
+so you generate a random W.
 
 760
 01:01:24,170 --> 01:01:29,150
-now I want to mention that you'll also
+Okay. Now I wanted to mention that you'll also
 be training a two-layer neural network
 
 761
 01:01:29,150 --> 01:01:32,070
-in this class so you'll be doing
+in this class, so you'll be doing
 something very similar to this but
 
 762
@@ -3775,365 +3775,365 @@ you might have different activation
 
 763
 01:01:34,949 --> 01:01:39,149
-functions but again just my advice to
-you when you implement this is staged
+functions. But again, just my advice to
+you when you implement this is, stage
 
 764
 01:01:39,150 --> 01:01:42,789
 your computation into these intermediate
-results and then do proper
+results, and then do proper
 
 765
 01:01:42,789 --> 01:01:46,909
 backpropagation into every intermediate
-result so you might have you compute
+result. So you might have, you compute
 
 766
 01:01:46,909 --> 01:01:54,460
-your computer you receive these weight
-matrices and also the biases I don't
+your... Let's see. You compute, you receive these weight
+matrices and also the biases. I don't
 
 767
 01:01:54,460 --> 01:01:59,940
-believe you have biases p.m. in your
-slot max but here you'll have biases so
+believe you have biases actually in your SVM and in your
+softmax, but here you'll have biases. So
 
 768
 01:01:59,940 --> 01:02:03,269
-take your weight matrices in the biases
-computer person later computers course
+take your weight matrices in the biases,
+compute the first hidden layer, compute your scores,
 
 769
 01:02:03,269 --> 01:02:08,429
-complete your loss and then do backward
-pass so backdrop in this course then
+compute your loss, and then do backward
+pass. So bacprop in to scores, then
 
 770
 01:02:08,429 --> 01:02:13,739
-backdrop into the weights at the second
-layer and backdrop into this h1 doctor
+backprop into the weights at the second
+layer, and backprop into this h1 vector,
 
 771
 01:02:13,739 --> 01:02:18,849
-and then through eight-run backdrop into
-the first weight matrices and spices do
+and then through h1, backprop into
+the first weight matrices and the first biases. Okay, so do
 
 772
 01:02:18,849 --> 01:02:22,929
-proper backpropagation here otherwise if
-you tried and right away just say what
+proper backpropagation here. Otherwise, if
+you try to right away, just say, what
 
 773
 01:02:22,929 --> 01:02:26,739
-is DWI on what is going on W one if you
+is dW1, what is the gradient on W1. If you
 just try to make it a single expression
 
 774
 01:02:26,739 --> 01:02:31,099
-for it will be way too large and
-headaches so do it through a series of
+for it, it will be way too large and you'll have
+headaches. So do it through a series of
 
 775
 01:02:31,099 --> 01:02:32,619
-steps and back-propagation
+steps and back-propagation.
 
 776
 01:02:32,619 --> 01:02:36,119
-that's just a hint
+That's just a hint.
 
 777
 01:02:36,119 --> 01:02:39,940
-ok now I'd like to say that was the
+Okay. So now I'd like to, so that was the
 presentation of neural networks without
 
 778
 01:02:39,940 --> 01:02:43,940
-all the bring stuff and it looks fairly
-simple so now we're going to make it
+all the brain stuff and it looks fairly
+simple. So now we're going to make it
 
 779
 01:02:43,940 --> 01:02:47,740
 slightly more insane by folding in all
-kinds of like motivations mostly
+kinds of like motivations, mostly
 
 780
 01:02:47,739 --> 01:02:51,219
-historical about like how this came
-about that it's related to bring it all
+historical about like how this came 
+about that it's related to brain at all.
 
 781
 01:02:51,219 --> 01:02:54,939
-and so we have neural networks and we
+And so, we have neural networks and we
 have neurons inside these neural
 
 782
 01:02:54,940 --> 01:02:59,440
-networks so this is what I look like
-just what happens when you search on
+networks. So this is what neurons look like.
+This is just what happens when you search on
 
 783
 01:02:59,440 --> 01:03:03,800
-image search Iran so there you go now
+image search 'neurons'. so there you go. Now
 your actual biological neurons don't
 
 784
 01:03:03,800 --> 01:03:09,030
-look like this are currently more like
-that and so on
+look like this. Fortunately, they look more like
+that. And so a neuron,
 
 785
 01:03:09,030 --> 01:03:11,880
-just very briefly just to give you an
+just very briefly, just to give you an
 idea about where this is all coming from
 
 786
 01:03:11,880 --> 01:03:17,220
-you have a cell body or so much like to
+you have the cell body or a Soma as pople like to [??]
 call it and it's got all these dendrites
 
 787
 01:03:17,219 --> 01:03:21,049
-that are connected to other neurons
+that are connected to other neurons. So
 there's a cluster of other neurons and
 
 788
 01:03:21,050 --> 01:03:25,450
-somebody's over here and then drives are
-really these appendages that listen to
+cell bodies over here. And dendrites are
+really, these appendages that listen to
 
 789
 01:03:25,449 --> 01:03:30,869
-them so this is your inputs to in Iran
+them. So this is your inputs to a neuron,
 and then it's got a single axon that
 
 790
 01:03:30,869 --> 01:03:35,839
-comes out of a neuron that carries the
-output of the competition at this number
+comes out of the neuron that carries the
+output of the computation that this neurons performs.
 
 791
 01:03:35,840 --> 01:03:40,579
-forms so usually usually have this
-neuron receives inputs if many of them
+So usunally, usually you have this
+neuron, receives inputs. If many of them
 
 792
 01:03:40,579 --> 01:03:46,179
-online then this sell your own can
-choose to spike it sends an activation
+align, then this cell, this neuron can
+choose to spike. It says an activation
 
 793
 01:03:46,179 --> 01:03:50,199
 potential down the axon and then this
-actually like that were just out to
+actually like diverges out to
 
 794
 01:03:50,199 --> 01:03:54,659
 connect to dendrites other neurons that
-are downstream so there are other
+are downstream. So there are other
 
 795
 01:03:54,659 --> 01:03:57,639
 neurons here and their dendrites
-connected to the axons of these guys
+connected to the axons of these guys.
 
 796
 01:03:57,639 --> 01:04:02,299
-basically just neurons connected through
-these synapses between and we had these
+So basically, just neurons connected through
+these synapses in between and we had these
 
 797
 01:04:02,300 --> 01:04:05,840
-dendrites that Rd in particular on and
-this action on that actually carries the
+dendrites that are the input to a neuron and
+this axon that actually carries the
 
 798
 01:04:05,840 --> 01:04:10,410
-output on their own and so basically you
+output of a neuron. And so basically, you
 can come up with a very crude model of a
 
 799
 01:04:10,409 --> 01:04:16,769
-neuron and it will look something like
-this we have so this is the cell body
+neuron, and it will look something like
+this. We have an axon, so this is the cell body
 
 800
 01:04:16,769 --> 01:04:20,909
-here on their own and just imagine an
-axon coming from a different neuron
+here of a neuron. And just imagine an
+axon coming from a different neuron,
 
 801
 01:04:20,909 --> 01:04:24,730
-someone at work and this neuron is
-connected to that Iran through this
+somewhere in the network, and this neuron is
+connected to that neuron through this
 
 802
 01:04:24,730 --> 01:04:29,840
-synapse and every one of these synapses
+synapse. And every one of these synapses
 has a weight associated with it
 
 803
 01:04:29,840 --> 01:04:35,350
 of how much this neuron likes that
-neuron basically and so actually carries
+neuron basically. And so axon carries
 
 804
 01:04:35,349 --> 01:04:39,769
-this X it interacts in the synapse and
-they multiply and discrete model so you
+this x. It interacts in the synapse and
+they multiply in this crude model. So you
 
 805
 01:04:39,769 --> 01:04:44,989
-get W 00 flooding flowing to the summer
-and then that happens for many Iraqis
+get w0x0 flowing to the soma.
+And then that happens for many neurons
 
 806
 01:04:44,989 --> 01:04:45,849
-who have lots of
+so you have lots of
 
 807
 01:04:45,849 --> 01:04:51,500
-and puts up w times explosion and the
-cell body here it's just some offset by
+inputs of w times x flowing in. And the
+cell body here, it just performs a sum, offset by
 
 808
 01:04:51,500 --> 01:04:56,940
-bias and then if an activation function
-is met here so it passes through an
+a bias, and then if an activation function
+is met here, so it passes through an
 
 809
 01:04:56,940 --> 01:05:02,800
-activation function to actually complete
-the outfit of the sax on now in
+activation function to actually compute
+the output of this axon. Now in
 
 810
 01:05:02,800 --> 01:05:06,570
-biological models historically people
-like to use the sigmoid nonlinearity to
+biological models, historically people
+liked to use the sigmoid nonlinearity to
 
 811
 01:05:06,570 --> 01:05:11,730
-actually the reason for that is because
-you get a number between 0 and one and
+actually use for the activation function. The reason for that is because
+you get a number between 0 and 1, and
 
 812
 01:05:11,730 --> 01:05:15,420
 you can interpret that as the rate at
-which this neuron inspiring for that
+which this neuron is firing for that
 
 813
 01:05:15,420 --> 01:05:19,809
-particular input so it's a rate between
-zero and one that's going through the
+particular input. So it's a rate between
+0 and 1 that's going through the
 
 814
 01:05:19,809 --> 01:05:23,889
-activation function so if this neuron is
-seen something that likes in the neurons
+activation function. So if this neuron is
+seen something it likes, in the neurons
 
 815
 01:05:23,889 --> 01:05:27,900
-that connected to it it will start to
-spike a lot and the rate is described by
+that connected to it, it will start to
+spike a lot, and the rate is described by
 
 816
 01:05:27,900 --> 01:05:33,139
-F off the impact oK so that's the crude
-model of neuron if I wanted to implement
+f of the input. Okay, so that's the crude
+model of the neuron. If I wanted to implement it
 
 817
 01:05:33,139 --> 01:05:38,819
-it would look something like this so and
-neuron function forward pass and receive
+it would look something like this. So a
+neuron_tick function forward pass, it receives
 
 818
 01:05:38,820 --> 01:05:44,500
-some inputs this is a vector and reform
-of the cell body so just a lawyer some
+some inputs. This is a vector and we form
+a sum at the cell body, so just a linear sum.
 
 819
 01:05:44,500 --> 01:05:49,980
-and we put the firing rate as a sigmoid
-off the Somali some and return to firing
+And we put, we compute the firing rate as a sigmoid
+of the cell body sum and return the firing
 
 820
 01:05:49,980 --> 01:05:53,579
-rate and then this can plug into
-different neurons right so you can
+rate. And then this can plug into
+different neurons, right? So you can
 
 821
 01:05:53,579 --> 01:05:56,710
-imagine you can actually see that this
+imagine, you can actually see that this
 looks very similar to a linear
 
 822
 01:05:56,710 --> 01:06:02,750
-classifier radar for MIMO lehrer some
-here and we're passing through
+classifier, right? We're forming a linear sum
+here, a weighted sum, and we're passing that through
 
 823
 01:06:02,750 --> 01:06:07,050
-nonlinearity so every single neuron in
-this model is really like a small your
+nonlinearity. So every single neuron in
+this model is really like a small linear
 
 824
 01:06:07,050 --> 01:06:11,530
-classifier but these authors plug into
-each other and they can work together to
+classifier, but these linear classifiers plug into
+each other, and they can work together to
 
 825
 01:06:11,530 --> 01:06:16,650
-do interesting things now 10 to make
-about neurons that they're very they're
+do interesting things. Now one note to make
+about neurons is that they're very, they're
 
 826
 01:06:16,650 --> 01:06:21,300
-not like biological neurons biological
-neurons are super complex so if you go
+not like biological neurons. Biological
+neurons are super complex, so if you go
 
 827
 01:06:21,300 --> 01:06:24,670
-around then you start saying that neural
-networks work like brain people are
+around and you start saying that neural
+networks work like brain, people are
 
 828
 01:06:24,670 --> 01:06:28,849
-starting to round people started firing
-at you and that's because there are
+starting to frown. People will start to frown
+at you and that's because neurons are
 
 829
 01:06:28,849 --> 01:06:33,650
-complex dynamical systems there are many
-different types of neurons they function
+complex, dynamical systems. There are many
+different types of neurons. They function
 
 830
 01:06:33,650 --> 01:06:38,550
-differently these dendrites there they
+differently. These dendrites, they
 can perform lots of interesting
 
 831
 01:06:38,550 --> 01:06:42,140
-computation a good review article is in
-direct competition which I really
+computation. A good review article is
+Dendritic Computation, which I really
 
 832
 01:06:42,139 --> 01:06:46,069
-enjoyed these synapses are complex
-dynamical systems they're not just a
+enjoyed. These synapses are complex
+dynamical systems. They're not just a
 
 833
 01:06:46,070 --> 01:06:49,720
-single weight and we're not really sure
-of the brain uses rate code to
+single weight. And we're not really sure
+if the brain uses rate code to
 
 834
 01:06:49,719 --> 01:06:54,689
-communicate so very crude mathematical
-model and don't put his analogy too much
+communicate, so very crude mathematical
+model and don't put his analogy too much.
 
 835
 01:06:54,690 --> 01:06:57,960
-but it's good for a kind of like media
-articles
+But it's good for, kind of like, media
+articles,
 
 836
 01:06:57,960 --> 01:07:01,990
@@ -4142,47 +4142,47 @@ coming up again and again as we
 
 837
 01:07:01,989 --> 01:07:04,989
-explained that this works like a brain
-but I'm not going to go too deep into
+explained that this works like your brain.
+But I'm not going to go too deep into
 
 838
 01:07:04,989 --> 01:07:09,829
-this to go back to a question that was
-asked for there's an entire set of
+this. To go back to a question that was
+asked before, there's an entire set of
 
 839
 01:07:09,829 --> 01:07:17,559
-nonlinearities that we can choose from
-so historically signal has been used
+nonlinearities that we can choose from.
+So historically, sigmoid has been used
 
 840
 01:07:17,559 --> 01:07:20,210
-quite a bit and we're going to go into
+quite a bit, and we're going to go into
 much more detail over what these
 
 841
 01:07:20,210 --> 01:07:23,690
-nonlinearities are what are their trades
-tradeoffs and why you might want to use
+nonlinearities are, what are their
+tradeoffs, and why you might want to use
 
 842
 01:07:23,690 --> 01:07:27,838
-one or the other but for now just like a
-flash to mention that there are many to
+one or the other, but for now, I'd just like to
+flash to mention that there are many things to [??]
 
 843
 01:07:27,838 --> 01:07:28,579
-choose from
+choose from.
 
 844
 01:07:28,579 --> 01:07:33,940
-historically people use to 10 H as of
-2012 really became quite popular
+Historically people use to signmoid and tanh. As of
+2012, ReLU became quite popular.
 
 845
 01:07:33,940 --> 01:07:38,429
-it makes your networks quite a bit
-faster so right now if you want a
+It makes your networks converge quite a bit
+faster, so right now, if you wanted a
 
 846
 01:07:38,429 --> 01:07:40,429
@@ -4190,108 +4190,108 @@ default choice for nonlinearity
 
 847
 01:07:40,429 --> 01:07:45,679
-relew that's the current default
-recommendation and then there's a few
+use ReLU. That's the current default
+recommendation. And then there's a few, kind of a hipster
 
 848
 01:07:45,679 --> 01:07:51,489
-activation functions here and so are
-proposed a few years ago I max out is
+activation functions here. And so Leaky ReLUs were
+proposed a few years ago. Maxout is
 
 849
 01:07:51,489 --> 01:07:54,989
-interesting and very recently you lou
-and so you can come up with different
+interesting. And very recently ELU.
+And so you can come up with different
 
 850
 01:07:54,989 --> 01:07:58,319
 activation functions and you can
-describe I these might work better or
+describe why these might work better or
 
 851
 01:07:58,320 --> 01:08:01,789
-not and so this is an active area of
-research is trying to go up by the
+not. And so this is an active area of
+research. It's trying to come up with these
 
 852
 01:08:01,789 --> 01:08:05,949
-activation functions that perform there
-had better properties in one way or
+activation functions that perform, that
+have better properties in one way or
 
 853
 01:08:05,949 --> 01:08:10,909
-another we're going to go into this much
-more details as soon in class but for
+another. So we're going to go into this with much
+more detail soon in the class. But for
 
 854
 01:08:10,909 --> 01:08:15,980
-now we have these morons we have a
-choice of activation function and then
+now, we have these neurons, we have a
+choice of activation function, and then
 
 855
 01:08:15,980 --> 01:08:19,259
-we runs these neurons into neural
-networks right so we just connect them
+we arrange these neurons into neural
+networks, right? So we just connect them
 
 856
 01:08:19,259 --> 01:08:23,140
-together so they can talk to each other
-and so here is an example of a what to
+together so they can talk to each other.
+And so here is an example of a
 
 857
 01:08:23,140 --> 01:08:27,170
-learn or relearn rowlett when you want
-to count the number of layers and their
+2-layer neural net or 3-layer neural net. When you want
+to count the number of layers and the
 
 858
 01:08:27,170 --> 01:08:30,829
-neural net you count the number of
-players that happened waits to hear the
+neural net, you count the number of
+layers that have weights. So here, the
 
 859
 01:08:30,829 --> 01:08:35,449
-input layer does not count as a later
-cuz there's no reason Iran's largest
+input layer does not count as a layer,
+because there's no... These neurons are just
 
 860
 01:08:35,449 --> 01:08:39,729
-single values they don't actually do any
-computation so we have two players here
+single values. They don't actually do any
+computation. So we have two layers here
 
 861
 01:08:39,729 --> 01:08:45,068
-that that have weights to learn it and
+that have weights. So it's a 2-layer net. And
 we call these layers fully connected
 
 862
 01:08:45,069 --> 01:08:50,870
-layers and so that I shown you that a
-single neuron computer this little
+layers, and so, remember that I shown you that a
+single neuron computes this little
 
 863
 01:08:50,869 --> 01:08:54,750
-weight at some and ambassador
-nonlinearity in a neural network the
+weighted sum, and then passed that through
+nonlinearity. In a neural network, the
 
 864
 01:08:54,750 --> 01:08:58,829
 reason we arrange these into layers is
-because Iranian them into layers allows
+because arranging them into layers allows
 
 865
 01:08:58,829 --> 01:09:01,759
-us to the competition much more
-efficiently so instead of having an
+us to perform the computation much more
+efficiently. So instead of having an
 
 866
 01:09:01,759 --> 01:09:04,460
 amorphous blob of neurons and every one
-of them has to be computed independently
+of them has to be computed independently,
 
 867
 01:09:04,460 --> 01:09:08,699
 having them in layers allows us to use
-vectorized operations and so we can
+vectorized operations. And so we can
 
 868
 01:09:08,699 --> 01:09:10,139
@@ -4300,102 +4300,102 @@ compute an entire set of
 869
 01:09:10,140 --> 01:09:14,410
 neurons in a single hidden layer as just
-a single times amateurs multiply and
+at a single times a matrix multiply. And
 
 870
 01:09:14,409 --> 01:09:17,619
 that's why we arrange them in these
-layers where Iran since I deliver and
+layers, where neurons inside a layer can be
 
 871
 01:09:17,619 --> 01:09:21,119
-evaluate it completely in peril and they
-all say the same thing but it's a
+evaluated completely in parallel, and they
+all see the same input. So it's a
 
 872
 01:09:21,119 --> 01:09:25,519
 computational trick to arrange them in
-leaders this is a three-layer neural net
+layers. So this is a 3-layer neural net
 
 873
 01:09:25,520 --> 01:09:30,500
-and this is how you would compute it
-just a bunch of major multiplies
+and this is how you would compute it.
+Just a bunch of matrix multiplies
 
 874
 01:09:30,500 --> 01:09:35,550
-followed by another activation followed
-by activation function as well now I'd
+followed by activation function.
+So now I'd
 
 875
 01:09:35,550 --> 01:09:40,520
 like to show you a demo of how these
-neural networks work so this is just
+neural networks work. So this is JavaScript demo
 
 876
 01:09:40,520 --> 01:09:44,770
-grabbed a model shoot you in a bit but
-basically this is an example of a
+that I'll show you in a bit. But
+basically, this is an example of a
 
 877
 01:09:44,770 --> 01:09:50,080
-two-layer neural network classifying AP
-doing a binary classification task two
+two-layer neural network classifying a,
+doing a binary classification task. So we have two
 
 878
 01:09:50,079 --> 01:09:54,119
-closest red and green and so if these
-points in two dimensions and I'm drawing
+classes, red and green. And so we have these
+points in two dimensions, and I'm drawing
 
 879
 01:09:54,119 --> 01:09:58,109
 the decision boundaries by the neural
-network and see what you can see is when
+network. And so what you can see is, when
 
 880
 01:09:58,109 --> 01:10:01,969
-I train a neural network on this data
+I train a neural network on this data,
 the more hidden neurons I have in my
 
 881
 01:10:01,970 --> 01:10:05,770
-head in later the more wiggle your
-electric cars right the more can compute
+hidden layer, the more wiggle your
+neural network has, right? The more it can compute
 
 882
 01:10:05,770 --> 01:10:12,290
-crazy functions and just show you also a
-regularization strength so this is the
+crazy functions. And just to show you effect also of
+regularization strength. So this is the
 
 883
 01:10:12,289 --> 01:10:17,069
 regularization of how much you penalize
-large W you can see that when you insist
+large W. So you can see that when you insist
 
 884
 01:10:17,069 --> 01:10:22,340
-that your WR very small you end up with
-a very smooth functions so they don't
+that your Ws are very small, you end up with
+a very smooth functions, so they don't
 
 885
 01:10:22,340 --> 01:10:27,050
-have as much variance so these neural
-networks there's not as much wriggle
+have as much variance. So these neural
+networks, there's not as much wiggle
 
 886
 01:10:27,050 --> 01:10:31,090
-that they can give you and then you
-decrease the regularization these know
+that they can give you, and then as you
+decrease the regularization, these neural
 
 887
 01:10:31,090 --> 01:10:34,090
-that we can do more and more complex
-tasks so they can kind of get in and get
+networks can do more and more complex
+tasks, so they can kind of get in and get
 
 888
 01:10:34,090 --> 01:10:38,710
-these laws squeezed out points to cover
-them in the training data so let me show
+these little squeezed out points to cover
+them in a training data. So let me show
 
 889
 01:10:38,710 --> 01:10:41,489
@@ -4403,61 +4403,61 @@ you what this looks like
 
 890
 01:10:41,489 --> 01:10:47,079
-during training
+during training. Okay.
 
 891
 01:10:47,079 --> 01:10:53,010
-so there's some stuff to explain here
-let me first actually you can play with
+So there're some stuff to explain here.
+Let me first actually... So you can play with
 
 892
 01:10:53,010 --> 01:10:56,060
-this because it's all in javascript
+this because it's all in JavaScript.
 
 893
 01:10:56,060 --> 01:11:04,060
-alright so we're doing here as we have
-six neurons and this is a binary
+Okay. All right. So what we're doing here is we have
+six neurons, and this is a binary
 
 894
 01:11:04,060 --> 01:11:09,000
-classification there said with circle
-data and so we have a little cluster of
+classification dataset with circle
+data. And so we have a little cluster of
 
 895
 01:11:09,000 --> 01:11:13,520
-green dot separated by red dots and work
+green dots separated by red dots. And we're
 training a neural network to classify
 
 896
 01:11:13,520 --> 01:11:18,080
-this dataset so if I restart the neural
-network it's just started off with the
+this dataset. So if I restart the neural
+network, it's just, starts off with a
 
 897
 01:11:18,079 --> 01:11:20,949
-random W and that it converges the
-decision boundary to actually classified
+random W, and then it converges the
+decision boundary to actually classify
 
 898
 01:11:20,949 --> 01:11:26,289
-the data showing on the right which is
-the cool part is one interpretation of
+the data. What I'm showing on the right, which is
+the cool part, this visualization, is one interpretation of
 
 899
 01:11:26,289 --> 01:11:29,529
-the neural network here is what I'm
-taking that's great to hear and I'm
+the neural network here, is what I'm
+taking this grid here and I'm
 
 900
 01:11:29,529 --> 01:11:33,909
-showing how this space gets worked by
-the neural network so you can interpret
+showing how this space gets warped by
+the neural network. So you can interpret
 
 901
 01:11:33,909 --> 01:11:37,619
 what the neural network is doing is it's
-using its hidden layer to transport your
+using its hidden layer to transform your
 
 902
 01:11:37,619 --> 01:11:41,159
@@ -4466,403 +4466,403 @@ hidden layer can come in with a linear
 
 903
 01:11:41,159 --> 01:11:47,059
-classifier and classify your data so
-here you see that the neural network
+classifier and classify your data. So
+here, you see that the neural network
 
 904
 01:11:47,060 --> 01:11:51,920
-arranges your space it works it such
-that the second layer which is really a
+arranges your space. It warps it such
+that the second layer, which is really a
 
 905
 01:11:51,920 --> 01:11:56,779
 linear classifier on top of the first
-layer is can put a plane through it okay
+layer, can put a plane through it, okay?
 
 906
 01:11:56,779 --> 01:11:59,939
-so it's working the space so that you
-can put the plane through it and
+So it's warping the space so that you
+can put a plane through it and
 
 907
 01:11:59,939 --> 01:12:06,259
-separate out the points so let's look at
-this again so you can really see what
+separate out the points. So let's look at
+this again. So you can roughly see what
 
 908
 01:12:06,260 --> 01:12:10,940
-happens gets worked for that you can
-leave early classify the data this is
+how this gets warped so that you can
+linearly classify the data. This is
 
 909
 01:12:10,939 --> 01:12:13,569
 something that people sometimes also
-referred to as current trek it's
+referred to as kernel trick. It's
 
 910
 01:12:13,569 --> 01:12:19,149
 changing your data representation to a
-space where two linearly separable ok
+space where it's linearly separable. Okay.
 
 911
 01:12:19,149 --> 01:12:23,079
-now here's a question if we'd like to
-separate the right now we have six
+Now, here's a question. If we'd like to
+separate, so right now we have six
 
 912
 01:12:23,079 --> 01:12:27,809
-neurons here and the intermediate layer
+neurons here in the intermediate layer,
 and it allows us to separate out these
 
 913
 01:12:27,810 --> 01:12:33,580
-things so you can see actually those six
-neurons roughly you can see these lines
+data points. So you can see actually those six
+neurons roughly. You can see these lines
 
 914
 01:12:33,579 --> 01:12:36,869
-here like they're kind of like these
-functions of one of these neurons so
+here, like they're kind of like these
+functions of one of these neurons. So
 
 915
 01:12:36,869 --> 01:12:40,349
-here's a question for you what is the
+here's a question for you, What is the
 minimum number of neurons for which this
 
 916
 01:12:40,350 --> 01:12:45,570
 dataset is separable with a neural
-network like if I want to know that work
+network? If I want the neural network
 
 917
 01:12:45,569 --> 01:12:51,889
-to correctly classify this as a minimum
+to correctly classify this, how many neurons do I need in the hidden layer as a minimum? [STUDENT ANSWER]
 
 918
 01:12:51,890 --> 01:13:15,270
-so into it with the way this work is 34
-so what happens with or is there is one
+4? I heard some 3s, some 4s. Binary search. So intuitively, the way this would work is, let's see 4.
+So what happens with 4 is, there is one
 
 919
 01:13:15,270 --> 01:13:18,910
-around here that went from this way to
-that way this way to that way this way
+neuron here that went from this way to
+that way, this way to that way, this way
 
 920
 01:13:18,909 --> 01:13:22,689
-to that way there's more neurons that
-are cutting up this plane and then
+to that way. There's four neurons that
+are cutting up this plane. And then
 
 921
 01:13:22,689 --> 01:13:27,039
-there's an additional layer that's a
-weighted sum so in fact the lowest
+there's an additional layer that's doing a
+weighted sum. So in fact, the lowest
 
 922
 01:13:27,039 --> 01:13:34,739
-number here what would be three which
-would work so with three neurons ok so
+number here would be three, which
+would work. So with three neurons... So
 
 923
 01:13:34,739 --> 01:13:39,189
-one plane second plane airplane so three
-linear functions within the linearity
+one plane, second plane, third plane. So three
+linear functions with a nonlinearity,
 
 924
 01:13:39,189 --> 01:13:45,649
 and then you can basically with three
-lines you can carve out the space so
+lines, you can carve out the space so
 
 925
 01:13:45,649 --> 01:13:52,429
-that the second layer can just combined
-them when their numbers are 102
+that the second layer can just combine
+them when their numbers are 1 and not 0. [STUDENT QUESTION]
 
 926
 01:13:52,430 --> 01:13:57,850
-certainly donate to this will break
-because two lines are not enough I
+At two? Certainly. So at two, this will break
+because two lines are not enough. I
 
 927
 01:13:57,850 --> 01:14:03,900
-suppose this work something very good
-here so with to basically it will find
+suppose this works something [??] Not going to look very good
+here. So with two, basically it will find
 
 928
 01:14:03,899 --> 01:14:07,239
 the optimum way of just using these two
-lines they're kind of creating this
+lines. They're kind of creating this
 
 929
 01:14:07,239 --> 01:14:14,599
-tunnel and that the best you can do
+tunnel and that's the best you can do. Okay? [STUDENT QUESTION]
 
 930
 01:14:14,600 --> 01:14:31,300
-I think if I was using rather I think
-there would be much surrealism and I
+The curve, I think... Which nonlinearity am I using? tanh? Yeah, I'm not sure exactly how that works out. If I was using ReLU, I think it would be much, so ReLU is the... Let me change to ReLU, and I
 
 931
 01:14:31,300 --> 01:14:50,460
-think you'd see sharp boundaries yeah
-you can do for now let's do it because
+think you'd see sharp boundaries. Yeah.
+Yes, this is three. You can do four. So let's do... [STUDENT QUESTION] Yeah, that's because
 
 932
 01:14:50,460 --> 01:14:52,130
-some of these parts
+because some of these parts
 
 933
 01:14:52,130 --> 01:14:58,119
-there's more than one of those revenues
-are active and so you end up with there
+there's more than one of those ReLUs
+are active, and so you end up with... there
 
 934
 01:14:58,119 --> 01:15:02,359
-are really three lines I think like 123
-but then in some of the corners to revel
+are really three lines. I think like one, two, three,
+but then in some of the corners two ReLU
 
 935
 01:15:02,359 --> 01:15:05,689
-in your eyes are active and so these
-weights will have its kind of funky you
+neurons are active and so these
+weights will add up. It's kind of funky. You
 
 936
 01:15:05,689 --> 01:15:12,649
-have to think about it but ok so let's
-look at say twenty here so change to 20
+have to think about a bit. But okay. So let's
+look at, say, twenty here. So I changed to twenty
 
 937
 01:15:12,649 --> 01:15:16,670
-so we have lots of space there and let's
-look at different assets like a spiral
+so we have lots of space there, and let's
+look at different datasets like say spiral.
 
 938
 01:15:16,670 --> 01:15:22,390
-you can see how this thing just as I'm
-doing this update will just go in there
+So you can see how this thing just, as I'm
+doing this update, it  will just go in there
 
 939
 01:15:22,390 --> 01:15:32,800
-and figure that out very simple data
-that is not my own circle and then ran
+and figure that out. Very simple data
+that is not. Spiral. Circle, and then random
 
 940
 01:15:32,800 --> 01:15:39,880
-him down so you could kind of goes in
-there and it's like covers up the green
+so random data, so you could, kind of goes in [??] 
+there, like covers up the green
 
 941
 01:15:39,880 --> 01:15:48,039
-lawns and the red ones and yeah and with
-fewer say like I'm going to break this
+ones and the red ones. And yeah. And with
+fewer, say like five... I'm going to break this
 
 942
 01:15:48,039 --> 01:15:54,890
-now I'm not going to go with five yes
-this will start working worse and worse
+now. I'm not going to... Okay. So with five... Yes.
+ So this will start working worse and worse
 
 943
 01:15:54,890 --> 01:15:58,770
 because you don't have enough capacity
-to separate out this data so you can
+to separate out this data. So you can
 
 944
 01:15:58,770 --> 01:16:05,270
-play with this in your free time and so
-as a summary
+play with this in your free time. Okay. And so
+as a summary,
 
 945
 01:16:05,270 --> 01:16:10,690
-we arrange these neurons and neural
-networks into political heirs
+we arrange these neurons in neural
+networks into fully connected layers.
 
 946
 01:16:10,689 --> 01:16:14,579
-look at that crop and how this gets
-changing competition graphs and they're
+We've looked at backprop and how this gets
+chained in computational graphs. And they're
 
 947
 01:16:14,579 --> 01:16:19,149
-not really neural and as you'll see soon
-the bigger the better and we'll go into
+not really neural. And as you'll see soon,
+the bigger the better, and we'll go into
 
 948
 01:16:19,149 --> 01:16:28,210
-that a lot I want to take questions
-before I am just sorry questions we have
+that a lot. I want to take questions
+before I end. Just sorry. Were there any questions? Go ahead. We have
 
 949
 01:16:28,210 --> 01:16:29,359
-two more minutes
+two more minutes. Sorry.
 
 950
 01:16:29,359 --> 01:16:36,899
-yes thank you
+Yes, thank you.
 
 951
 01:16:36,899 --> 01:16:41,119
-so is it always better to have more
-neurons and neural network the answer to
+So is it always better to have more
+neurons in your neural network? The answer to
 
 952
 01:16:41,119 --> 01:16:48,809
-that is yes more is always better it's
-usually competition constraint so more
+that is yes. More is always better. It's
+usually computational constraint, so more will
 
 953
 01:16:48,810 --> 01:16:52,510
-always work better but then you have to
-be careful to regularize it properly so
+always work better, but then you have to
+be careful to regularize it properly. So
 
 954
 01:16:52,510 --> 01:16:55,810
-the correct way to constrain you're not
-worked over put your data is not by
+the correct way to constrain your neural
+network to not overfit your data is not by
 
 955
 01:16:55,810 --> 01:16:58,940
-making the network smaller the correct
+making the network smaller. The correct
 way to do it is to increase the
 
 956
 01:16:58,939 --> 01:17:03,079
-regularization so you always want to use
-as larger network as you want but then
+regularization. So you always want to use
+as large a network as you want, but then
 
 957
 01:17:03,079 --> 01:17:06,269
 you have to make sure to properly
-regulate rise it but most of the time
+regularize it. But most of the time
 
 958
 01:17:06,270 --> 01:17:09,920
-because competition reasons why I don't
-have time to wait forever to train our
+because of computational reasons, you have finite
+amount of time, you don't want to wait forever to train your
 
 959
 01:17:09,920 --> 01:17:19,980
-networks use smaller ones for practical
-reasons question arises equally
+networks. You'll use smaller ones for practical
+reasons. Question? [STUDENT QUESTION] Do you regularize each layer equally.
 
 960
 01:17:19,979 --> 01:17:25,509
-usually you do as a simplification you
-yeah most of the often when you see
+Usually you do as a simplification.
+Yeah. Most of the, often when you see
 
 961
 01:17:25,510 --> 01:17:28,030
-networks trained in practice they will
-be regularized the same way throughout
+networks get trained in practice, they will
+be regularized the same way throughout.
 
 962
 01:17:28,029 --> 01:17:33,809
-but you don't have to necessarily
+But you don't have to necessarily. Go ahead.
 
 963
 01:17:33,810 --> 01:17:40,500
-is anybody using secondary option in
-optimizing networks there is value
+Is there any value to use in second derivatives using hashing in [??]
+optimizing neural networks? There is value
 
 964
 01:17:40,500 --> 01:17:44,859
-sometimes when your data sets are small
-you can use things like lbs which I
+sometimes when your data sets are small.
+You can use things like L-BFGS which I
 
 965
 01:17:44,859 --> 01:17:47,729
-don't go into too much and it's the
-second order method but usually the data
+didn't go into too much, and that's a
+second order method, but usually the datasets
 
 966
 01:17:47,729 --> 01:17:50,500
-sets are really large and that's when
-I'll get you it doesn't work very well
+are really large and that's when
+L-BFGS doesn't work very well.
 
 967
 01:17:50,500 --> 01:17:57,039
-so you when you millions of the up with
-you can't do lbs for ya and LBJ is not
+So when you millions of data points,
+you can't do L-BFGS for various reasons. Yeah. And L-BFGS is not
 
 968
 01:17:57,039 --> 01:18:01,970
-very good with many batch you always
-have to fall back by default
+very good with minibatch. You always
+have to do full batch by default. Question.
 
 969
 01:18:01,970 --> 01:18:16,650
-like how do you allocate not a good
-answer for that unfortunately so you
+[STUDENT QUESTION] So what is the tradeoff between depth and size roughly, like how do you allocate? Not a good
+answer for that unfortunately. So you
 
 970
 01:18:16,649 --> 01:18:20,899
-want a depth is good but maybe after
-like ten layers may be a simple data
+want, depth is good, but maybe after
+like ten layers maybe, if you have simple dataet
 
 971
 01:18:20,899 --> 01:18:25,219
-said it's not really adding too much in
-one minute so I can still take some
+it's not really adding too much. We have
+one more minute so I can still take some
 
 972
 01:18:25,220 --> 01:18:35,990
-questions you have a question for the
+questions. You had a question. [??] [STUDENT QUESTION] Yeah, so the
 tradeoff between where do I allocate my
 
 973
 01:18:35,989 --> 01:18:40,019
-capacity to I want us to be deeper or do
-I want it to be wider not a very good
+capacity, do I want us to be deeper or do
+I want it to be wider, not a very good
 
 974
 01:18:40,020 --> 01:18:47,860
-answer to that yes usually especially
-with images we find that more layers are
+answer to that. [STUDENT QUESTION] Yes, usually, especially
+with images, we find that more layers are
 
 975
 01:18:47,859 --> 01:18:51,199
-critical but sometimes when you have
-simple tastes like to do you are some
+critical. But sometimes when you have
+simple datasets like 2D or some
 
 976
 01:18:51,199 --> 01:18:55,359
 other things like depth is not as
-critical and so it's kind of slightly
+critical, and so it's kind of slightly
 
 977
 01:18:55,359 --> 01:19:01,670
-data dependent
+data dependent. We had a question over there. [STUDENT QUESTION]
 
 978
 01:19:01,670 --> 01:19:10,050
-different for different layers that
-health usually it's not done usually
+Different activation functions for different layers, does that
+help? Usually it's not done. Usually we
 
 979
 01:19:10,050 --> 01:19:15,960
-just gonna pick one and go with it
-that's for example will also see the
+just gonna pick one and go with it. So say, for ConvNets
+for example, we'll see that
 
 980
 01:19:15,960 --> 01:19:19,279
-most of them are changes with others and
+most of them are [??] with ReLUs. And
 so you just use that throughout and
 
 981
 01:19:19,279 --> 01:19:22,389
-there's no real benefit to to switch
-them around people don't play with that
+there's no real benefit to switch
+them around. People don't play with that
 
 982
 01:19:22,390 --> 01:19:26,660
-too much on principle you there's
-nothing preventing you are so it is 420
+too much, but in principle, there's
+nothing preventing you. So it is 4:20,
 
 983
 01:19:26,659 --> 01:19:29,789
-so we're going to end here but we'll see
-a lot more neural networks so a lot of
+so we're going to end here, but we'll see
+a lot more neural networks, so a lot of
 
 984
 01:19:29,789 --> 01:19:31,238
-these questions will go through them
+these questions we'll go through them.
+
 
