@@ -10,7 +10,7 @@ administrative things first
 
 3
 00:00:09,429 --> 00:00:12,859
-just as a reminder of the person Simon
+just as a reminder of the first assignment
 is due on next Wednesday so you have
 
 4
@@ -31,7 +31,7 @@ of course he also have some late two
 7
 00:00:25,920 --> 00:00:29,960
 days that you can use and allocate among
-your silence as you see fit
+your assignment as you see fit
 
 8
 00:00:29,960 --> 00:00:35,149
@@ -51,11 +51,11 @@ we're talking about the fact that this
 11
 00:00:42,950 --> 00:00:45,780
 is actually a very difficult problem
-right so he just consider the cross
+right so you just consider the cross
 
 12
 00:00:45,780 --> 00:00:50,829
-product called the possible variations
+product of all the possible variations
 that we have to be robust to when we
 
 13
@@ -65,7 +65,7 @@ as cat just seems like such an
 
 14
 00:00:54,198 --> 00:00:58,049
-intractable and possible problem and not
+intractable and impossible problem and not
 only do we know how to solve these
 
 15
@@ -81,11 +81,11 @@ at human accuracy or even slightly
 17
 00:01:05,859 --> 00:01:11,829
 surpassing it and some of those classes
-and it's also runs nearly in real kind
+and it's also runs nearly in real-time
 
 18
 00:01:11,829 --> 00:01:16,539
-of your phone and so basically and all
+on your phone and so basically and all
 of this also happened in the last three
 
 19
@@ -100,12 +100,12 @@ exciting oK so that's the problem of
 
 21
 00:01:23,609 --> 00:01:27,140
-classification of a commission we talked
-specifically about the data German
+classification of image recognition we talked
+specifically about the data-driven
 
 22
 00:01:27,140 --> 00:01:30,450
-approaching the fact that we can't just
+approach the fact that we can't just
 explicitly hardcode these classifiers so
 
 23
@@ -120,17 +120,17 @@ having the validation splits where we
 
 25
 00:01:37,188 --> 00:01:41,408
-just had our hyper parameters and a test
+just test out our hyper parameters and a test
 that that you don't touch too much we
 
 26
 00:01:41,409 --> 00:01:44,810
 look specifically at the example of the
-nearest neighbor classifier and someone
+nearest neighbor classifier and some more
 
 27
 00:01:44,810 --> 00:01:48,618
-and the canyons neighbor classifier and
+and K nearest neighbor classifiers and
 I talked about the secret India said
 
 28
@@ -145,22 +145,21 @@ paratroop approach which is really that
 
 30
 00:01:58,438 --> 00:02:03,639
-we're writing a function from image
-directly to the tennis courts that have
+we're writing a function F from image
+directly to the raw 10 scores if you have 10 classes
 
 31
 00:02:03,640 --> 00:02:07,618
-10 closest and the spermatic formerly
-seem to be a long year for us so we just
+And this parameteric form seem to be linear first.
 
 32
 00:02:07,618 --> 00:02:11,520
-have equal WX and we talked about the
-interpretations of this linear
+So we just have F=Wx. and we talked about the
+interpretations of this linear classifer
 
 33
 00:02:11,520 --> 00:02:12,850
-classifier the fact that you can
+the fact that you can
 
 34
 00:02:12,849 --> 00:02:16,039
@@ -170,16 +169,15 @@ that you can interpret it as these
 35
 00:02:16,039 --> 00:02:18,449
 images being in the very
-high-dimensional space and arlen your
+high-dimensional space and our linear classifer
 
 36
 00:02:18,449 --> 00:02:23,560
-class partner kind of going in and
-coloring this space my class course so
+kind of going in and coloring this space by class course
 
 37
 00:02:23,560 --> 00:02:28,740
-to speak and so by the end of the class
+so to speak. and so by the end of the class
 we got to this picture where we suppose
 
 38
@@ -194,32 +192,32 @@ classes say 10 classes and support n and
 
 40
 00:02:36,530 --> 00:02:40,740
-basically this function assigning scores
+basically this function f() is assigning scores
 for every single one of these images
 
 41
 00:02:40,740 --> 00:02:44,510
-with some particular setting off weights
-which have chosen randomly here we got
+with some particular setting of weights
+which have chosen randomly here
 
 42
 00:02:44,509 --> 00:02:47,939
-some scores out and so some of these
-results are good and some of them are
+we get some scores out and so some of these
+results are good and some of them are bad
 
 43
 00:02:47,939 --> 00:02:51,419
-bad so if you inspect this course for
-example in the first image you can see
+so if you inspect this scores, for example, 
+in the first image you can see that
 
 44
 00:02:51,419 --> 00:02:55,509
-that the correct class or just cat got a
+the correct class which is cat got a
 score of 2.9 and that's kind of in the
 
 45
 00:02:55,509 --> 00:03:00,060
-middle so some some classes he received
+middle so some some classes here received
 a higher score which is not very good
 
 46
@@ -230,31 +228,31 @@ which is good for that particular image
 47
 00:03:03,289 --> 00:03:09,019
 the car was very well classified because
-the car was much higher than all of the
+class score of car was much higher than all of the other ones
 
 48
 00:03:09,020 --> 00:03:12,980
-other ones and the Frog was enough
-durable classified all right so we have
+And the Frog was not very well classified at all.
+right?
 
 49
 00:03:12,979 --> 00:03:18,199
-this notion that four different weights
+So we had this notion that for different weights
 these different weights work better or
 
 50
 00:03:18,199 --> 00:03:21,389
 worse on different images and of course
-we're trying to find a way it's that
+we're trying to find weights that
 
 51
 00:03:21,389 --> 00:03:26,209
-give us course that are consistent with
-all the ground truth labels labels and
+give us scores that are consistent with
+all the ground truth labels. All the labels and data.
 
 52
 00:03:26,210 --> 00:03:30,490
-the data and so what we're going to do
+And so what we're going to do
 now is so far with only I believe what I
 
 53
