@@ -131,7 +131,7 @@ nearest neighbor classifier and some more
 27
 00:01:44,810 --> 00:01:48,618
 and K nearest neighbor classifiers and
-I talked about the secret India said
+I talked about the CIFAR-10 dataset
 
 28
 00:01:48,618 --> 00:01:52,938
@@ -141,7 +141,7 @@ with during this class then I introduced
 29
 00:01:52,938 --> 00:01:58,438
 the idea of this approach that I termed
-paratroop approach which is really that
+parametric approach which is really that
 
 30
 00:01:58,438 --> 00:02:03,639
@@ -187,8 +187,8 @@ dataset them just three images here
 
 39
 00:02:32,240 --> 00:02:36,530
-along the columns and we have some
-classes say 10 classes and support n and
+along the columns and we have some classes say 
+10 classes in CIFAR-10
 
 40
 00:02:36,530 --> 00:02:40,740
