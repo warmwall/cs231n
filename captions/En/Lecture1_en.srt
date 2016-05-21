@@ -840,38 +840,38 @@ the of the of the real-world image so
 
 171
 00:19:20,319 --> 00:19:27,779
-that's the beginning of the modern you
-know engineering
+That's the beginning of the modern, you
+know, engineering of vision.
 
 172
 00:19:27,779 --> 00:19:36,170
-vision it started with one team to copy
-the world and wanted to make a copy of
+It's started with wanting to copy
+the world and wanting to make a copy of
 
 173
 00:19:36,170 --> 00:19:42,350
-the visual world it hasn't gone anywhere
-close to wanting to engineer the
+the visual world.
+It hasn't got anywhere close to wanting to engineer the
 
 174
 00:19:42,349 --> 00:19:46,879
-understanding of the visual world right
-now we're just talking about duplicating
+understanding of the visual world.
+Right now, we're just talking about duplicating
 
 175
 00:19:46,880 --> 00:19:53,760
-the visual world so that's one important
+the visual world. so that's one important
 work to remember and of course after
 
 176
 00:19:53,759 --> 00:20:01,299
-camera obscura although we we we start
-to see a whole series of successful in
+camera Obscura that we we we start
+to see a whole series of successful, you
 
 177
 00:20:01,299 --> 00:20:07,539
-all some film gets developed you know
-like kodak was one of the first
+know, some film gets developed, you know
+like Kodak was one of the first
 
 178
 00:20:07,539 --> 00:20:12,329
@@ -880,23 +880,23 @@ and then we start to have camcorders and
 
 179
 00:20:12,329 --> 00:20:21,889
-and and all this very important
+and and all this. Another very important
 important piece of work that I want you
 
 180
 00:20:21,890 --> 00:20:28,050
 to be aware of as vision student is
-absolutely nothing engineering work but
+actually not a engineering work but
 
 181
 00:20:28,049 --> 00:20:32,710
-do you think science piece of science
+science piece of science
 work that's starting to ask the question
 
 182
 00:20:32,710 --> 00:20:38,130
-is how does Visual work in our
-biological bring you know we
+is how does Vision work in our
+biological brain? you know we
 
 183
 00:20:38,130 --> 00:20:45,760
@@ -905,38 +905,38 @@ years of evolution to get to really
 
 184
 00:20:45,759 --> 00:20:54,579
-fantastic visual system in humans but
-what did evolution do during this time
+fantastic visual system in mammals and humans but
+what did evolution do during this time?
 
 185
 00:20:54,579 --> 00:21:01,759
-what kind of architecture did develop
-from that simple trilobite to today
+what kind of architecture did it develop
+from that simple trilobite eye to today
 
 186
 00:21:01,759 --> 00:21:07,950
-yours and mine while very important
-piece of work happened at Harvard lied
+yours and mine? Well, very important
+piece of work happened at Harvard like
 
 187
 00:21:07,950 --> 00:21:12,690
-to that time too young to very young
-ambitious pulls the occupant in the
+two at that time two young two very young
+ambitious post-doc Hubel and Wiesel.
 
 188
 00:21:12,690 --> 00:21:21,500
-vehicle what they did is that they used
+What they did is that they used
 awake but anaesthetized cats and then
 
 189
 00:21:21,500 --> 00:21:28,529
-there was not technology to build this
-little needle electrode to push the
+there was enough technology to build this
+little needle called electrode to push the
 
 190
 00:21:28,529 --> 00:21:35,129
-electrons through to the the the the
-skull is open until the bringing of the
+electrode through into the the the the
+skull is open into the brain of the
 
 191
 00:21:35,130 --> 00:21:42,180
@@ -961,7 +961,7 @@ of course but earliest stage for visual
 195
 00:22:02,369 --> 00:22:07,299
 processing then there is tons and tons
-of new orleans working on vision then we
+of neurons working on vision then we
 
 196
 00:22:07,299 --> 00:22:12,419
