@@ -1324,7 +1324,7 @@ So to continue backpropagation
 269
 00:21:12,259 --> 00:21:20,000
 here and apply chain rule, we would
-receive [STUDENT ANSWER] Okay, so these are most of the rhetorical questions so I'm
+receive... (Student is asking question) Okay, so these are most of the rhetorical questions so I'm
 
 270
 00:21:20,000 --> 00:21:25,119
@@ -1476,11 +1476,11 @@ through that multiply operation
 300
 00:23:55,940 --> 00:24:06,450
 so what will be the gradient for w0 and x0?
-What will be the gradient for w0 specfically?
+What will be the gradient for w0 specifically?
 
 301
 00:24:06,450 --> 00:24:19,059
-[STUDENT ANSWER] Someone say 0? 0 will be wrong. It will be, so the gradient w1 will be, w0 sorry, will be
+Someone say 0? 0 will be wrong. It will be, so the gradient w1 will be, w0 sorry, will be
 
 302
 00:24:19,059 --> 00:24:24,389
@@ -1550,12 +1550,12 @@ means apply chain rule many many times
 315
 00:25:14,150 --> 00:25:21,720
 and we'll see how that is implemented in a bit.
-Sorry, did you have a question? [STUDENT QUESTION]
+Sorry, did you have a question? (Student is asking question)
 
 316
 00:25:21,720 --> 00:25:31,769
 Oh yes, so I'm going to skip that because it's the same.
-So I'm going to skip the other '*' gate. Any other questions at this point? [STUDENT QUESTION]
+So I'm going to skip the other '*' gate. Any other questions at this point? (Student is asking question)
 
 317
 00:25:31,769 --> 00:25:45,869
@@ -1718,7 +1718,7 @@ into single gates if it's very efficient
 349
 00:27:55,829 --> 00:28:06,819
 or easy to derive the local gradients
-because then those become your pieces. [STUDENT QUESTION]
+because then those become your pieces. (Student is asking question)
 
 350
 00:28:06,819 --> 00:28:10,529
@@ -1892,13 +1892,13 @@ the fact that it's not actually
 
 384
 00:30:26,960 --> 00:30:39,150
-nevermind about that part. Go ahead. [STUDENT QUESTION] So your
+nevermind about that part. Go ahead. (Student is asking question) So your
 question is what happens if the two
 
 385
 00:30:39,150 --> 00:30:53,470
 inputs are equal when you go through max
-gate. Yeah, what happens? [STUDENT ANSWER] I don't think it's
+gate. Yeah, what happens? (Student is answering) I don't think it's
 
 386
 00:30:53,470 --> 00:30:57,559
@@ -2062,7 +2062,7 @@ idea is that in the forward pass
 418
 00:33:19,929 --> 00:33:23,759
 we're iterating over all the gates in the circuit
-that, and they're sorted in topological [??]
+that, and they're sorted in topological
 
 419
 00:33:23,759 --> 00:33:27,980
@@ -2136,7 +2136,7 @@ actually more like correct
 
 433
 00:34:16,760 --> 00:34:18,730
-implementation something like this might [??]
+implementation. Something like this might
 run
 
 434
@@ -2147,7 +2147,7 @@ gate and how it could be implemented.
 435
 00:34:23,769 --> 00:34:27,690
 A multiply gate, in this case, is just a
-binary multiply who receives two inputs [??]
+binary multiply, so it receives two inputs
 
 436
 00:34:27,690 --> 00:34:33,780
@@ -2290,7 +2290,7 @@ intermediates to actually compute the
 
 464
 00:36:33,690 --> 00:36:45,289
-proper backward pass. So that's... [STUDENT QUESTION] Yes, so if you don't, if you know you don't want to do backward pass, then you can
+proper backward pass. So that's... (Student is asking question) Yes, so if you don't, if you know you don't want to do backward pass, then you can
 get rid of many of these things and you
 
 465
@@ -2310,7 +2310,7 @@ with that. Usually we end up remembering it
 
 468
 00:36:57,280 --> 00:37:09,370
-anyway. I, yeah. [STUDENT QUESTION] I see. Yes, so I think if you're in the [??]
+anyway. (Student is asking question) I see. Yes, so I think if you're in the
 embedded device for example, and you worry
 
 469
@@ -2331,7 +2331,7 @@ make sure nothing gets cached in case
 472
 00:37:18,750 --> 00:37:33,130
 you want to do a backward pass. Questions.
-Yes. [STUDENT QUESTION] You're saying if we remember the local gradients in
+Yes. (Student is asking question) You're saying if we remember the local gradients in
 
 473
 00:37:33,130 --> 00:37:39,750
@@ -2351,11 +2351,11 @@ But I mean, you're in charge of, remember
 476
 00:37:49,170 --> 00:37:54,950
 whatever you need to, perform the
-backward pass, and on a gate-by-gate basis. You
+backward pass, and on a gate-by-gate basis.
 
 477
 00:37:54,949 --> 00:37:58,509
-don't necce, you can remember whatever [memory footprint??]
+You can remember whatever
 you feel like. It has lower footprint and so on.
 
 478
@@ -2436,7 +2436,7 @@ that function piece knows how to do a
 493
 00:38:58,840 --> 00:39:02,670
 forward and it knows how to do a backward.
-So just [?? For the?] specific example, let's
+So just to view the specific example, let's
 
 494
 00:39:02,670 --> 00:39:10,150
@@ -2456,7 +2456,7 @@ numbers basically, because when we
 497
 00:39:19,300 --> 00:39:22,410
 actually work with these, we do a lot of
-[??] operation so we receive a tensor
+vectorized operation so we receive a tensor
 
 498
 00:39:22,409 --> 00:39:28,289
@@ -2505,7 +2505,7 @@ variable gradInput
 
 507
 00:39:59,690 --> 00:40:03,539
-which you need to compute. That's your gradient [??]
+which it needs to compute. That's your gradient
 that you're passing up. The gradInput is,
 
 508
@@ -2639,7 +2639,7 @@ these implementations and so on?
 
 534
 00:42:00,849 --> 00:42:15,559
-Yes, thank you. [STUDENT QUESTION] So the question is, do we have to go through forward and backward for every update. The answer is yes, because when you want to do update, you need the gradient, and so you need to do forward on your sample minibatch. You do a forward. Right away you do a backward.
+Yes, thank you. (Student is asking question) So the question is, do we have to go through forward and backward for every update. The answer is yes, because when you want to do update, you need the gradient, and so you need to do forward on your sample minibatch. You do a forward. Right away you do a backward.
 And now you have your analytic gradient.
 
 535
@@ -2669,7 +2669,7 @@ backward, update. Forward, backward, update.
 
 540
 00:42:36,318 --> 00:42:51,808
-We'll see that in a bit. Go ahead. [STUDENT QUESTION] You're asking about a
+We'll see that in a bit. Go ahead. (Student is asking question) You're asking about a
 for loop. Oh, is there a for loop here? I didn't even notice. Okay.
 
 541
@@ -2760,7 +2760,7 @@ is an entire Jacobian matrix, so you end up with
 558
 00:44:16,079 --> 00:44:32,130
 an entire matrix-vector multiply to
-actually chain the gradient backwards. [STUDENT QUESTION]
+actually chain the gradient backwards. (Student is asking question)
 
 559
 00:44:32,130 --> 00:44:36,380
@@ -2853,11 +2853,11 @@ right? So the second question is, so this
 577
 00:45:49,460 --> 00:45:52,949
 is a huge matrix, 16 million
-numbers, but why would you never form it? [??]
+numbers, but why would you never form it?
 
 578
 00:45:52,949 --> 00:46:02,719
-What does the Jacobian actually look like? [STUDENT QUESTION] No, Jacobian will always be
+What does the Jacobian actually look like? (Student is asking question) No, Jacobian will always be
 a matrix, because every one of these 4096
 
 579
@@ -2868,7 +2868,7 @@ Jacobian is still a giant 4096 by 4096
 580
 00:46:09,949 --> 00:46:14,558
 matrix, but has special structure, right?
-And what is that special structure? [STUDENT ANSWER]
+And what is that special structure? (Student is answering)
 
 581
 00:46:14,559 --> 00:46:27,420
@@ -2907,8 +2907,8 @@ so you never actually want to carry out
 
 588
 00:46:55,429 --> 00:47:00,808
-this operation as a matrix-vector
-multiply, because (of) their special structure [??]
+this operation as a matrix vector
+multiply, because of their special structure
 
 589
 00:47:00,809 --> 00:47:04,150
@@ -2932,7 +2932,7 @@ set the gradient to 0 in those dimensions.
 
 593
 00:47:17,210 --> 00:47:21,650
-So you take the grid output here, and [??]
+So you take the grad output here, and
 whichever numbers were less than zero,
 
 594
@@ -2942,7 +2942,7 @@ just set them to 0. Set those gradients to 0 and then you continue backward pass
 595
 00:47:25,909 --> 00:47:52,230
 So very simple operations in the
-end in terms of efficiency. [STUDENT QUESTION] That's right. So the question is, the commication between the gates is always just vectors. That's right. So this Jacobian
+end in terms of efficiency. (Student is asking question) That's right. So the question is, the commication between the gates is always just vectors. That's right. So this Jacobian
 
 596
 00:47:52,230 --> 00:47:55,940
@@ -2956,7 +2956,7 @@ what's going back to other gates, they
 
 598
 00:47:59,670 --> 00:48:17,380
-only care about the gradient vector. [STUDENT QUESTION] Yes, so the question is, unless you end up having multiple outputs, because then for each output, we have to do this, so yeah. So
+only care about the gradient vector. (Student is asking question) Yes, so the question is, unless you end up having multiple outputs, because then for each output, we have to do this, so yeah. So
 we'll never actually run into that case
 
 599
@@ -3036,7 +3036,7 @@ be writing SVMs and Softmax and so on, and I just kind of
 
 614
 00:49:30,789 --> 00:49:33,680
-would like to give you a hint on the design [??]
+would like to give you a hint on the design
 of how you actually should approach this
 
 615
@@ -3116,7 +3116,7 @@ tempted to try to just derive W, the
 
 630
 00:50:40,179 --> 00:50:43,798
-gradient on W equals, and then implement [??]
+gradient on W equals, and then implement
 that and that's an unhealthy way of
 
 631
@@ -3181,7 +3181,7 @@ I'm going to go into neural networks. So
 643
 00:51:37,690 --> 00:51:49,860
 any questions before we move on from
-backprop? Go ahead. [STUDENT QUESTION]
+backprop? Go ahead. (Student is asking a question)
 
 644
 00:51:49,860 --> 00:52:03,130
@@ -3196,11 +3196,11 @@ in numpy, so that's going to be some of the
 646
 00:52:06,750 --> 00:52:18,030
 brain teaser stuff that you guys are
-going to have to do. [STUDENT QUESTION] Yes, so it's up to you what you want your gates to be like, and what you want them
+going to have to do. (Student is asking a question) Yes, so it's up to you what you want your gates to be like, and what you want them
 
 647
 00:52:18,030 --> 00:52:24,490
-to be. [STUDENT QUESTION] Yeah, I don't think you'd want to do that.
+to be. (Student is asking a question) Yeah, I don't think you'd want to do that.
 
 648
 00:52:24,489 --> 00:52:30,739
@@ -3477,7 +3477,7 @@ interesting.
 
 703
 00:56:14,719 --> 00:56:49,509
-Was there a question? [STUDENT QUESTION] So the question is, if h had less than 10 units, would it be inferior to a linear classifier? I think that's... that's acutally not obvious to me. It's an interesting question. I think... you could make that work. I think you could make it work. Yeah, I think that would actually work. Someone should try that for extra points in the
+Was there a question? (Student is asking a question) So the question is, if h had less than 10 units, would it be inferior to a linear classifier? I think that's... that's acutally not obvious to me. It's an interesting question. I think... you could make that work. I think you could make it work. Yeah, I think that would actually work. Someone should try that for extra points in the
 assignment. So you'll have a section on the assignment do something fun or extra
 
 704
@@ -3497,11 +3497,11 @@ or not.
 
 707
 00:56:59,659 --> 00:57:08,329
-Any other questions? Go ahead. [STUDENT QUESTION]
+Any other questions? Go ahead. (Student is asking a question)
 
 708
 00:57:08,329 --> 00:57:34,989
-Sorry, I don't think I understood the question. [STUDENT QUESTION] I see. So you're really asking about the layout of the h vector and how it gets allocated over the different modes of
+Sorry, I don't think I understood the question. (Student is asking a question) I see. So you're really asking about the layout of the h vector and how it gets allocated over the different modes of
 the dataset and I don't have a good
 
 709
@@ -3561,7 +3561,7 @@ be as big as possible, as it fits in your
 720
 00:58:22,739 --> 00:58:30,659
 computer and so on, so more is better. So we'll go
-into that. Go ahead. [STUDENT QUESTION]
+into that. Go ahead. (Student is asking a question)
 
 721
 00:58:30,659 --> 00:58:38,639
@@ -3656,7 +3656,7 @@ layer activations, but this is using
 739
 00:59:50,139 --> 00:59:54,069
 a sigmoid nonlinearity not a max of 0 and X.
-And we'll go into a bit of what [??]
+And we'll go into a bit of what
 
 740
 00:59:54,070 --> 00:59:58,650
@@ -3750,7 +3750,7 @@ forward pass, we do backward pass, we do an
 
 758
 01:01:11,019 --> 01:01:18,840
-update, we keep iterating this over and over again. Go ahead. [STUDENT QUESTION]
+update, we keep iterating this over and over again. Go ahead. (Student is asking a question)
 The random function is creating your first initial random
 
 759
@@ -3888,8 +3888,8 @@ idea about where this is all coming from
 
 786
 01:03:11,880 --> 01:03:17,220
-you have the cell body or a Soma as pople like to [??]
-call it and it's got all these dendrites
+you have the cell body or a Soma as people like to
+call it, and it's got all these dendrites
 
 787
 01:03:17,219 --> 01:03:21,049
@@ -4536,7 +4536,7 @@ network? If I want the neural network
 
 917
 01:12:45,569 --> 01:12:51,889
-to correctly classify this, how many neurons do I need in the hidden layer as a minimum? [STUDENT ANSWER]
+to correctly classify this, how many neurons do I need in the hidden layer as a minimum? (Student is answering)
 
 918
 01:12:51,890 --> 01:13:15,270
@@ -4576,7 +4576,7 @@ lines, you can carve out the space so
 925
 01:13:45,649 --> 01:13:52,429
 that the second layer can just combine
-them when their numbers are 1 and not 0. [STUDENT QUESTION]
+them when their numbers are 1 and not 0. (Student is asking question)
 
 926
 01:13:52,430 --> 01:13:57,850
@@ -4585,7 +4585,7 @@ because two lines are not enough. I
 
 927
 01:13:57,850 --> 01:14:03,900
-suppose this works something [??] Not going to look very good
+suppose this works... Not going to look very good
 here. So with two, basically it will find
 
 928
@@ -4595,7 +4595,7 @@ lines. They're kind of creating this
 
 929
 01:14:07,239 --> 01:14:14,599
-tunnel and that's the best you can do. Okay? [STUDENT QUESTION]
+tunnel and that's the best you can do. Okay? (Student is asking question)
 
 930
 01:14:14,600 --> 01:14:31,300
@@ -4604,7 +4604,7 @@ The curve, I think... Which nonlinearity am I using? tanh? Yeah, I'm not sure ex
 931
 01:14:31,300 --> 01:14:50,460
 think you'd see sharp boundaries. Yeah.
-Yes, this is three. You can do four. So let's do... [STUDENT QUESTION] Yeah, that's because
+Yes, this is three. You can do four. So let's do... (Student is asking question) Yeah, that's because
 
 932
 01:14:50,460 --> 01:14:52,130
@@ -4643,11 +4643,11 @@ doing this update, it  will just go in there
 939
 01:15:22,390 --> 01:15:32,800
 and figure that out. Very simple data
-that is not. Spiral. Circle, and then random
+that is not. Spiral. Circle, and then random...
 
 940
 01:15:32,800 --> 01:15:39,880
-so random data, so you could, kind of goes in [??] 
+so random data, and so you could, kind of goes in
 there, like covers up the green
 
 941
@@ -4741,7 +4741,7 @@ amount of time, you don't want to wait forever to train your
 959
 01:17:09,920 --> 01:17:19,980
 networks. You'll use smaller ones for practical
-reasons. Question? [STUDENT QUESTION] Do you regularize each layer equally.
+reasons. Question? (Student is asking question) Do you regularize each layer equally.
 
 960
 01:17:19,979 --> 01:17:25,509
@@ -4755,11 +4755,11 @@ be regularized the same way throughout.
 
 962
 01:17:28,029 --> 01:17:33,809
-But you don't have to necessarily. Go ahead.
+But you don't have to necessarily. Go ahead. (Student is asking question)
 
 963
 01:17:33,810 --> 01:17:40,500
-Is there any value to use in second derivatives using hashing in [??]
+Is there any value to using second derivatives using hashing in
 optimizing neural networks? There is value
 
 964
@@ -4789,7 +4789,7 @@ have to do full batch by default. Question.
 
 969
 01:18:01,970 --> 01:18:16,650
-[STUDENT QUESTION] So what is the tradeoff between depth and size roughly, like how do you allocate? Not a good
+(Student is asking question) So what is the tradeoff between depth and size roughly, like how do you allocate? Not a good
 answer for that unfortunately. So you
 
 970
@@ -4804,7 +4804,7 @@ one more minute so I can still take some
 
 972
 01:18:25,220 --> 01:18:35,990
-questions. You had a question. [??] [STUDENT QUESTION] Yeah, so the
+questions. You had a question for a while. (Student is asking question) Yeah, so the
 tradeoff between where do I allocate my
 
 973
@@ -4814,7 +4814,7 @@ I want it to be wider, not a very good
 
 974
 01:18:40,020 --> 01:18:47,860
-answer to that. [STUDENT QUESTION] Yes, usually, especially
+answer to that. (Student is asking question)  Yes, usually, especially
 with images, we find that more layers are
 
 975
@@ -4829,7 +4829,7 @@ critical, and so it's kind of slightly
 
 977
 01:18:55,359 --> 01:19:01,670
-data dependent. We had a question over there. [STUDENT QUESTION]
+data dependent. We had a question over there. (Student is asking question)
 
 978
 01:19:01,670 --> 01:19:10,050
@@ -4864,5 +4864,3 @@ a lot more neural networks, so a lot of
 984
 01:19:29,789 --> 01:19:31,238
 these questions we'll go through them.
-
-
