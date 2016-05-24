@@ -19,9 +19,9 @@ permalink: /classification/
 
 ## Image Classification(이미지 분류)
 
-**동기**. 이 섹션에서는 이미지 분류 문제에 대해 다룰 것이다. 이미지 분류 문제란, 입력 이미지를 미리 정해진 카테고리 중 하나인 라벨로 분류하는 문제다. 문제 정의는 매우 간단하지만 다양한 활용 가능성이 있는 컴퓨터 비전 분야의 핵심적인 문제 중의 하나이다. 강의의 나중 파트에서도 살펴보겠지만, 이미지 분류와 멀어보이는 다른 컴퓨터 비전 분야의 여러 문제들 (물체 검출, 영상 분할 등)이 영상 분류 문제를 푸는 것으로 인해 해결될 수 있다.
+**동기**. 이 섹션에서는 이미지 분류 문제에 대해 다룰 것이다. 이미지 분류 문제란, 입력 이미지를 미리 정해진 카테고리 중 하나인 라벨로 분류하는 문제다. 문제 정의는 매우 간단하지만 다양한 활용 가능성이 있는 컴퓨터 비전 분야의 핵심적인 문제 중의 하나이다. 강의의 나중 파트에서도 살펴보겠지만, 이미지 분류와 멀어보이는 다른 컴퓨터 비전 분야의 여러 문제들 (물체 검출, 영상 분할 등)이 이미지 분류 문제를 푸는 것으로 인해 해결될 수 있다.
 
-**예시**. 예를 들어, 아래 그림의 이미지 분류 모델은 하나의 이미지와 4개의 분류가능한 라벨 *{cat, dog, hat, mug}*  이 있다. 그림에서 보다시피, 컴퓨터에서 이미지는 3차원 배열로 표현된다. 이 예시에서 고양이 이미지는 가로 248픽셀(모니터의 화면을 구성하는 최소 단위, 역자 주), 세로 400픽셀로 구성되어 있고 3개의 색상 채널이 있는데 각각 Red, Green, Blue(RGB)로 불린다. 따라서 이 이미지는 248 x 400 x 3개(총 297,500개)의 픽셀로 구성되어 있다. 각 픽셀의 값은 0~255 범위의 정수값이다. 이미지 분류 문제는 이 수많은 값들을 *"cat"* 이라는 하나의 라벨로 변경하는 것이다.
+**예시**. 예를 들어, 아래 그림의 이미지 분류 모델은 하나의 이미지와 4개의 분류가능한 라벨 *{cat, dog, hat, mug}*  이 있다. 그림에서 보다시피, 컴퓨터에서 이미지는 3차원 배열로 표현된다. 이 예시에서 고양이 이미지는 가로 248픽셀(모니터의 화면을 구성하는 최소 단위, 역자 주), 세로 400픽셀로 구성되어 있고 Red, Green, Blue(RGB) 3개의 색상 채널이 있다. 따라서 이 이미지는 248 x 400 x 3개(총 297,500개)의 픽셀로 구성되어 있다. 각 픽셀의 값은 0~255 범위의 정수값이다. 이미지 분류 문제는 이 수많은 값들을 *"cat"* 이라는 하나의 라벨로 변경하는 것이다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/classify.png">
@@ -33,7 +33,7 @@ permalink: /classification/
 - **Viewpoint variation(시점 변화)**. 객체의 단일 인스턴스는 카메라에 의해 시점이 달라질 수 있다.
 - **Scale variation(크기 변화)**. 비주얼 클래스는 대부분 그것들의 크기의 변화를 나타낸다(이미지의 크기뿐만 아니라 실제 세계에서의 크기까지 포함함).
 - **Deformation(변형)**. 많은 객체들은 고정된 형태가 없고, 극단적인 형태로 변형될 수 있다.
-- **Occlusion(폐색)**. 객체들은 전체가 보이지 않을 수 있다. 때로는 물체의 매우 적은 부분(매우 적은 픽셀)이 보인다.
+- **Occlusion(폐색)**. 객체들은 전체가 보이지 않을 수 있다. 때로는 물체의 매우 적은 부분(매우 적은 픽셀)만이 보인다.
 - **Illumination conditions(조명 상태)**. 조명의 영향으로 픽셀 값이 변형된다.
 - **Background clutter(배경 분규)**. 객체가 주변 환경에 섞여(*blend*) 알아보기 힘들게 된다.
 - **Intra-class variation(내부클래스의 다양성)**. 분류해야할 클래스는 범위가 큰 것들이 많다. 예를 들어 *의자* 의 경우, 매우 다양한 형태의 객체가 있다.
@@ -48,48 +48,48 @@ permalink: /classification/
 **Data-driven approach(데이터 기반 방법론)**. 어떻게 하면 이미지를 각각의 카테고리로 분류하는 알고리즘을 작성할 수 있을까? 숫자를 정렬하는 알고리즘 작성과는 달리 고양이를 분별하는 알고리즘을 작성하는 것은 어렵다.
 
  그러므로, 코드를 통해 직접적으로 모든 것을 카테고리로 분류하기 보다는 좀 더 쉬운 방법을 사용할 것이다. 먼저 컴퓨터에게 각 클래스에 대해 많은 예제를 주고 나서 이 예제들을 보고 시각적으로 학습할 수 있는 학습 알고리즘을 개발한다.
- 이런 방법을 *data-driven approach(데이터 기반  아법론)* 이라고 한다. 이 방법은 라벨화가 된 이미지들 *training dataset(트레이닝 데이터 셋)* 이 처음 학습을 위해 필요하다. 아래 그림은 이런 데이터셋의 예이다.
+ 이런 방법을 *data-driven approach(데이터 기반  방법론)* 이라고 한다. 이 방법은 라벨화가 된 이미지들 *training dataset(학습 데이터셋)* 이 처음 학습을 위해 필요하다. 아래 그림은 이런 데이터셋의 예이다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/trainset.jpg">
-  <div class="figcaption">4개의 카테고리에 대한 트레이닝 셋에 대한 예. 학습과정에서 천여개의 카테고리와 각 카테고리당 수십만개의 이미지가 있을 수 있다.</div>
+  <div class="figcaption">4개의 카테고리에 대한 학습 데이터셋에 대한 예. 학습과정에서 천여 개의 카테고리와 각 카테고리당 수십만 개의 이미지가 있을 수 있다.</div>
 </div>
 
-**The image classification pipeline(이미지 분류 파이프라인)**. 이제까지 이미지 분류는 픽셀값을 같고 있는 배열은 하나의 이미지로 표현하고 라벨을 할당하는 것이다라는 것을 살펴봤다. 우리의 완전한 파이프라인은 아래와 같이 공식화할 수 있다:
+**The image classification pipeline(이미지 분류 파이프라인)**. 이미지 분류 문제란, 이미지를 픽셀들의 배열로 표현하고 각 이미지에 라벨을 하나씩 할당하는 문제라는 것을 이제까지 살펴보았다. 완전한 파이프라인은 아래와 같이 공식화할 수 있다:
 
 - **Input(입력):** 입력은 *N* 개의 이미지로 구성되어 있고, *K* 개의 별개의 클래스로 라벨화 되어 있다. 이 데이터를 *training set* 으로 사용한다.
 - **Learning(학습):** 학습에서 할 일은 트레이닝 셋을 이용해 각각의 클래스를 학습하는 것이다. 이 과정을 *training a classifier* 혹은 *learning a model* 이란 용어를 사용해 표현할 수 있다.
-- **Evaluation(평가):** 마지막으로 새로운 이미지에 대해 어떤 라벨값으로 분류되는지 예측해봄으로써 분류기의 성능을 평가한다. 새로운 이미지의 라벨값과 분류기를 통해 예측된 라벨값을 비교할 수 있다. 직감적으로, 많은 예상치들이 실제 답과 일치하기를 기대한다. 이 것을 *ground truth(실측 자료)* 라고 한다.
+- **Evaluation(평가):** 마지막으로 새로운 이미지에 대해 어떤 라벨로 분류되는지 예측해봄으로써 분류기의 성능을 평가한다. 새로운 이미지의 라벨과 분류기를 통해 예측된 라벨을 비교할 것이다. 직관적으로, 많은 예상치들이 실제 답과 일치하기를 기대하는 것이고, 이 것을 우리는 *ground truth(실측 자료)* 라고 한다.
 
 <a name='nn'></a>
 
 ## Nearest Neighbor Classifier(최근접 이웃 분류기)
 
-첫번째 방법으로써, **Nearest Neighbor Classifier** 라 불리는 분류기를 개발할 것이다. 이 분류기는 컨볼루션 신경망 방법이 사용되지 않고 연습과정애서 매우 드물게 사용된다. 하지만 이 분류기는 이미지 분류 문제에 대한 기본적인 접근방법을 알 수 있다.
+첫번째 방법으로써, **Nearest Neighbor Classifier** 라 불리는 분류기를 개발할 것이다. 이 분류기는 컨볼루션 신경망 방법과는 아무 상관이 없고 실제 문제를 풀 때 자주 사용되지는 않지만, 이미지 분류 문제에 대한 기본적인 접근 방법을 알 수 있도록 한다.
 
-**이미지 분류 데이터셋의 예: CIFAR-10.** 하나의 유명한 이미지 분류 데이터셋은 <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 이다. 이 데이터셋은 60,000개의 작은 이미지로 구성되어 있고, 각 이미지는 32x32픽셀 크기있다. 각 이미지는 10개의 클래스중 하나로 라벨화되어 있다(예를 들어, *"airplane, automobile, bird, etc"*). 이 60,000개의 이미지 중에 50,000개는 트레이싱 셋, 10,000개는 트레이닝 셋으로 분류된다. 아래의 그림에서 각 10개의 클래스에 대해 임의로 선정한 10개의 이미지들의 예를 볼 수 있다:
+**이미지 분류 데이터셋의 예: CIFAR-10.** 간단하면서 유명한 이미지 분류 데이터셋 중의 하나는 <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 이다. 이 데이터셋은 60,000개의 작은 이미지로 구성되어 있고, 각 이미지는 32x32 픽셀 크기이다. 각 이미지는 10개의 클래스중 하나로 라벨링되어 있다(Ex. *"airplane, automobile, bird, etc"*). 이 60,000개의 이미지 중에 50,000개는 학습 데이터셋 (트레이닝 셋), 10,000개는 테스트 (데이터)셋으로 분류된다. 아래의 그림에서 각 10개의 클래스에 대해 임의로 선정한 10개의 이미지들의 예를 볼 수 있다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn.jpg">
-  <div class="figcaption">좌: <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 의 각 클래스 예. 우: 첫번째 열은 테스트 셋이고 나머지 열은 이 테스트셋에 대해서 트레이닝 셋에 있는 이미지 중 픽셀값 차에 따른 상위 10개의 최근접 이웃 이미지이다.</div>
+  <div class="figcaption">좌: <a href="http://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10 dataset</a> 의 각 클래스 예. 우: 첫번째 열은 테스트 셋이고 나머지 열은 이 테스트 셋에 대해서 트레이닝 셋에 있는 이미지 중 픽셀값 차에 따른 상위 10개의 최근접 이웃 이미지이다.</div>
 </div>
 
-50,000개의 CIFAR-10 트레이닝 셋(하나의 라벨 당 5,000개의 이미지)이 주어진 상태에서 나머지 10,000개의 이미지에 대해 라벨화 하는 것을 가정해보자. 최근접 이웃 분류기는 테스트 이미지를 취해 모든 트레이닝 이미지와 비교를 하고 라벨 값을 예상할 것이다. 상단 이미지의 우측과 같이 10개의 테스트 이미지에 대한 결과를 확인할 수 있다. 10개의 이미지 중 3개만이 같은 클래스로 검색된 반면에, 7개의 이미지는 같은 클래스로 분류되지 않았다. 예를 들어, 8번째 행의 말 학습 이미지에 대한 첫번째 최근접 이웃 이미지는 붉은색의 차이다. 짐작컨데 이 경우는 검은색 배경의 영향이 큰 듯 하다. 결과적으로, 이 말 이미지는 차로 잘 못 분류될 것이다.
+50,000개의 CIFAR-10 트레이닝 셋(하나의 라벨 당 5,000개의 이미지)이 주어진 상태에서 나머지 10,000개의 이미지에 대해 라벨화 하는 것을 가정해보자. 최근접 이웃 분류기는 테스트 이미지를 취해 모든 학습 이미지와 비교를 하고 라벨 값을 예상할 것이다. 상단 이미지의 우측과 같이 10개의 테스트 이미지에 대한 결과를 확인해보면, 10개의 이미지 중 3개만이 같은 클래스로 검색된 반면, 7개의 이미지는 같은 클래스로 분류되지 않았다. 예를 들어, 8번째 행의 말 학습 이미지에 대한 첫번째 최근접 이웃 이미지는 붉은색의 차이다. 짐작컨데 이 경우는 검은색 배경의 영향이 큰 듯 하다. 결과적으로, 이 말 이미지는 차로 잘못 분류될 것이다.
 
-두개의 이미지를 비교하는 정확한 방법을 아직 명시하지 않았는데, 이 경우에는 32 x 32 x 3 크기의 두 블록이다. 가장 간단한 방법 중 하나는 이미지를 각각의 픽셀값으로 비교하고, 그 차이를 더해 모두 더하는 것이다. 다시 말해서 두 개의 이미지가 주어지고 그 것들을 $$ I_1, I_2 $$ 벡터로 나타냈을 때, 벡터 간의 **L1 distance(L1 거리)** 를 계산하는 것이 적절한 방법이다:
+두개의 이미지(이 경우에는 32 x 32 x 3 크기의 두 블록)를 비교하는 정확한 방법을 아직 명시하지 않았다는 점을 눈치챘을 것이다. 가장 간단한 방법 중 하나는 이미지를 각각의 픽셀값으로 비교하고, 그 차이를 모두 더하는 것이다. 다시 말해서 두 개의 이미지가 주어지고 그 것들을 $$ I_1, I_2 $$ 벡터로 나타냈을 때, 벡터 간의 **L1 distance(L1 거리)** 를 계산하는 것이 한 가지 방법이다:
 
 $$
 d_1 (I_1, I_2) = \sum_{p} \left| I^p_1 - I^p_2 \right|
 $$
 
-결과는 모든 픽셀값 차이의 합이다. 아래에 시각적인 절차가 있다:
+결과는 모든 픽셀값 차이의 합이다. 아래에 그 과정을 시각화 하였다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nneg.jpeg">
-  <div class="figcaption">An example of using pixel-wise differences to compare two images with L1 distance (for one color channel in this example). Two images are subtracted elementwise and then all differences are added up to a single number. If two images are identical the result will be zero. But if the images are very different the result will be large.</div>
+  <div class="figcaption">두 개의 이미지를 (각각의 색 채널마다의) L1 거리를 이용해서 비교할 때, 각 픽셀마다의 차이를 사용하는 예시. 두 이미지 벡터(행렬)의 각 성분마다 차를 계산하고, 그 차를 전부 더해서 하나의 숫자를 얻는다. 두 이미지가 똑같을 경우에는 결과가 0일 것이고, 두 이미지가 매우 다르다면 결과값이 클 것이다.</div>
 </div>
 
-분류기를 코드상에서 어떻게 구현하는 과정을 살펴보자. 첫번째로 CIFAR-10 데이터를 4개의 배열을 통해 메모리로 불러온다. 각각은 트레이닝 데이터와 라벨, 테스트 데이터와 라벨이다. 아래 코드에 `Xtr`(크기 50,000 x 32 x 32 x 3)은 트레이닝 셋의 모든 이미지를 저장하고 1차원 배열인 `Ytr`(길이 50,000)은 트레이닝 데이터의 라벨을 저장한다.
+다음으로, 분류기를 실제로 코드 상에서 어떻게 구현하는지 살펴보자. 첫 번째로 CIFAR-10 데이터를 메모리로 불러와 4개의 배열에 저장한다. 각각은 학습(트레이닝) 데이터와 그 라벨, 테스트 데이터와 그 라벨이다. 아래 코드에 `Xtr`(크기 50,000 x 32 x 32 x 3)은 트레이닝 셋의 모든 이미지를 저장하고 1차원 배열인 `Ytr`(길이 50,000)은 트레이닝 데이터의 라벨(0부터 9까지)을 저장한다.
 
 ~~~python
 Xtr, Ytr, Xte, Yte = load_CIFAR10('data/cifar10/') # 제공되는 함수
@@ -101,15 +101,15 @@ Xte_rows = Xte.reshape(Xte.shape[0], 32 * 32 * 3) # Xte_rows는 10000 x 3072 크
 이제 모든 이미지를 배열의 각 행들로 얻었다. 아래에는 분류기를 어떻게 학습시키고 평가하는지에 대한 코드이다:
 
 ~~~python
-nn = NearestNeighbor() # create a Nearest Neighbor classifier class
-nn.train(Xtr_rows, Ytr) # train the classifier on the training images and labels
-Yte_predict = nn.predict(Xte_rows) # predict labels on the test images
-# and now print the classification accuracy, which is the average number
-# of examples that are correctly predicted (i.e. label matches)
+nn = NearestNeighbor() # Nearest Neighbor 분류기 클래스 생성
+nn.train(Xtr_rows, Ytr) # 학습 이미지/라벨을 활용하여 분류기 학습
+Yte_predict = nn.predict(Xte_rows) # 테스트 이미지들에 대해 라벨 예측
+# 그리고 분류 성능을 프린트한다
+# 정확도는 이미지가 올바르게 예측된 비율로 계산된다 (라벨이 같을 비율)
 print 'accuracy: %f' % ( np.mean(Yte_predict == Yte) )
 ~~~
 
-일반적으로 평가 기준으로서 **accuracy(정확도)** 를 사용한다. 정확도는 예측값이 얼마나 일치한지 비율을 측정한다. 앞으로 만들어 볼 모든 분류기는 공통적인 API를 갖는다: 그것들은 데이터(X)와 데이터가 실제로 속하는 라벨(y)을 입력으로 받는 `train(X,y)` 형태의 함수가 있다. 내부적으로는 클래스는 특정한 종류의 라벨에 대한 모델과 그 값들이 데이터로부터 어떻게 예측될 수 있는지 만들어야 한다. 그 이후에 새로운 데이터로 부터 라벨을 예측하는 `predict(X)` 형태의 함수가 있다. 물론, 아직은 실제로 분류기가 작동하는 부분은 빠져있다. 이제 L1 거리를 이용한 간단한 최근접 이웃 분류기에 대한 구현방법을 소개한다:
+일반적으로 평가 기준으로서 **accuracy(정확도)** 를 사용한다. 정확도는 예측값이 실제와 얼마나 일치하는지 그 비율을 측정한다. 앞으로 만들어볼 모든 분류기는 공통적인 API를 갖게 될 것이다: 데이터(X)와 데이터가 실제로 속하는 라벨(y)을 입력으로 받는 `train(X,y)` 형태의 함수가 있다는 점이다. 내부적으로, 이 함수는 라벨들을 활용하여 어떤 모델을 만들어야 하고, 그 값들이 데이터로부터 어떻게 예측될 수 있는지를 알아야 한다. 그 이후에는 새로운 데이터로 부터 라벨을 예측하는 `predict(X)` 형태의 함수가 있다. 물론, 아직까지는 실제 분류기 자체가 빠져있다. 다음은 앞의 형식을 만족하는 L1 거리를 이용한 간단한 최근접 이웃 분류기의 구현이다:
 
 ~~~python
 import numpy as np
@@ -120,31 +120,31 @@ class NearestNeighbor(object):
 
   def train(self, X, y):
     """ X is N x D where each row is an example. Y is 1-dimension of size N """
-    # the nearest neighbor classifier simply remembers all the training data
+    # nearest neighbor 분류기는 단순히 모든 학습 데이터를 기억해둔다.
     self.Xtr = X
     self.ytr = y
 
   def predict(self, X):
     """ X is N x D where each row is an example we wish to predict label for """
     num_test = X.shape[0]
-    # lets make sure that the output type matches the input type
+    # 출력 type과 입력 type이 갖게 되도록 확인해준다.
     Ypred = np.zeros(num_test, dtype = self.ytr.dtype)
 
     # loop over all test rows
     for i in xrange(num_test):
-      # find the nearest training image to the i'th test image
-      # using the L1 distance (sum of absolute value differences)
+      # i번째 테스트 이미지와 가장 가까운 학습 이미지를
+      # L1 거리(절대값 차의 총합)를 이용하여 찾는다.
       distances = np.sum(np.abs(self.Xtr - X[i,:]), axis = 1)
-      min_index = np.argmin(distances) # get the index with smallest distance
-      Ypred[i] = self.ytr[min_index] # predict the label of the nearest example
+      min_index = np.argmin(distances) # 가장 작은 distance를 갖는 인덱스를 찾는다.
+      Ypred[i] = self.ytr[min_index] # 가장 가까운 이웃의 라벨로 예측
 
     return Ypred
 ~~~
 
-이 코드를 실행해보면 이 분류기는 CIFAR-10에 대해 정확도가 **38.6%** 밖에 되지 않다는 것을 확인할 수 있다. 임의로 답을 결정하는 것(10개의 클래스가 있을 때 10%의 정확도)보다는 낫지만, 사람의 반응([약 94%](http://karpathy.github.io/2011/04/27/manually-classifying-cifar10/))이나 최신 컨볼루션 신경망의 성능(약 95%)에는 훨씬 미치지 못한다(최근 Kaggle 대회 [순위표](http://www.kaggle.com/c/cifar-10/leaderboard) 참고).
+이 코드를 실행해보면 이 분류기는 CIFAR-10에 대해 정확도가 **38.6%** 밖에 되지 않는다는 것을 확인할 수 있다. 임의로 답을 결정하는 것(10개의 클래스가 있으므로 10%의 정확도)보다는 낫지만, 사람의 정확도([약 94%](http://karpathy.github.io/2011/04/27/manually-classifying-cifar10/))나 최신 컨볼루션 신경망의 성능(약 95%)에는 훨씬 미치지 못한다(최근 Kaggle 대회 [순위표](http://www.kaggle.com/c/cifar-10/leaderboard) 참고).
 
-**거리 선택**
-벡터간의 거리를 계산하는 방법은 많다. 다른 일반적인 선택으로는 두 벡터간의 유클리디안 거리를 계산하는 기하학적인 방법인 **L2 distance(L2 거리)** 의 사용을 고려해볼 수 있다.  이 거리는 아래의 식으로 얻는다:
+**거리(distance) 선택**
+벡터간의 거리를 계산하는 방법은 L1 거리 외에도 매우 많다. 또 다른 일반적인 선택으로, 기하학적으로 두 벡터간의 유클리디안 거리를 계산하는 것으로 해석할 수 있는 **L2 distance(L2 거리)** 의 사용을 고려해볼 수 있다. 이 거리의 계산 방식은 다음과 같다:
 
 $$
 d_2 (I_1, I_2) = \sqrt{\sum_{p} \left( I^p_1 - I^p_2 \right)^2}
@@ -179,7 +179,7 @@ In practice, you will almost always want to use k-Nearest Neighbor. But what val
 The k-nearest neighbor classifier requires a setting for *k*. But what number works best? Additionally, we saw that there are many different distance functions we could have used: L1 norm, L2 norm, there are many other choices we didn't even consider (e.g. dot products). These choices are called **hyperparameters** and they come up very often in the design of many Machine Learning algorithms that learn from data. It's often not obvious what values/settings one should choose.
 
 You might be tempted to suggest that we should try out many different values and see what works best. That is a fine idea and that's indeed what we will do, but this must be done very carefully. In particular, **we cannot use the test set for the purpose of tweaking hyperparameters**. Whenever you're designing Machine Learning algorithms, you should think of the test set as a very precious resource that should ideally never be touched until one time at the very end. Otherwise, the very real danger is that you may tune your hyperparameters to work well on the test set, but if you were to deploy your model you could see a significantly reduced performance. In practice, we would say that you **overfit** to the test set. Another way of looking at it is that if you tune your hyperparameters on the test set, you are effectively using the test set as the training set, and therefore the performance you achieve on it will be too optimistic with respect to what you might actually observe when you deploy your model. But if you only use the test set once at end, it remains a good proxy for measuring the **generalization** of your classifier (we will see much more discussion surrounding generalization later in the class).
-
+당신은
 > Evaluate on the test set only a single time, at the very end.
 
 Luckily, there is a correct way of tuning the hyperparameters and it does not touch the test set at all. The idea is to split our training set in two: a slightly smaller training set, and what we call a **validation set**. Using CIFAR-10 as an example, we could for example use 49,000 of the training images for training, and leave 1,000 aside for validation. This validation set is essentially used as a fake test set to tune the hyper-parameters.
