@@ -150,71 +150,72 @@ $$
 d_2 (I_1, I_2) = \sqrt{\sum_{p} \left( I^p_1 - I^p_2 \right)^2}
 $$
 
-In other words we would be computing the pixelwise difference as before, but this time we square all of them, add them up and finally take the square root. In numpy, using the code from above we would need to only replace a single line of code. The line that computes the distances:
+즉, 이전처럼 각 픽셀간의 차를 구하지만 각각에 제곱을 취하고, 전부 더한 다음에 최종적으로 제곱근을 취한다. NumPy를 사용한다면 위 코드를 사용하여 거리를 계산하는 아래의 코드 부분 딱 한 줄만 바꾸면 된다.
 
 ~~~python
 distances = np.sqrt(np.sum(np.square(self.Xtr - X[i,:]), axis = 1))
 ~~~
 
-Note that I included the `np.sqrt` call above, but in a practical nearest neighbor application we could leave out the square root operation because square root is a *monotonic function*. That is, it scales the absolute sizes of the distances but it preserves the ordering, so the nearest neighbors with or without it are identical. If you ran the Nearest Neighbor classifier on CIFAR-10 with this distance, you would obtain **35.4%** accuracy (slightly lower than our L1 distance result).
+위 코드에서는 `np.sqrt` 함수를 호출하는 것을 그대로 남겨두었지만, 제곱근 함수는 단조 함수이기 때문에 실제 nearest neighbor 응용에서 제곱근은 빼도 결과에 상관이 없다. 즉, 계산되는 거리들의 크기에는 차이가 생기겠지만 그 순서는 동일하기 때문에, 제곱근 함수를 포함할 때와 포함하지 않을 때의 nearest neighbor(최근접 이웃)는 동일하다. 이 거리 함수를 사용하여 Nearest Neighbor 분류기를 CIFAR-10 데이터셋에 돌린다면, **35.4%** 정확도를 얻을 수 있다 (L1 거리를 사용한 결과보다 조금 낮아졌다).
 
-**L1 vs. L2.** It is interesting to consider differences between the two metrics. In particular, the L2 distance is much more unforgiving than the L1 distance when it comes to differences between two vectors. That is, the L2 distance prefers many medium disagreements to one big one. L1 and L2 distances (or equivalently the L1/L2 norms of the differences between a pair of images) are the most commonly used special cases of a [p-norm](http://planetmath.org/vectorpnorm).
+**L1 vs. L2.** 두 거리 함수의 특징을 비교하는 것은 매우 흥미로운 주제이다. 일반적으로, L2 거리는 L1 거리에 비해 두 벡터간의 차가 커지는 것에 대해 훨씬 더 크게 반응한다. 즉, L2 거리는 하나의 큰 차이가 있는 것보다 여러 개의 적당한 차이가 생기는 것을 선호한다. L1/L2 거리(또는 두 이미지의 차에 대한 L1/L2 norm)는 일반적인 [p-norm](http://planetmath.org/vectorpnorm)의 형태 중 가장 많이 사용되는 두 가지이다.
 
 <a name='knn'></a>
 
-## k - Nearest Neighbor Classifier
+## k - Nearest Neighbor (kNN) 분류기
 
-You may have noticed that it is strange to only use the label of the nearest image when we wish to make a prediction. Indeed, it is almost always the case that one can do better by using what's called a **k-Nearest Neighbor Classifier**. The idea is very simple: instead of finding the single closest image in the training set, we will find the top **k** closest images, and have them vote on the label of the test image. In particular, when *k = 1*, we recover the Nearest Neighbor classifier. Intuitively, higher values of **k** have a smoothing effect that makes the classifier more resistant to outliers:
+여태까지 예측을 할 때 가장 가까운 이미지의 라벨만을 사용하는 것을 이상하다고 생각할 수도 있을 것이다. 확실히, **k-Nearest Neighbor Classifier (kNN 분류기)** 라는 것을 사용한다면 거의 무조건 더 분류를 잘 할 수 있다. 아이디어는 매우 간단하다: 학습 데이터셋에서 가장 가까운 하나의 이미지만을 찾는 것이 아니라, 가장 가까운 **k** 개의 이미지를 찾아서 테스트 이미지의 라벨에 대해 투표하도록 하는 것이다. 여기서 *k = 1* 인 경우, 원래의 Nearest Neighbor 분류기가 된다. 직관적으로 **k** 값이 커질수록 분류기는 이상점(outlier)에 더 강인하고, 분류 경계가 부드러워지는 효과가 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/knn.jpeg">
-  <div class="figcaption">An example of the difference between Nearest Neighbor and a 5-Nearest Neighbor classifier, using 2-dimensional points and 3 classes (red, blue, green). The colored regions show the <b>decision boundaries</b> induced by the classifier with an L2 distance. The white regions show points that are ambiguously classified (i.e. class votes are tied for at least two classes). Notice that in the case of a NN classifier, outlier datapoints (e.g. green point in the middle of a cloud of blue points) create small islands of likely incorrect predictions, while the 5-NN classifier smooths over these irregularities, likely leading to better <b>generalization</b> on the test data (not shown). Also note that the gray regions in the 5-NN image are caused by ties in the votes among the nearest neighbors (e.g. 2 neighbors are red, next two neighbors are blue, last neighbor is green).</div>
+  <div class="figcaption">Nearest Neighbor 분류기와 5-Nearest Neighbor 분류기의 차이 예시. 2차원 점과 3개의 클래스(라벨: red, blue, green)를 사용하였다. 색칠된 부분들은 L2 거리를 사용한 분류기를 통해 정해진 <b>결정 경계(decision boundaries)</b>이다. 흰색 부분들은 애매하게 분류(투표를 가장 많이 받은 라벨이 여러 개 있는 경우)된 점들을 나타낸다. NN 분류기의 경우 이상점들(e.g. 수많은 파란 점들 가운데에 있는 하나의 초록색 점)이 실제 결과와 맞지 않을 가능성이 큰 섬들을 형성하지만, 5-NN 분류기는 이런 조그만한 섬들이 생기지 않도록 부드럽게 이어주는 것을 확인하자. 이런 특성이 실제 테스트 데이터(그림에는 없음)에 적용할 때는 더 나은 <b>일반화(generalization)</b> 성능을 보인다. 또한, 5-NN 분류기 결과에서 회색 부분들은 nearest neighbors 간의 투표에서 동점이 발생한 경우(e.g. 2개의 이웃이 red, 다음 2개가 blue, 마지막 이웃이 green)인 것을 확인하자.</div>
 </div>
 
-In practice, you will almost always want to use k-Nearest Neighbor. But what value of *k* should you use? We turn to this problem next.
+실제 문제에 적용할 경우, 대부분은 NN 분류기보다는 k-Nearest Neighbor (kNN) 분류기를 사용하고 싶을 것이다. 그러나 어떤 *k* 값을 골라야 할까? 이 문제에 대해 지금부터 다룰 것이다.
 
 <a name='val'></a>
-### Validation sets for Hyperparameter tuning
 
-The k-nearest neighbor classifier requires a setting for *k*. But what number works best? Additionally, we saw that there are many different distance functions we could have used: L1 norm, L2 norm, there are many other choices we didn't even consider (e.g. dot products). These choices are called **hyperparameters** and they come up very often in the design of many Machine Learning algorithms that learn from data. It's often not obvious what values/settings one should choose.
+### Hyperparameter 튜닝을 위한 검증 셋 (Validation set)
 
-You might be tempted to suggest that we should try out many different values and see what works best. That is a fine idea and that's indeed what we will do, but this must be done very carefully. In particular, **we cannot use the test set for the purpose of tweaking hyperparameters**. Whenever you're designing Machine Learning algorithms, you should think of the test set as a very precious resource that should ideally never be touched until one time at the very end. Otherwise, the very real danger is that you may tune your hyperparameters to work well on the test set, but if you were to deploy your model you could see a significantly reduced performance. In practice, we would say that you **overfit** to the test set. Another way of looking at it is that if you tune your hyperparameters on the test set, you are effectively using the test set as the training set, and therefore the performance you achieve on it will be too optimistic with respect to what you might actually observe when you deploy your model. But if you only use the test set once at end, it remains a good proxy for measuring the **generalization** of your classifier (we will see much more discussion surrounding generalization later in the class).
-당신은
-> Evaluate on the test set only a single time, at the very end.
+k-nearest neighbor 분류기는 *k* 를 정해줘야 한다. 그런데 어떤 값이 가장 좋을까? 또한, 앞서 우리는 여러 가지 거리 함수(L1 norm, L2 norm, 여기서 고려하지 않은 다른 종류들 - e.g.내적 - 도 매우 많다)에 대해서도 살펴보았다. 이러한 선택들을 **hyperparameters** 라 부르고, 데이터로부터 학습하는 많은 기계학습(머신러닝) 알고리즘 디자인에 등장한다. 그런데 어떤 값/세팅을 골라야 하는지에 대해서 확신이 있는 경우는 거의 없다.
 
-Luckily, there is a correct way of tuning the hyperparameters and it does not touch the test set at all. The idea is to split our training set in two: a slightly smaller training set, and what we call a **validation set**. Using CIFAR-10 as an example, we could for example use 49,000 of the training images for training, and leave 1,000 aside for validation. This validation set is essentially used as a fake test set to tune the hyper-parameters.
+여러 가지 다른 값들을 시도해보고, 어떤 것이 가장 좋은 성능을 보이는지 확인해보는 방법을 생각할 수 있다. 아래에서 우리도 실제로 이렇게 할 것이지만, 이 과정은 매우 조심스럽게 수행되어야 한다. 특히, **hyperparameter 값을 조정하기 위해 테스트 셋을 사용하면 절대 안 된다**. 우리가 머신러닝 알고리즘을 디자인할 때, 테스트 셋은 매우 귀한 리소스이고, 이론적으로는 실제로 알고리즘을 평가할 때인 맨 마지막 단 한 번을 제외하고는 절대 쳐다봐서는 안 된다. 그렇게 하지 않는다면 위험한 점은, 우리 모델의 hyperparameter 들이 테스트 셋에서는 잘 동작하도록 튜닝이 되어 있지만, 실전에서 모델을 사용(deploy)할 때 상당히 성능이 낮아지는 것을 확인할 수 있을 것이다. 머신러닝에서는 이것을 테스트 셋에 **overfit** 되었다고 말한다. 이를 다른 관점으로 바라본다면, 우리가 테스트 셋을 사용하여 hyperparameter 들을 튜닝했다는 것은 곧 우리가 테스트 셋을 마치 학습 데이터셋(트레이닝 셋)처럼 사용한 것이고, 우리 모델의 테스트 셋에서의 성능은 실제로 다른 데이터에 적용할 때에 비해 너무 낙관적이게 되어버린다. 그러나 테스트 셋을 맨 마지막에 딱 한 번만 사용한다면, 그 때는 우리가 학습한 분류기의 **일반화(generalization)** 된 성능을 잘 평가할 수 있는 척도로 활용될 것이다. (이 수업의 나중 부분에서도 일반화에 관련된 주제를 다룰 것이다.)
 
-Here is what this might look like in the case of CIFAR-10:
+> 테스트 셋에 성능을 평가하는 것은 맨 마지막에 단 한 번만 하라.
+
+다행히도, hyperparameter 들을 튜닝하는 올바른 방법이 존재하고, 이 방법은 테스트 셋을 전혀 건드리지 않는다. 아이디어는, 우리가 갖고 있는 트레이닝 셋을 두 개로 쪼개는 것이다: 이른바 **검증 셋(validation set)** 으로 불리는, 약간 적은 수의 트레이닝 셋과 나머지로 나눈다. CIFAR-10 데이터셋을 예로 들면, 학습 이미지들 중에 49,000 장을 트레이닝 셋으로 삼고, 나머지 1,000 개를 검증(validation) 용으로 남겨놓는 것이다. 이 검증 셋은 hyperparameter 들을 튜닝할 때, 가짜 테스트 셋으로 활용된다. (역자 주: 즉, 실전 테스트인 수능을 준비하기 위한 모의고사라고 생각하면 된다.)
+
+CIFAR-10의 경우, 이런 식으로 나타낼 수 있을 것이다:
 
 ~~~python
-# assume we have Xtr_rows, Ytr, Xte_rows, Yte as before
-# recall Xtr_rows is 50,000 x 3072 matrix
-Xval_rows = Xtr_rows[:1000, :] # take first 1000 for validation
+# Xtr_rows, Ytr, Xte_rows, Yte 는 이전과 동일하게 갖고 있다고 가정하자.
+# Xtr_rows 는 50,000 x 3072 행렬이었다.
+Xval_rows = Xtr_rows[:1000, :] # 앞의 1000 개를 검증용으로 선택한다.
 Yval = Ytr[:1000]
-Xtr_rows = Xtr_rows[1000:, :] # keep last 49,000 for train
+Xtr_rows = Xtr_rows[1000:, :] # 뒤쪽의 49,000 개를 학습용으로 선택한다.
 Ytr = Ytr[1000:]
 
-# find hyperparameters that work best on the validation set
+# 검증 셋에서 가장 잘 동작하는 hyperparameter 들을 찾는다.
 validation_accuracies = []
 for k in [1, 3, 5, 10, 20, 50, 100]:
 
-  # use a particular value of k and evaluation on validation data
+  # 특정 k 값을 정해서 검증 데이터에 대해 평가할 때 사용한다.
   nn = NearestNeighbor()
   nn.train(Xtr_rows, Ytr)
-  # here we assume a modified NearestNeighbor class that can take a k as input
+  # 여기서는 k를 input으로 받을 수 있도록 변형된 NearestNeighbor 클래스가 있다고 가정하자.
   Yval_predict = nn.predict(Xval_rows, k = k)
   acc = np.mean(Yval_predict == Yval)
   print 'accuracy: %f' % (acc,)
 
-  # keep track of what works on the validation set
+  # 검증 셋에 대한 정확도를 저장해 놓는다.
   validation_accuracies.append((k, acc))
 ~~~
 
-By the end of this procedure, we could plot a graph that shows which values of *k* work best. We would then stick with this value and evaluate once on the actual test set.
+이 과정이 끝나면, 어떤 *k* 값이 가장 잘 동작하는지를 그래프로 그려볼 수 있다. 그 뒤, 가장 잘 동작하는 k 값으로 정하고, 실제 테스트 셋에 대해 한 번 평가를 하면 된다.
 
-> Split your training set into training set and a validation set. Use validation set to tune all hyperparameters. At the end run a single time on the test set and report performance.
+> 학습 데이터셋을 트레이닝 셋과 검증 셋으로 나누고, 검증 셋을 활용하여 모든 hyperparameter 들을 튜닝하라. 마지막으로 테스트 셋에 대해서는 딱 한 번 돌려보고, 성능을 리포트한다.
 
-**Cross-validation**.
+**Cross-validation (교차 검증)**.
 In cases where the size of your training data (and therefore also the validation data) might be small, people sometimes use a more sophisticated technique for hyperparameter tuning called **cross-validation**. Working with our previous example, the idea is that instead of arbitrarily picking the first 1000 datapoints to be the validation set and rest training set, you can get a better and less noisy estimate of how well a certain value of *k* works by iterating over different validation sets and averaging the performance across these. For example, in 5-fold cross-validation, we would split the training data into 5 equal folds, use 4 of them for training, and 1 for validation. We would then iterate over which fold is the validation fold, evaluate the performance, and finally average the performance across the different folds.
 
 <div class="fig figleft fighighlight">
@@ -232,6 +233,7 @@ In cases where the size of your training data (and therefore also the validation
 </div>
 
 <a name='procon'></a>
+
 **Pros and Cons of Nearest Neighbor classifier.**
 
 It is worth considering some advantages and drawbacks of the Nearest Neighbor classifier. Clearly, one advantage is that it is very simple to implement and understand. Additionally, the classifier takes no time to train, since all that is required is to store and possibly index the training data. However, we pay that computational cost at test time, since classifying a test example requires a comparison to every single training example. This is backwards, since in practice we often care about the test time efficiency much more than the efficiency at training time. In fact, the deep neural networks we will develop later in this class shift this tradeoff to the other extreme: They are very expensive to train, but once the training is finished it is very cheap to classify a new test example. This mode of operation is much more desirable in practice.
@@ -255,6 +257,7 @@ Here is one more visualization to convince you that using pixel differences to c
 In particular, note that images that are nearby each other are much more a function of the general color distribution of the images, or the type of background rather than their semantic identity. For example, a dog can be seen very near a frog since both happen to be on white background. Ideally we would like images of all of the 10 classes to form their own clusters, so that images of the same class are nearby to each other regardless of irrelevant characteristics and variations (such as the background). However, to get this property we will have to go beyond raw pixels.
 
 <a name='summary'></a>
+
 ### Summary
 
 In summary:
@@ -270,6 +273,7 @@ In summary:
 In next lectures we will embark on addressing these challenges and eventually arrive at solutions that give 90% accuracies, allow us to completely discard the training set once learning is complete, and they will allow us to evaluate a test image in less than a millisecond.
 
 <a name='summaryapply'></a>
+
 ### Summary: Applying kNN in practice
 
 If you wish to apply kNN in practice (hopefully not on images, or perhaps as only a baseline) proceed as follows:
@@ -282,6 +286,7 @@ If you wish to apply kNN in practice (hopefully not on images, or perhaps as onl
 6. Take note of the hyperparameters that gave the best results. There is a question of whether you should use the full training set with the best hyperparameters, since the optimal hyperparameters might change if you were to fold the validation data into your training set (since the size of the data would be larger). In practice it is cleaner to not use the validation data in the final classifier and consider it to be *burned* on estimating the hyperparameters. Evaluate the best model on the test set. Report the test set accuracy and declare the result to be the performance of the kNN classifier on your data.
 
 <a name='reading'></a>
+
 #### Further Reading
 
 Here are some (optional) links you may find interesting for further reading:
@@ -292,5 +297,6 @@ Here are some (optional) links you may find interesting for further reading:
 
 ---
 <p style="text-align:right"><b>
-번역: 이옥민 <a href="https://github.com/OkminLee" style="color:black">(OkminLee)</a>
+번역: 이옥민 <a href="https://github.com/OkminLee" style="color:black">(OkminLee)</a>,
+  최명섭<a href="https://github.com/myungsub" style="color:black">(myungsub)</a>
 </b></p>
