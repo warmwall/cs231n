@@ -216,84 +216,82 @@ for k in [1, 3, 5, 10, 20, 50, 100]:
 > 학습 데이터셋을 트레이닝 셋과 검증 셋으로 나누고, 검증 셋을 활용하여 모든 hyperparameter 들을 튜닝하라. 마지막으로 테스트 셋에 대해서는 딱 한 번 돌려보고, 성능을 리포트한다.
 
 **Cross-validation (교차 검증)**.
-In cases where the size of your training data (and therefore also the validation data) might be small, people sometimes use a more sophisticated technique for hyperparameter tuning called **cross-validation**. Working with our previous example, the idea is that instead of arbitrarily picking the first 1000 datapoints to be the validation set and rest training set, you can get a better and less noisy estimate of how well a certain value of *k* works by iterating over different validation sets and averaging the performance across these. For example, in 5-fold cross-validation, we would split the training data into 5 equal folds, use 4 of them for training, and 1 for validation. We would then iterate over which fold is the validation fold, evaluate the performance, and finally average the performance across the different folds.
+학습 데이터셋의 크기가 작을 경우(검증 셋의 크기도 작을 것이다), 조금 더 정교한 방식으로 **교차 검증(cross-validation)** 이라는 hyperparameter 튜닝 방법을 사용한다. 앞의 예시에서처럼 첫 1000 개의 데이터를 검증 셋으로 사용하고 나머지를 학습(training) 셋으로 사용하는 대신, 어떤 *k* 값이 더 좋은지를 여러 가지 검증 셋에 대해 시험해보고 평균 성능을 확인해본다면 보다 잡음이 덜 섞이고 나은 예측을 할 수 있을 것이다. 예를 들어, 5-fold 교차 검증에서는 학습 데이터를 5개의 동일한 크기의 그룹(fold)으로 쪼갠 뒤, 4개를 학습용으로, 1개를 검증용으로 사용한다. 그 다음에는 어떤 그룹을 검증 셋으로 사용할지에 따라 iteration(반복)을 돌고, 성능을 평가하고, 각 그룹에 대해 평가한 성능을 평균낸다.
 
 <div class="fig figleft fighighlight">
   <img src="{{site.baseurl}}/assets/cvplot.png">
-  <div class="figcaption">Example of a 5-fold cross-validation run for the parameter <b>k</b>. For each value of <b>k</b> we train on 4 folds and evaluate on the 5th. Hence, for each <b>k</b> we receive 5 accuracies on the validation fold (accuracy is the y-axis, each result is a point). The trend line is drawn through the average of the results for each <b>k</b> and the error bars indicate the standard deviation. Note that in this particular case, the cross-validation suggests that a value of about <b>k</b> = 7 works best on this particular dataset (corresponding to the peak in the plot). If we used more than 5 folds, we might expect to see a smoother (i.e. less noisy) curve.</div>
+  <div class="figcaption">파라미터 <b>k</b> 에 대한 5-fold 교차 검증 예시. 각 <b>k</b> 값마다 4개의 그룹에 대해 학습을 하고 다섯 번째 그룹을 사용하여 성능을 평가한다. 따라서, 각 <b>k</b> 마다 검증 셋으로 활용한 그룹들에서 5 개의 정확도가 나온다. (y축이 정확도를 나타내고, 각 결과는 점으로 표시하였다.) 그래프에서 선은 각 <b>k</b> 에서의 결과의 평균으로 그려져 있고, 에러 바는 표준 편차를 나타낸다. 이 경우, 이 데이터셋에 대해서는 <b>k</b> = 7 로 놓는 것이 가장 좋을 것(그래프에서 가장 높은 부분)이라고 교차 검증 결과가 말해준다. 만약 5개보다 더 많은 그룹 수를 사용했다면, 지금보다는 더 부드러운 곡선 형태(즉, 잡음이 덜 섞여있음)의 그래프를 볼 수 있을 것이다.</div>
   <div style="clear:both"></div>
 </div>
 
 
-**In practice**. In practice, people prefer to avoid cross-validation in favor of having a single validation split, since cross-validation can be computationally expensive. The splits people tend to use is between 50%-90% of the training data for training and rest for validation. However, this depends on multiple factors: For example if the number of hyperparameters is large you may prefer to use bigger validation splits. If the number of examples in the validation set is small (perhaps only a few hundred or so), it is safer to use cross-validation. Typical number of folds you can see in practice would be 3-fold, 5-fold or 10-fold cross-validation.
+**실제 활용**. 교차 검증은 계산량이 매우 많아지기 때문에, 실제로 사람들은 교차 검증보다 하나의 검증 셋을 정해놓는 것을 선호한다. 보통은 학습 데이터의 50% ~ 90% 정도를 학습 용으로 쓰고 나머지를 검증 데이터로 활용하는데, 검증 데이터셋의 크기는 여러 가지 변수들에 의해 영향을 받는다. 예를 들어, hyperparameter 개수가 매우 많다면, 검증 데이터셋의 크기를 늘리는게 좋을 것이다. 검증 셋에 있는 데이터의 개수가 매우 적다면 (수백 개 정도), 교차 검증 방법을 사용하는 것이 더 안전하다. 보통은 3-fold, 5-fold, 10-fold 교차 검증을 주로 많이 사용한다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/crossval.jpeg">
-  <div class="figcaption">Common data splits. A training and test set is given. The training set is split into folds (for example 5 folds here). The folds 1-4 become the training set. One fold (e.g. fold 5 here in yellow) is denoted as the Validation fold and is used to tune the hyperparameters. Cross-validation goes a step further iterates over the choice of which fold is the validation fold, separately from 1-5. This would be referred to as 5-fold cross-validation. In the very end once the model is trained and all the best hyperparameters were determined, the model is evaluated a single time on the test data (red).</div>
+  <div class="figcaption">데이터를 그룹으로 나누는 일반적인 방법. 학습 데이터셋과 테스트 셋은 주어져 있다. 학습 셋은 이 예시의 경우, 5개의 그룹으로 나누어져 있다. 이 중 1-4 그룹이 학습 셋이 되고, 나머지 하나(노란색 그룹 5)가 검증 셋으로 사용할 그룹으로 hyperparameter 들을 튜닝하는데 사용된다. 교차 검증 방법은 여기서 한 단계 더 나아가서 어떤 그룹을 검증 셋으로 사용할지를 1-5까지 바꿔가며 전부 반복하고, 이를 5-fold 교차 검증이라 부른다. 모델의 학습이 끝나고 가장 좋은 hyperparameter 들이 정해진 이후에는, 마지막으로 모델을 테스트 데이터(빨간색)에 대해 딱 한 번 시험해보고 성능을 평가한다.</div>
 </div>
 
 <a name='procon'></a>
 
-**Pros and Cons of Nearest Neighbor classifier.**
+**Nearest Neighbor 분류기의 장단점.**
 
-It is worth considering some advantages and drawbacks of the Nearest Neighbor classifier. Clearly, one advantage is that it is very simple to implement and understand. Additionally, the classifier takes no time to train, since all that is required is to store and possibly index the training data. However, we pay that computational cost at test time, since classifying a test example requires a comparison to every single training example. This is backwards, since in practice we often care about the test time efficiency much more than the efficiency at training time. In fact, the deep neural networks we will develop later in this class shift this tradeoff to the other extreme: They are very expensive to train, but once the training is finished it is very cheap to classify a new test example. This mode of operation is much more desirable in practice.
+Nearest Neighbor 분류기의 장점과 단점이 무엇인지 분석해보자. 당연히, 한 가지 장점은 방법을 이해하고 구현하는 것이 매우 쉽다는 점이다. 또한, 분류기를 학습할 때 단순히 학습 데이터셋을 저장하고 기억만 해놓으면 되기 때문에 학습 시간이 전혀 소요되지 않는다. 그러나, 학습 시의 계산량이 없는 것은 테스트할 때 모든 학습 데이터 예시들과 비교를 해야되기 때문에 계산량이 매우 많아지는 것으로 보상된다. 이것은 거꾸로인게, 보통 우리는 테스트할 때 얼마나 효율적인지에 관심이 많이 있고, 학습에 소요되는 시간이 얼마인지는 크게 중요하게 생각하지 않기 때문이다. 사실, 이 수업에서 나중에 다룰 (깊은) 뉴럴 네트워크, 또는 신경망 구조는 이 교환(tradeoff)을 반대 극단으로 이끈다. 뉴럴 네트워크는 학습할 때 매우 많은 계산량을 필요로 하지만, 학습이 끝나면 새로운 테스트 샘플을 분류하는데 매우 적은 계산만으로도 수행할 수 있다. 실제 환경에서는 이러한 형태가 더 바람직하다.
 
-As an aside, the computational complexity of the Nearest Neighbor classifier is an active area of research, and several **Approximate Nearest Neighbor** (ANN) algorithms and libraries exist that can accelerate the nearest neighbor lookup in a dataset (e.g. [FLANN](http://www.cs.ubc.ca/research/flann/)). These algorithms allow one to trade off the correctness of the nearest neighbor retrieval with its space/time complexity during retrieval, and usually rely on a pre-processing/indexing stage that involves building a kdtree, or running the k-means algorithm.
+딴 얘기지만, Nearest Neighbor 분류기의 계산량(computational complexity) 문제는 매우 활발한 연구 주제이고, 많은 **Approximate Nearest Neighbor** (ANN, 근사 최근접 이웃) 알고리즘 및 라이브러리들이 있어서 데이터셋 내에서 nearest neighbor를 찾는 것을 가속화해준다 (e.g. [FLANN](http://www.cs.ubc.ca/research/flann/)). 이 알고리즘들은 nearest neighbor를 찾는 것의 정확도를 조금 희생하여 공간(메모리)/시간(계산량) 복잡도를 크게 낮추도록 하고, 보통 kdtree나 k-means 알고리즘 등과 같은 전처리 기법에 의존하는 경우가 많다.
 
-The Nearest Neighbor Classifier may sometimes be a good choice in some settings (especially if the data is low-dimensional), but it is rarely appropriate for use in practical image classification settings. One problem is that images are high-dimensional objects (i.e. they often contain many pixels), and distances over high-dimensional spaces can be very counter-intuitive. The image below illustrates the point that the pixel-based L2 similarities we developed above are very different from perceptual similarities:
+Nearest Neighbor 분류기가 좋은 경우도 있지만 (특히 데이터의 차원이 낮을 때), 실제 이미지 분류 문제 세팅에서는 대부분 효과적이지 않다. 한 가지 문제는, 이미지가 매우 고차원 물체라는 것이고 (수많은 픽셀들로 이루어져 있다), 고차원 공간에서의 '거리'는 매우 직관적이지 않는 경우가 많다. 아래 그림을 보면, 사람이 보기에 비슷한 이미지로 느끼는 것과 위에서 살펴본 픽셀 값들의 L2 거리를 기준으로 비슷한 것은 매우 다르다는 것을 알 수 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/samenorm.png">
-  <div class="figcaption">Pixel-based distances on high-dimensional data (and images especially) can be very unintuitive. An original image (left) and three other images next to it that are all equally far away from it based on L2 pixel distance. Clearly, the pixel-wise distance does not correspond at all to perceptual or semantic similarity.</div>
+  <div class="figcaption">고차원 데이터(이미지)에서의 픽셀값 기준 거리는 매우 비직관적인 경우가 많다. 원본 이미지(왼쪽)와 그 옆의 세 이미지는 픽셀값의 L2 거리를 기준으로 모두 같은 거리만큼 떨어져 있다. 이로 보아 픽셀값을 기준으로 한 거리는 인지적, 의미적으로 거의 연관이 없다고 생각할 수 있다.</div>
 </div>
 
-Here is one more visualization to convince you that using pixel differences to compare images is inadequate. We can use a visualization technique called <a href="http://homepage.tudelft.nl/19j49/t-SNE.html">t-SNE</a> to take the CIFAR-10 images and embed them in two dimensions so that their (local) pairwise distances are best preserved. In this visualization, images that are shown nearby are considered to be very near according to the L2 pixelwise distance we developed above:
+아래는 픽셀값의 차이만으로는 불충분하다는 점을 다시 한 번 보여주기 위한 시각화이다. 여기서는 <a href="http://homepage.tudelft.nl/19j49/t-SNE.html">t-SNE</a> 라는 시각화 기법을 사용하여 CIFAR-10 이미지들을 서로간의 거리가 잘 보존되도록 2차원으로 투사시킨 것이다. 이 시각화에서, 가까이 있는 이미지들은 픽셀간의 L2 거리가 매우 가까울 것이라고 생각하면 된다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/pixels_embed_cifar10.jpg">
-  <div class="figcaption">CIFAR-10 images embedded in two dimensions with t-SNE. Images that are nearby on this image are considered to be close based on the L2 pixel distance. Notice the strong effect of background rather than semantic class differences. Click <a href="{{site.baseurl}}/assets/pixels_embed_cifar10_big.jpg">here</a> for a bigger version of this visualization.</div>
+  <div class="figcaption">t-SNE로 2차원으로 투사시킨 CIFAR-10 이미지들. 여기서 서로 가까이 있는 이미지들은 픽셀간의 L2 거리가 가까울 것이라고 생각하면 된다. 실제 클래스의 의미적인 차이보다 배경이 끼치는 영향이 얼마나 큰지 확인할 수 있다. 시각화의 큰 버전은 <a href="{{site.baseurl}}/assets/pixels_embed_cifar10_big.jpg">여기</a> 에서 확인할 수 있다.</div>
 </div>
 
-In particular, note that images that are nearby each other are much more a function of the general color distribution of the images, or the type of background rather than their semantic identity. For example, a dog can be seen very near a frog since both happen to be on white background. Ideally we would like images of all of the 10 classes to form their own clusters, so that images of the same class are nearby to each other regardless of irrelevant characteristics and variations (such as the background). However, to get this property we will have to go beyond raw pixels.
+여기서 특히, 서로 가까운 이미지들은 보편적인 색의 분포나 배경의 종류에 영향을 많이 받고 각자의 실제 의미가 담긴 클래스에는 큰 영향을 받지 않는 것을 확인할 수 있다. 예를 들어, 강아지와 개구리가 똑같이 흰 배경에 있어서 (실제 클래스가 다름에도 불구하고) 매우 가까이 위치한 것을 볼 수 있다. 이상적으로는 같은 클래스의 이미지들이 여러 변칙적인 성질과 변화(또는 배경)에 상관없이 가까이 있어서 10개의 클래스들이 각각 군집을 이뤄서 뭉쳐있었으면 좋겠지만, 이러한 성질을 위해서는 단순 픽셀값 이상의 것이 필요하다.
 
 <a name='summary'></a>
 
-### Summary
+### 요약
 
-In summary:
+- 여기서는 **이미지 분류(Image Classification)** 문제에 대해 살펴보았다. 각 이미지별로 한 개의 카테고리로 라벨링 되어있는 이미지들이 주어지고, 새로운 테스트 이미지들이 들어왔을 때 이 카테고리들 중 하나로 분류하도록 하고 예측값들의 정확도를 측정하였다.
+- 간단한 **Nearest Neighbor 분류기** 를 소개하였다. 이 분류기와 관련하여 여러 가지 hyperparameter (k의 값이라든지, 데이터를 비교할 때 사용하는 거리의 종류라든지) 들이 존재하는 것을 보았고, 어떤 것을 선택할지 확실한 답은 없다는 것을 보았다.
+- 이 hyperparameter 들을 올바르게 정하는 방법은 학습 데이터셋을 두 개로 (학습 셋과 **검증 셋(validation set)** 으로 불리는 가까 테스트 셋) 나누는 것임을 배웠다. 검증 셋에서 여러 가지 hyperparameter 값들을 시험해 보았고, 가장 좋은 성능을 얻는 값을 찾을 수 있었다.
+- 학습 데이터가 적은 경우, 어떤 hyperparameter를 선택해야 하는지에 대해 보다 안정적인 방식인 **교차 검증(cross-validation)** 이라는 방법을 알게 되었다.
+- 가장 좋은 hyperparameter 값들을 찾은 뒤, 그것으로 값을 고정하고 실제 테스트 셋에 대해 마지막에 단 한 번 **평가** 를 한다.
+- Nearest Neighbor 분류기는 CIFAR-10 데이터셋에서 약 40% 정도의 정확도를 보이는 것을 확인하였다. 이 방법은 구현이 매우 간단하지만, 학습 데이터셋 전체를 메모리에 저장해야 하고, 새로운 테스트 이미지를 분류하고 평가할 때 계산량이 매우 많다.
+- 마지막으로, 단순히 픽셀 값들의 L1이나 L2 거리는 이미지의 클래스보다 배경이나 이미지의 전체적인 색깔 분포 등에 더 큰 영향을 받기 때문에 이미지 분류 문제에 있어서 충분하지 못하다는 점을 보았다.
 
-- We introduced the problem of **Image Classification**, in which we are given a set of images that are all labeled with a single category. We are then asked to predict these categories for a novel set of test images and measure the accuracy of the predictions.
-- We introduced a simple classifier called the **Nearest Neighbor classifier**. We saw that there are multiple hyper-parameters (such as value of k, or the type of distance used to compare examples) that are associated with this classifier and that there was no obvious way of choosing them.
--  We saw that the correct way to set these hyperparameters is to split your training data into two: a training set and a fake test set, which we call **validation set**. We try different hyperparameter values and keep the values that lead to the best performance on the validation set.
-- If the lack of training data is a concern, we discussed a procedure called **cross-validation**, which can help reduce noise in estimating which hyperparameters work best.
-- Once the best hyperparameters are found, we fix them and perform a single **evaluation** on the actual test set.
-- We saw that Nearest Neighbor can get us about 40% accuracy on CIFAR-10. It is simple to implement but requires us to store the entire training set and it is expensive to evaluate on a test image.
-- Finally, we saw that the use of L1 or L2 distances on raw pixel values is not adequate since the distances correlate more strongly with backgrounds and color distributions of images than with their semantic content.
-
-In next lectures we will embark on addressing these challenges and eventually arrive at solutions that give 90% accuracies, allow us to completely discard the training set once learning is complete, and they will allow us to evaluate a test image in less than a millisecond.
+다음 강의에서는 여기서의 문제들을 해결하기 위한 방법들에 대해 살펴보고, 최종적으로 90% 정도의 성능을 갖고, 학습이 완료된 이후에는 학습 데이터셋을 전부 없애버려도 상관없으며, 테스트 이미지를 1/1000 초 단위로 빠르게 분류하고 평가할 수 있도록 해주는 모델을 살펴볼 것이다.
 
 <a name='summaryapply'></a>
 
-### Summary: Applying kNN in practice
+### 요약2: kNN을 실제로 적용하기
 
-If you wish to apply kNN in practice (hopefully not on images, or perhaps as only a baseline) proceed as follows:
+실제 응용에서 kNN을 사용하고 싶다면 (이미지에는 적용하지 않는 것을 추천하지만, 베이스라인으로 시도해볼 수는 있을 것이다), 다음 과정을 따르면 된다:
 
-1. Preprocess your data: Normalize the features in your data (e.g. one pixel in images) to have zero mean and unit variance. We will cover this in more detail in later sections, and chose not to cover data normalization in this section because pixels in images are usually homogeneous and do not exhibit widely different distributions, alleviating the need for data normalization.
-2. If your data is very high-dimensional, consider using a dimensionality reduction technique such as PCA ([wiki ref](http://en.wikipedia.org/wiki/Principal_component_analysis), [CS229ref](http://cs229.stanford.edu/notes/cs229-notes10.pdf), [blog ref](http://www.bigdataexaminer.com/understanding-dimensionality-reduction-principal-component-analysis-and-singular-value-decomposition/)) or even [Random Projections](http://scikit-learn.org/stable/modules/random_projection.html).
-3. Split your training data randomly into train/val splits. As a rule of thumb, between 70-90% of your data usually goes to the train split. This setting depends on how many hyperparameters you have and how much of an influence you expect them to have. If there are many hyperparameters to estimate, you should err on the side of having larger validation set to estimate them effectively. If you are concerned about the size of your validation data, it is best to split the training data into folds and perform cross-validation. If you can afford the computational budget it is always safer to go with cross-validation (the more folds the better, but more expensive).
-4. Train and evaluate the kNN classifier on the validation data (for all folds, if doing cross-validation) for many choices of **k** (e.g. the more the better) and across different distance types (L1 and L2 are good candidates)
-5. If your kNN classifier is running too long, consider using an Approximate Nearest Neighbor library (e.g. [FLANN](http://www.cs.ubc.ca/research/flann/)) to accelerate the retrieval (at cost of some accuracy).
-6. Take note of the hyperparameters that gave the best results. There is a question of whether you should use the full training set with the best hyperparameters, since the optimal hyperparameters might change if you were to fold the validation data into your training set (since the size of the data would be larger). In practice it is cleaner to not use the validation data in the final classifier and consider it to be *burned* on estimating the hyperparameters. Evaluate the best model on the test set. Report the test set accuracy and declare the result to be the performance of the kNN classifier on your data.
+1. 데이터 전처리 과정을 수행하라: 데이터의 각 특징(feature)들을 평균이 0, 표준편차가 1이 되도록 정규화하라. 정규화 관련된 내용은 강의의 나중 부분에서도 다루겠지만, 여기서 따로 다루지 않았던 이유는 이미지의 픽셀들은 보통 균등한 분포를 갖기 때문에 데이터 정규화가 크게 필요하지 않기 때문이다.
+2. 사용할 데이터가 매우 고차원 데이터라면, PCA ([wiki ref](http://en.wikipedia.org/wiki/Principal_component_analysis), [CS229ref](http://cs229.stanford.edu/notes/cs229-notes10.pdf), [blog ref](http://www.bigdataexaminer.com/understanding-dimensionality-reduction-principal-component-analysis-and-singular-value-decomposition/))나 아예 [Random Projection](http://scikit-learn.org/stable/modules/random_projection.html)과 같은 차원 축소 기법들을 적용하는 것을 고려해 보자.
+3. 학습 데이터를 랜덤으로 학습/검증 셋(train/val split)으로 나누어라. 일반적으로, 70~90% 정도의 데이터를 학습용으로 사용한다. 이 세팅은 튜닝할 hyperparameter 들이 얼마나 많이 있는지에 따라, 각각이 얼만큼의 영향을 끼칠지에 따라 달라진다. 정해야 할 hyperparameter의 개수가 많다면, 그것들을 효과적으로 정하기 위해 충분히 큰 검증 셋을 사용해야 한다. 검증 셋의 크기가 적당한지에 대해서 의문이 있다면, 학습 데이터를 그룹으로 나누어서 교차 검증을 하는 방법이 제일 좋다. 계산할 시간만 충분하다면, 교차 검증을 하는 것이 항상 더 안전하다 (그룹이 많을수록 더 좋지만, 그만큼 계산량도 늘어난다).
+4. 여러 가지 **k** 값에 대해 (많이 해볼수록 좋다), 다른 종류의 거리 함수에 대해 (L1과 L2 거리를 주로 사용한다) kNN 분류기를 학습하고, 검증 셋으로 (또는 교차 검증을 사용한다면 모든 그룹에 대해) 평가해 보자.
+5. 현재의 kNN 분류기가 너무 느리다면, 이를 가속하기 위해 Approximate Nearest Neighbor 라이브러리 (e.g. [FLANN](http://www.cs.ubc.ca/research/flann/))를 사용하는 것을 고려해보라. (성능은 조금 떨어질 것이다)
+6. 가장 좋은 결과를 주는 hyperparameter 들을 기록해두라. 가장 좋은 hyperparameter 세팅으로 다시 전체 학습 데이터셋을 학습해야 하는지에 대한 점은 아직 확실하지 않다. 학습 셋에서 쪼갠 검증 셋을 다시 합친다면 최적의 hyperparameter 세팅이 바뀔 수도 있기 때문이다 (학습에 사용한 데이터셋의 크기가 커지기 때문에). 실제로는 최종 분류기에서 검증 셋은 사용하지 않는 편이 더 깔끔하고, 검증에 사용한 데이터들은 hyperparameter 들을 고르는데 사용되어 *날라가버렸다* 고 생각해도 된다. 그 뒤, 최종 모델을 테스트 셋에 대해 성능을 평가해 보고, 그 테스트 셋에 대한 정확도를 현재 데이터로 학습한 kNN 분류기의 성능으로 발표하라.
 
 <a name='reading'></a>
 
-#### Further Reading
+#### 추가 읽기 자료
 
-Here are some (optional) links you may find interesting for further reading:
+관심있을 법한 추가적인 읽기 자료 몇 가지를 선정해 두었다 (optional):
 
-- [A Few Useful Things to Know about Machine Learning](http://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf), where especially section 6 is related but the whole paper is a warmly recommended reading.
+- [A Few Useful Things to Know about Machine Learning](http://homes.cs.washington.edu/~pedrod/papers/cacm12.pdf) 에서 section 6이 가장 연관이 있지만, 전체적인 내용을 다 읽는 것도 추천한다.
 
-- [Recognizing and Learning Object Categories](http://people.csail.mit.edu/torralba/shortCourseRLOC/index.html), a short course of object categorization at ICCV 2005.
+- [Recognizing and Learning Object Categories](http://people.csail.mit.edu/torralba/shortCourseRLOC/index.html). 물체 분류에 관한 ICCV 2005 (컴퓨터비전 분야에서 유명한) 학회의 short course.
 
 ---
 <p style="text-align:right"><b>
