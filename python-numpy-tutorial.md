@@ -21,56 +21,51 @@ Python:
 Numpy
 -->
 
-This tutorial was contributed by [Justin Johnson](http://cs.stanford.edu/people/jcjohns/).
+이 튜토리얼은 [Justin Johnson](http://cs.stanford.edu/people/jcjohns/)에 의해 작성되었습니다.
 
-We will use the Python programming language for all assignments in this course.
-Python is a great general-purpose programming language on its own, but with the
-help of a few popular libraries (numpy, scipy, matplotlib) it becomes a powerful
-environment for scientific computing.
+cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 사용할 것입니다.
+파이썬은 그 자체만으로도 훌륭한 범용 프로그래밍 언어이지만, 몇몇 라이브러리(numpy, scipy, matplotlib)의 도움으로 
+계산과학 분야에서 강력한 개발 환경을 갖추게 됩니다.  
 
-We expect that many of you will have some experience with Python and numpy;
-for the rest of you, this section will serve as a quick crash course both on
-the Python programming language and on the use of Python for scientific
-computing.
+많은 분들이 파이썬과 numpy를 경험 해보셨을거라고 생각합니다. 경험 하지 못했을지라도 이 문서를 통해  
+'프로그래밍 언어로서의 파이썬'과 '파이썬을 계산과학에 활용하는법'을 빠르게 훑을 수 있습니다.
 
-Some of you may have previous knowledge in Matlab, in which case we also recommend the [numpy for Matlab users](http://wiki.scipy.org/NumPy_for_Matlab_Users) page.
+만약 Matlab을 사용해보셨다면, [Matlab사용자를 위한 numpy](http://wiki.scipy.org/NumPy_for_Matlab_Users) 페이지를 추천해 드립니다.
 
-You can also find an [IPython notebook version of this tutorial here](https://github.com/kuleshov/cs228-material/blob/master/tutorials/python/cs228-python-tutorial.ipynb) created by [Volodymyr Kuleshov](http://web.stanford.edu/~kuleshov/) and [Isaac Caswell](https://symsys.stanford.edu/viewing/symsysaffiliate/21335) for [CS 228](http://cs.stanford.edu/~ermon/cs228/index.html).
+또한 [CS 228](http://cs.stanford.edu/~ermon/cs228/index.html)수업을 위해 [Volodymyr Kuleshov](http://web.stanford.edu/~kuleshov/) 와 [Isaac Caswell](https://symsys.stanford.edu/viewing/symsysaffiliate/21335)가 만든 [이 튜토리얼의 IPython notebook 버전](https://github.com/kuleshov/cs228-material/blob/master/tutorials/python/cs228-python-tutorial.ipynb)도 참조 할 수 있습니다.
 
-Table of contents:
+목차:
 
-- [Python](#python)
-  - [Basic data types](#python-basic)
-  - [Containers](#python-containers)
-      - [Lists](#python-lists)
-      - [Dictionaries](#python-dicts)
-      - [Sets](#python-sets)
-      - [Tuples](#python-tuples)
-  - [Functions](#python-functions)
-  - [Classes](#python-classes)
+- [파이썬](#python)
+  - [기본 자료형](#python-basic)
+  - [컨테이너](#python-containers)
+      - [리스트](#python-lists)
+      - [딕셔너리](#python-dicts)
+      - [집합](#python-sets)
+      - [튜플](#python-tuples)
+  - [함수](#python-functions)
+  - [클래스](#python-classes)
 - [Numpy](#numpy)
-  - [Arrays](#numpy-arrays)
-  - [Array indexing](#numpy-array-indexing)
-  - [Datatypes](#numpy-datatypes)
-  - [Array math](#numpy-math)
-  - [Broadcasting](#numpy-broadcasting)
+  - [배열](#numpy-arrays)
+  - [배열 색인](#numpy-array-indexing)
+  - [데이터타입](#numpy-datatypes)
+  - [배열 연산](#numpy-math)
+  - [브로드캐스팅](#numpy-broadcasting)
 - [SciPy](#scipy)
-  - [Image operations](#scipy-image)
-  - [MATLAB files](#scipy-matlab)
-  - [Distance between points](#scipy-dist)
+  - [이미지 작업](#scipy-image)
+  - [MATLAB 파일](#scipy-matlab)
+  - [두 점 사이의 거리](#scipy-dist)
 - [Matplotlib](#matplotlib)
   - [Plotting](#matplotlib-plotting)
   - [Subplots](#matplotlib-subplots)
-  - [Images](#matplotlib-images)
+  - [이미지](#matplotlib-images)
 
 <a name='python'></a>
-## Python
+## 파이썬
 
-Python is a high-level, dynamically typed multiparadigm programming language.
-Python code is often said to be almost like pseudocode, since it allows you
-to express very powerful ideas in very few lines of code while being very
-readable. As an example, here is an implementation of the classic quicksort
-algorithm in Python:
+파이썬은 고차원이고, 다중패러다임을 지원하는 동적 프로그래밍 언어이다. 
+짧지만 가독성 높은 코드 몇 줄로 수준 높은 아이디어들을 표현할수있기에 파이썬 코드는 거의 수도코드처럼 보인다고도 한다. 
+아래는 quicksort알고리즘의 파이썬 구현 예시이다:
 
 ~~~python
 def quicksort(arr):
@@ -96,7 +91,7 @@ You can check your Python version at the command line by running
 `python --version`.
 
 <a name='python-basic'></a>
-### Basic data types
+### 기본 자료형
 
 Like most languages, Python has a number of basic types including integers,
 floats, booleans, and strings. These data types behave in ways that are
