@@ -3,7 +3,7 @@ layout: page
 title: IPython Tutorial
 permalink: /ipython-tutorial/
 ---
-cs231s 수업에서는 프로그래밍 과제 진행을 위해 [IPython notebooks](http://ipython.org/)을 사용합니다. IPython notebook을 사용하면 여러분의 브라우저에서 Python 코드를 작성하고 실행할 수 있습니다. Python notebook를 사용하면 여러 조각의 코드를 아주 쉽게 수정하고 실행할 수 있습니다. 이런 장점 때문에 IPython notebook은 계산과학분야에서 널리 사용되고 있습니다.
+cs231n 수업에서는 프로그래밍 과제 진행을 위해 [IPython notebooks](http://ipython.org/)을 사용합니다. IPython notebook을 사용하면 여러분의 브라우저에서 Python 코드를 작성하고 실행할 수 있습니다. Python notebook를 사용하면 여러 조각의 코드를 아주 쉽게 수정하고 실행할 수 있습니다. 이런 장점 때문에 IPython notebook은 계산과학분야에서 널리 사용되고 있습니다.
 
 IPython의 설치와 실행은 간단합니다. command line에서 다음 명령어를 입력하여 IPython을 설치합니다.
 
