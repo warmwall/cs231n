@@ -61,8 +61,7 @@ cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 �
   - [이미지](#matplotlib-images)
 
 <a name='python'></a>
-## 파이썬
-
+## Python
 파이썬은 고차원이고, 다중패러다임을 지원하는 동적 프로그래밍 언어이다. 
 짧지만 가독성 높은 코드 몇 줄로 수준 높은 아이디어들을 표현할수있기에 파이썬 코드는 거의 수도코드처럼 보인다고도 한다. 
 아래는 quicksort알고리즘의 파이썬 구현 예시이다:
@@ -161,11 +160,12 @@ print '  world '.strip()  # 문자열 앞뒤 공백 제거; 출력 "world"
 
 <a name='python-containers'></a>
 ### 컨테이너
-Python includes several built-in container types: lists, dictionaries, sets, and tuples.
+
 파이썬은 다음과 같은 컨테이너 타입이 구현되어 있습니다: 리스트, 딕셔너리, 집합, 튜플
 
 <a name='python-lists'></a>
 #### 리스트
+
 리스트는 파이썬에서 배열같은 존재입니다. 그렇지만 배열과 달리 크기 변경이 가능하고
 서로 다른 자료형일지라도 하나의 리스트에 저장 될 수 있습니다:
 
@@ -182,22 +182,22 @@ print x, xs      # 출력 "bar [3, 1, 'foo']"
 ~~~
 마찬가지로, 리스트에 대해 자세하 사항은 [문서](https://docs.python.org/2/tutorial/datastructures.html#more-on-lists)에서 찾아볼 수 있습니다.
 
-**Slicing:**
-In addition to accessing list elements one at a time, Python provides
-concise syntax to access sublists; this is known as *slicing*:
+**슬라이싱:**
+리스트의 요소로 한번에 접근하는것 이외에도, 파이썬은 리스트의 일부분에만 접근하는 간결한 문법을 제공한다;
+이를 *슬라이싱*이라고 한다:
 
 ~~~python
-nums = range(5)    # range is a built-in function that creates a list of integers
+nums = range(5)    # range는 파이썬에 구현되어 있는 함수이며 정수들로 구성된 리스트를 만든다
 print nums         # 출력 "[0, 1, 2, 3, 4]"
-print nums[2:4]    # Get a slice from index 2 to 4 (exclusive); 출력 "[2, 3]"
-print nums[2:]     # Get a slice from index 2 to the end; 출력 "[2, 3, 4]"
-print nums[:2]     # Get a slice from the start to index 2 (exclusive); 출력 "[0, 1]"
-print nums[:]      # Get a slice of the whole list; 출력 ["0, 1, 2, 3, 4]"
-print nums[:-1]    # Slice indices can be negative; 출력 ["0, 1, 2, 3]"
-nums[2:4] = [8, 9] # Assign a new sublist to a slice
+print nums[2:4]    # 인덱스 2에서 4(제외)까지 슬라이싱; 출력 "[2, 3]"
+print nums[2:]     # 인덱스 2에서 끝까지 슬라이싱; 출력 "[2, 3, 4]"
+print nums[:2]     # 처음부터 인덱스 2(제외)까지 슬라이싱; 출력 "[0, 1]"
+print nums[:]      # 전체 리스트 슬라이싱; 출력 ["0, 1, 2, 3, 4]"
+print nums[:-1]    # 슬라이싱 인덱스는 음수도 가능; 출력 ["0, 1, 2, 3]"
+nums[2:4] = [8, 9] # 슬라이스된 리스트에 새로운 리스트 할당
 print nums         # 출력 "[0, 1, 8, 9, 4]"
 ~~~
-We will see slicing again in the context of numpy arrays.
+numpy 배열 부분에서 다시 슬라이싱을 보게될것입니다.
 
 **Loops:** You can loop over the elements of a list like this:
 
