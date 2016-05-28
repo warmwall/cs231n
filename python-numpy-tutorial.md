@@ -384,33 +384,32 @@ def hello(name, loud=False):
 hello('Bob') # 출력 "Hello, Bob"
 hello('Fred', loud=True)  # 출력 "HELLO, FRED!"
 ~~~
-파이썬 함수에 관해 더 많은 정보는 [문서](https://docs.python.org/2/tutorial/controlflow.html#defining-functions)를 참조하세요.
+파이썬 함수에 관한 더 많은 정보는 [문서](https://docs.python.org/2/tutorial/controlflow.html#defining-functions)를 참조하세요.
 
 <a name='python-classes'></a>
 ### Classes
 
-The syntax for defining classes in Python is straightforward:
+파이썬에서 클래스를 정의하는 구문은 복잡하지 않습니다:
 
 ~~~python
 class Greeter(object):
     
-    # Constructor
+    # 생성자
     def __init__(self, name):
-        self.name = name  # Create an instance variable
+        self.name = name  # 인스턴스 변수 선언
         
-    # Instance method
+    # 인스턴스 메소드
     def greet(self, loud=False):
         if loud:
             print 'HELLO, %s!' % self.name.upper()
         else:
             print 'Hello, %s' % self.name
         
-g = Greeter('Fred')  # Construct an instance of the Greeter class
-g.greet()            # Call an instance method; 출력 "Hello, Fred"
-g.greet(loud=True)   # Call an instance method; 출력 "HELLO, FRED!"
+g = Greeter('Fred')  # Greeter 클래스의 인스턴스 생성
+g.greet()            # 인스턴스 메소드 호출; 출력 "Hello, Fred"
+g.greet(loud=True)   # 인스턴스 메소드 호출; 출력 "HELLO, FRED!"
 ~~~
-You can read a lot more about Python classes
-[in the documentation](https://docs.python.org/2/tutorial/classes.html).
+파이썬 클래스에 관한 더 많은 정보는 [문서](https://docs.python.org/2/tutorial/classes.html)를 참조하세요.
 
 <a name='numpy'></a>
 ## Numpy
