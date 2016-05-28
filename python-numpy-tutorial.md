@@ -61,6 +61,7 @@ cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 �
   - [이미지](#matplotlib-images)
 
 <a name='python'></a>
+
 ## Python
 파이썬은 고차원이고, 다중패러다임을 지원하는 동적 프로그래밍 언어입니다. 
 짧지만 가독성 높은 코드 몇 줄로 수준 높은 아이디어들을 표현할수있기에 파이썬 코드는 거의 수도코드처럼 보인다고도 합니다. 
@@ -90,6 +91,7 @@ print quicksort([3,6,8,10,1,2,1])
 `python --version`.
 
 <a name='python-basic'></a>
+
 ### 기본 자료형
 
 다른 프로그래밍 언어들처럼, 파이썬에는 정수, 실수, 불린, 문자열같은 기본 자료형이 있습니다.
@@ -159,13 +161,13 @@ print '  world '.strip()  # 문자열 앞뒤 공백 제거; 출력 "world"
 모든 문자열 메소드는 [문서](https://docs.python.org/2/library/stdtypes.html#string-methods)에서 찾아볼 수 있습니다. 
 
 <a name='python-containers'></a>
-### 컨테이너
 
+### 컨테이너
 파이썬은 다음과 같은 컨테이너 타입이 구현되어 있습니다: 리스트, 딕셔너리, 집합, 튜플
 
 <a name='python-lists'></a>
-#### 리스트
 
+#### 리스트
 리스트는 파이썬에서 배열같은 존재입니다. 그렇지만 배열과 달리 크기 변경이 가능하고
 서로 다른 자료형일지라도 하나의 리스트에 저장 될 수 있습니다:
 
@@ -247,6 +249,7 @@ print even_squares  # 출력 "[0, 4, 16]"
 ~~~
 
 <a name='python-dicts'></a>
+
 #### 딕셔너리
 자바의 '맵', 자바스크립트의 '오브젝트'와 유사하게, 파이썬의 '딕셔너리'는 (열쇠, 값) 쌍을 저장합니다.
 아래와 같은 방식으로 딕셔너리를 사용할 수 있습니다:
@@ -263,7 +266,7 @@ print d.get('fish', 'N/A')    # 딕셔너리의 값을 받음. 존재하지 않�
 del d['fish']        # 딕셔너리에 저장된 요소 삭제
 print d.get('fish', 'N/A') # "fish"는 더이상 열쇠가 아님; 출력 "N/A"
 ~~~
-딕셔너리에 관해 필요한 모든것은 [문서](https://docs.python.org/2/library/stdtypes.html#dict)에서 찾아볼 수 있습니다.
+딕셔너리에 관해 더 알고싶다면 [문서](https://docs.python.org/2/library/stdtypes.html#dict)를 참조하세요.
 
 **반복문:** 딕셔너리의 열쇠는 쉽게 반복될 수 있습니다:
 
@@ -275,7 +278,7 @@ for animal in d:
 # 출력 "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs", 한 줄에 하나씩 출력.
 ~~~
 
-If you want access to keys and their corresponding values, use the `iteritems` method:
+만약 열쇠와, 그에 상응하는 값에 접근하고 싶다면, 'iteritems' 메소드를 사용하세요:
 
 ~~~python
 d = {'person': 2, 'cat': 4, 'spider': 8}
@@ -295,41 +298,38 @@ print even_num_to_square  # 출력 "{0: 0, 2: 4, 4: 16}"
 ~~~
 
 <a name='python-sets'></a>
-#### Sets
-A set is an unordered collection of distinct elements. As a simple example, consider
-the following:
+
+#### 집합
+집합은 순서 구분이 없고 서로 다른 요소간의 모임입니다. 예시:
 
 ~~~python
 animals = {'cat', 'dog'}
-print 'cat' in animals   # Check if an element is in a set; 출력 "True"
+print 'cat' in animals   # 요소가 집합에 포함되어 있는지 확인; 출력 "True"
 print 'fish' in animals  # 출력 "False"
-animals.add('fish')      # Add an element to a set
+animals.add('fish')      # 요소를 집합에 추가
 print 'fish' in animals  # 출력 "True"
-print len(animals)       # Number of elements in a set; 출력 "3"
-animals.add('cat')       # Adding an element that is already in the set does nothing
+print len(animals)       # 집합에 포함된 요소의 수; 출력 "3"
+animals.add('cat')       # 이미 포함되어있는 요소를 추가할 경우 아무 변화 없음
 print len(animals)       # 출력 "3"
 animals.remove('cat')    # Remove an element from a set
 print len(animals)       # 출력 "2"
 ~~~
 
-As usual, everything you want to know about sets can be found
-[in the documentation](https://docs.python.org/2/library/sets.html#set-objects).
+마찬가지로, 집합에 관해 더 알고싶다면 [문서](https://docs.python.org/2/library/sets.html#set-objects)를 참조하세요.
 
-
-**Loops:**
-Iterating over a set has the same syntax as iterating over a list;
-however since sets are unordered, you cannot make assumptions about the order
-in which you visit the elements of the set:
+**반복문:**
+집합을 반복하는 구문은 리스트 반복 구문과 동일합니다;
+그러나 집합은 순서가 없어서, 어떤 순서로 반복될지 추측할순 없습니다:
 
 ~~~python
 animals = {'cat', 'dog', 'fish'}
 for idx, animal in enumerate(animals):
     print '#%d: %s' % (idx + 1, animal)
-# 출력 "#1: fish", "#2: dog", "#3: cat"
+# 출력 "#1: fish", "#2: dog", "#3: cat", 한 줄에 하나씩 출력.
 ~~~
 
-**Set comprehensions:**
-Like lists and dictionaries, we can easily construct sets using set comprehensions:
+**집합 comprehensions:**
+리스트, 딕셔너리와 마찬가지로 집합 comprehensions을 통해 손쉽게 집합을 만들수 있습니다.
 
 ~~~python
 from math import sqrt
@@ -338,24 +338,25 @@ print nums  # 출력 "set([0, 1, 2, 3, 4, 5])"
 ~~~
 
 <a name='python-tuples'></a>
-#### Tuples
-A tuple is an (immutable) ordered list of values.
-A tuple is in many ways similar to a list; one of the most important differences is that
-tuples can be used as keys in dictionaries and as elements of sets, while lists cannot.
-Here is a trivial example:
+
+#### 튜플
+튜플은 요소들 간 순서가 있으며 값이 변하지 않는 리스트입니다.
+튜플은 많은 면에서 리스트와 유사합니다; 가장 중요한 차이점은 튜플은 '딕셔너리의 열쇠'와 '집합의 요소'가 될 수 있지만 리스트는 불가능하다는 점입니다.
+여기 간단한 예시가 있습니다:
 
 ~~~python
-d = {(x, x + 1): x for x in range(10)}  # Create a dictionary with tuple keys
-t = (5, 6)       # Create a tuple
+d = {(x, x + 1): x for x in range(10)}  # 튜플을 열쇠로 하는 딕셔너리 생성
+t = (5, 6)       # 튜플 생성
 print type(t)    # 출력 "<type 'tuple'>"
 print d[t]       # 출력 "5"
 print d[(1, 2)]  # 출력 "1"
 ~~~
-[The documentation](https://docs.python.org/2/tutorial/datastructures.html#tuples-and-sequences) has more information about tuples.
+[문서](https://docs.python.org/2/tutorial/datastructures.html#tuples-and-sequences)에 튜플에 관한 더 많은 정보가 있습니다.
 
 <a name='python-functions'></a>
-### Functions
-Python functions are defined using the `def` keyword. For example:
+
+### 함수
+파이썬 함수는 'def' 키워드를 통해 정의됩니다. 예시:
 
 ~~~python
 def sign(x):
@@ -368,10 +369,10 @@ def sign(x):
 
 for x in [-1, 0, 1]:
     print sign(x)
-# 출력 "negative", "zero", "positive"
+# 출력 "negative", "zero", "positive", 한 줄에 하나씩 출력.
 ~~~
 
-We will often define functions to take optional keyword arguments, like this:
+가끔은 아래처럼 선택적으로 인자를 받는 함수를 정의할 때도 있습니다:
 
 ~~~python
 def hello(name, loud=False):
@@ -383,8 +384,7 @@ def hello(name, loud=False):
 hello('Bob') # 출력 "Hello, Bob"
 hello('Fred', loud=True)  # 출력 "HELLO, FRED!"
 ~~~
-There is a lot more information about Python functions
-[in the documentation](https://docs.python.org/2/tutorial/controlflow.html#defining-functions).
+파이썬 함수에 관해 더 많은 정보는 [문서](https://docs.python.org/2/tutorial/controlflow.html#defining-functions)를 참조하세요.
 
 <a name='python-classes'></a>
 ### Classes
