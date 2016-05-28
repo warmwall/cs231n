@@ -62,9 +62,9 @@ cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 �
 
 <a name='python'></a>
 ## Python
-파이썬은 고차원이고, 다중패러다임을 지원하는 동적 프로그래밍 언어이다. 
-짧지만 가독성 높은 코드 몇 줄로 수준 높은 아이디어들을 표현할수있기에 파이썬 코드는 거의 수도코드처럼 보인다고도 한다. 
-아래는 quicksort알고리즘의 파이썬 구현 예시이다:
+파이썬은 고차원이고, 다중패러다임을 지원하는 동적 프로그래밍 언어입니다. 
+짧지만 가독성 높은 코드 몇 줄로 수준 높은 아이디어들을 표현할수있기에 파이썬 코드는 거의 수도코드처럼 보인다고도 합니다. 
+아래는 quicksort알고리즘의 파이썬 구현 예시입니다:
 
 ~~~python
 def quicksort(arr):
@@ -172,22 +172,22 @@ print '  world '.strip()  # 문자열 앞뒤 공백 제거; 출력 "world"
 ~~~python
 xs = [3, 1, 2]   # 리스트 생성
 print xs, xs[2]  # 출력 "[3, 1, 2] 2"
-print xs[-1]     # 인덱스가 음수일 경우 리스트의 끝에서부터 세어진다; 출력 "2"
-xs[2] = 'foo'    # 리스트는 자료형이 다른 요소들을 저장 할 수 있다
+print xs[-1]     # 인덱스가 음수일 경우 리스트의 끝에서부터 세어짐; 출력 "2"
+xs[2] = 'foo'    # 리스트는 자료형이 다른 요소들을 저장 할 수 있습니다
 print xs         # 출력 "[3, 1, 'foo']"
 xs.append('bar') # 리스트의 끝에 새 요소 추가
 print xs         # 출력 "[3, 1, 'foo', 'bar']"
 x = xs.pop()     # 리스트의 마지막 요소 삭제하고 반환
 print x, xs      # 출력 "bar [3, 1, 'foo']"
 ~~~
-마찬가지로, 리스트에 대해 자세하 사항은 [문서](https://docs.python.org/2/tutorial/datastructures.html#more-on-lists)에서 찾아볼 수 있습니다.
+마찬가지로, 리스트에 대해 자세한 사항은 [문서](https://docs.python.org/2/tutorial/datastructures.html#more-on-lists)에서 찾아볼 수 있습니다.
 
 **슬라이싱:**
-리스트의 요소로 한번에 접근하는것 이외에도, 파이썬은 리스트의 일부분에만 접근하는 간결한 문법을 제공한다;
-이를 *슬라이싱*이라고 한다:
+리스트의 요소로 한번에 접근하는것 이외에도, 파이썬은 리스트의 일부분에만 접근하는 간결한 문법을 제공합니다;
+이를 *슬라이싱*이라고 합니다:
 
 ~~~python
-nums = range(5)    # range는 파이썬에 구현되어 있는 함수이며 정수들로 구성된 리스트를 만든다
+nums = range(5)    # range는 파이썬에 구현되어 있는 함수이며 정수들로 구성된 리스트를 만듭니다
 print nums         # 출력 "[0, 1, 2, 3, 4]"
 print nums[2:4]    # 인덱스 2에서 4(제외)까지 슬라이싱; 출력 "[2, 3]"
 print nums[2:]     # 인덱스 2에서 끝까지 슬라이싱; 출력 "[2, 3, 4]"
@@ -199,28 +199,28 @@ print nums         # 출력 "[0, 1, 8, 9, 4]"
 ~~~
 numpy 배열 부분에서 다시 슬라이싱을 보게될것입니다.
 
-**Loops:** You can loop over the elements of a list like this:
+**반복문:** 아래와 같이 리스트의 요소들을 반복해서 조회할 수 있습니다:
 
 ~~~python
 animals = ['cat', 'dog', 'monkey']
 for animal in animals:
     print animal
-# 출력 "cat", "dog", "monkey", each on its own line.
+# 출력 "cat", "dog", "monkey", 한 줄에 하나씩 출력.
 ~~~
 
-If you want access to the index of each element within the body of a loop,
-use the built-in `enumerate` function:
+만약 반복문 내에서 리스트 각 요소의 인덱스에 접근하고 싶다면, 'enumerate' 함수를 사용하세요:
 
 ~~~python
 animals = ['cat', 'dog', 'monkey']
 for idx, animal in enumerate(animals):
     print '#%d: %s' % (idx + 1, animal)
-# 출력 "#1: cat", "#2: dog", "#3: monkey", each on its own line
+# 출력 "#1: cat", "#2: dog", "#3: monkey", 한 줄에 하나씩 출력.
 ~~~
 
-**List comprehensions:**
-When programming, frequently we want to transform one type of data into another.
-As a simple example, consider the following code that computes square numbers:
+**리스트 comprehensions:**
+프로그래밍을 하다보면, 자료형을 변환해야 하는 경우가 자주 있습니다.
+간단한 예를 들자면, 숫자의 제곱을 계산하는 다음의 코드를 보세요:
+
 
 ~~~python
 nums = [0, 1, 2, 3, 4]
@@ -230,7 +230,7 @@ for x in nums:
 print squares   # 출력 [0, 1, 4, 9, 16]
 ~~~
 
-You can make this code simpler using a **list comprehension**:
+**리스트 comprehension**을 이용해 이 코드를 더 간단하게 만들 수 있습니다:
 
 ~~~python
 nums = [0, 1, 2, 3, 4]
@@ -238,7 +238,7 @@ squares = [x ** 2 for x in nums]
 print squares   # 출력 [0, 1, 4, 9, 16]
 ~~~
 
-List comprehensions can also contain conditions:
+리스트 comprehensions에 조건을 추가 할 수도 있습니다:
 
 ~~~python
 nums = [0, 1, 2, 3, 4]
@@ -247,33 +247,32 @@ print even_squares  # 출력 "[0, 4, 16]"
 ~~~
 
 <a name='python-dicts'></a>
-#### Dictionaries
-A dictionary stores (key, value) pairs, similar to a `Map` in Java or
-an object in Javascript. You can use it like this:
+#### 딕셔너리
+자바의 '맵', 자바스크립트의 '오브젝트'와 유사하게, 파이썬의 '딕셔너리'는 (열쇠, 값) 쌍을 저장합니다.
+아래와 같은 방식으로 딕셔너리를 사용할 수 있습니다:
 
 ~~~python
-d = {'cat': 'cute', 'dog': 'furry'}  # Create a new dictionary with some data
-print d['cat']       # Get an entry from a dictionary; 출력 "cute"
-print 'cat' in d     # Check if a dictionary has a given key; 출력 "True"
-d['fish'] = 'wet'    # Set an entry in a dictionary
+d = {'cat': 'cute', 'dog': 'furry'}  # 새로운 딕셔너리를 만듭니다
+print d['cat']       # 딕셔너리의 값을 받음; 출력 "cute"
+print 'cat' in d     # 딕셔너리가 주어진 열쇠를 가지고 있는지 확인; 출력 "True"
+d['fish'] = 'wet'    # 딕셔너리의 값을 지정
 print d['fish']      # 출력 "wet"
 # print d['monkey']  # KeyError: 'monkey' not a key of d
-print d.get('monkey', 'N/A')  # Get an element with a default; 출력 "N/A"
-print d.get('fish', 'N/A')    # Get an element with a default; 출력 "wet"
-del d['fish']        # Remove an element from a dictionary
-print d.get('fish', 'N/A') # "fish" is no longer a key; 출력 "N/A"
+print d.get('monkey', 'N/A')  # 딕셔너리의 값을 받음. 존재하지 않는 다면 'N/A'; 출력 "N/A"
+print d.get('fish', 'N/A')    # 딕셔너리의 값을 받음. 존재하지 않는 다면 'N/A'; 출력 "wet"
+del d['fish']        # 딕셔너리에 저장된 요소 삭제
+print d.get('fish', 'N/A') # "fish"는 더이상 열쇠가 아님; 출력 "N/A"
 ~~~
-You can find all you need to know about dictionaries
-[in the documentation](https://docs.python.org/2/library/stdtypes.html#dict).
+딕셔너리에 관해 필요한 모든것은 [문서](https://docs.python.org/2/library/stdtypes.html#dict)에서 찾아볼 수 있습니다.
 
-**Loops:** It is easy to iterate over the keys in a dictionary:
+**반복문:** 딕셔너리의 열쇠는 쉽게 반복될 수 있습니다:
 
 ~~~python
 d = {'person': 2, 'cat': 4, 'spider': 8}
 for animal in d:
     legs = d[animal]
     print 'A %s has %d legs' % (animal, legs)
-# 출력 "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs"
+# 출력 "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs", 한 줄에 하나씩 출력.
 ~~~
 
 If you want access to keys and their corresponding values, use the `iteritems` method:
@@ -282,12 +281,12 @@ If you want access to keys and their corresponding values, use the `iteritems` m
 d = {'person': 2, 'cat': 4, 'spider': 8}
 for animal, legs in d.iteritems():
     print 'A %s has %d legs' % (animal, legs)
-# 출력 "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs"
+# 출력 "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs", 한 줄에 하나씩 출력.
 ~~~
 
-**Dictionary comprehensions:**
-These are similar to list comprehensions, but allow you to easily construct
-dictionaries. For example:
+**딕셔너리 comprehensions:**
+리스트 comprehensions과 유사한 딕셔너리 comprehensions을 통해 손쉽게 딕셔너리를 만들수 있습니다.
+예시:
 
 ~~~python
 nums = [0, 1, 2, 3, 4]
