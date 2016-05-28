@@ -78,89 +78,86 @@ def quicksort(arr):
     return quicksort(left) + middle + quicksort(right)
     
 print quicksort([3,6,8,10,1,2,1])
-# Prints "[1, 1, 2, 3, 6, 8, 10]"
+# 출력 "[1, 1, 2, 3, 6, 8, 10]"
 ~~~
 
-### Python versions
-There are currently two different supported versions of Python, 2.7 and 3.4.
-Somewhat confusingly, Python 3.0 introduced many backwards-incompatible changes
-to the language, so code written for 2.7 may not work under 3.4 and vice versa.
-For this class all code will use Python 2.7.
+### 파이썬 버전
+현재 파이썬에는 두가지 버전이 있습니다. 파이썬 2.7 그리고 파이썬 3.4입니다. 
+혼란스럽게도, 파이썬3은 기존 파이썬2와 호환되지 않게 변경된 부분이 있습니다.
+그러므로 파이썬 2.7로 쓰여진 코드는 3.4환경에서 동작하지 않고 그 반대도 마찬가지입니다.
+이 수업에선 파이썬 2.7을 사용합니다.
 
-You can check your Python version at the command line by running
+커맨드라인에 아래의 명령어를 입력해서 현재 설치된 파이썬 버전을 확인 할 수 있습니다.
 `python --version`.
 
 <a name='python-basic'></a>
 ### 기본 자료형
 
-Like most languages, Python has a number of basic types including integers,
-floats, booleans, and strings. These data types behave in ways that are
-familiar from other programming languages.
+다른 프로그래밍 언어들처럼, 파이썬에는 정수, 실수, 불린, 문자열같은 기본 자료형이 있습니다.
+파이썬 기본 자료형 역시 다른 프로그래밍 언어와 유사합니다.
 
-**Numbers:** Integers and floats work as you would expect from other languages:
+**숫자:** 다른 언어와 마찬가지로 파이썬의 정수형(Integers)과 실수형(floats) 데이터 타입 역시 동일한 역할을 합니다 :
 
 ~~~python
 x = 3
-print type(x) # Prints "<type 'int'>"
-print x       # Prints "3"
-print x + 1   # Addition; prints "4"
-print x - 1   # Subtraction; prints "2"
-print x * 2   # Multiplication; prints "6"
-print x ** 2  # Exponentiation; prints "9"
+print type(x) # 출력 "<type 'int'>"
+print x       # 출력 "3"
+print x + 1   # 덧셈; 출력 "4"
+print x - 1   # 뺄셈; 출력 "2"
+print x * 2   # 곱셈; 출력 "6"
+print x ** 2  # 제곱; 출력 "9"
 x += 1
-print x  # Prints "4"
+print x  # 출력 "4"
 x *= 2
-print x  # Prints "8"
+print x  # 출력 "8"
 y = 2.5
-print type(y) # Prints "<type 'float'>"
-print y, y + 1, y * 2, y ** 2 # Prints "2.5 3.5 5.0 6.25"
+print type(y) # 출력 "<type 'float'>"
+print y, y + 1, y * 2, y ** 2 # 출력 "2.5 3.5 5.0 6.25"
 ~~~
-Note that unlike many languages, Python does not have unary increment (`x++`)
-or decrement (`x--`) operators.
+다른 언어들과는 달리, 파이썬에는 증감 단항연상자(`x++`, `x--`)가 없습니다.
 
-Python also has built-in types for long integers and complex numbers;
-you can find all of the details
-[in the documentation](https://docs.python.org/2/library/stdtypes.html#numeric-types-int-float-long-complex).
+파이썬 역시 long 정수형과 복소수 데이터 타입이 구현되어 있습니다. 
+자세한 사항은 [문서](https://docs.python.org/2/library/stdtypes.html#numeric-types-int-float-long-complex)에서 찾아볼 수 있습니다.
 
-**Booleans:** Python implements all of the usual operators for Boolean logic,
-but uses English words rather than symbols (`&&`, `||`, etc.):
+**불린(Booleans):** 파이썬에는 논리 자료형의 모든 연산자들이 구현되어 있습니다. 
+그렇지만 기호(`&&`, `||`, 등.) 대신 영어 단어로 구현되어 있습니다 :
 
 ~~~python
 t = True
 f = False
-print type(t) # Prints "<type 'bool'>"
-print t and f # Logical AND; prints "False"
-print t or f  # Logical OR; prints "True"
-print not t   # Logical NOT; prints "False"
-print t != f  # Logical XOR; prints "True" 
+print type(t) # 출력 "<type 'bool'>"
+print t and f # 논리 AND; 출력 "False"
+print t or f  # 논리 OR; 출력 "True"
+print not t   # 논리 NOT; 출력 "False"
+print t != f  # 논리 XOR; 출력 "True" 
 ~~~
 
-**Strings:** Python has great support for strings:
+**문자열:** 파이썬은 문자열과 연관된 다양한 기능을 지원합니다:
 
 ~~~python
-hello = 'hello'   # String literals can use single quotes
-world = "world"   # or double quotes; it does not matter.
-print hello       # Prints "hello"
-print len(hello)  # String length; prints "5"
-hw = hello + ' ' + world  # String concatenation
-print hw  # prints "hello world"
-hw12 = '%s %s %d' % (hello, world, 12)  # sprintf style string formatting
-print hw12  # prints "hello world 12"
+hello = 'hello'   # String 문자열을 표현할땐 따옴표나
+world = "world"   # 쌍따옴표가 사용됩니다; 어떤걸 써도 상관없습니다.
+print hello       # 출력 "hello"
+print len(hello)  # 문자열 길이; 출력 "5"
+hw = hello + ' ' + world  # 문자열 연결
+print hw  # 출력 "hello world"
+hw12 = '%s %s %d' % (hello, world, 12)  # sprintf 방식의 문자열 서식 지정
+print hw12  # 출력 "hello world 12"
 ~~~
 
 String objects have a bunch of useful methods; for example:
 
 ~~~python
 s = "hello"
-print s.capitalize()  # Capitalize a string; prints "Hello"
-print s.upper()       # Convert a string to uppercase; prints "HELLO"
-print s.rjust(7)      # Right-justify a string, padding with spaces; prints "  hello"
-print s.center(7)     # Center a string, padding with spaces; prints " hello "
+print s.capitalize()  # Capitalize a string; 출력 "Hello"
+print s.upper()       # Convert a string to uppercase; 출력 "HELLO"
+print s.rjust(7)      # Right-justify a string, padding with spaces; 출력 "  hello"
+print s.center(7)     # Center a string, padding with spaces; 출력 " hello "
 print s.replace('l', '(ell)')  # Replace all instances of one substring with another;
-                               # prints "he(ell)(ell)o"
-print '  world '.strip()  # Strip leading and trailing whitespace; prints "world"
+                               # 출력 "he(ell)(ell)o"
+print '  world '.strip()  # Strip leading and trailing whitespace; 출력 "world"
 ~~~
-You can find a list of all string methods [in the documentation](https://docs.python.org/2/library/stdtypes.html#string-methods).
+모든 문자열 메소드는 [문서](https://docs.python.org/2/library/stdtypes.html#string-methods)에서 찾아볼 수 있습니다. 
 
 <a name='python-containers'></a>
 ### Containers
@@ -173,14 +170,14 @@ and can contain elements of different types:
 
 ~~~python
 xs = [3, 1, 2]   # Create a list
-print xs, xs[2]  # Prints "[3, 1, 2] 2"
-print xs[-1]     # Negative indices count from the end of the list; prints "2"
+print xs, xs[2]  # 출력 "[3, 1, 2] 2"
+print xs[-1]     # Negative indices count from the end of the list; 출력 "2"
 xs[2] = 'foo'    # Lists can contain elements of different types
-print xs         # Prints "[3, 1, 'foo']"
+print xs         # 출력 "[3, 1, 'foo']"
 xs.append('bar') # Add a new element to the end of the list
-print xs         # Prints "[3, 1, 'foo', 'bar']"
+print xs         # 출력 "[3, 1, 'foo', 'bar']"
 x = xs.pop()     # Remove and return the last element of the list
-print x, xs      # Prints "bar [3, 1, 'foo']"
+print x, xs      # 출력 "bar [3, 1, 'foo']"
 ~~~
 As usual, you can find all the gory details about lists
 [in the documentation](https://docs.python.org/2/tutorial/datastructures.html#more-on-lists).
@@ -191,14 +188,14 @@ concise syntax to access sublists; this is known as *slicing*:
 
 ~~~python
 nums = range(5)    # range is a built-in function that creates a list of integers
-print nums         # Prints "[0, 1, 2, 3, 4]"
-print nums[2:4]    # Get a slice from index 2 to 4 (exclusive); prints "[2, 3]"
-print nums[2:]     # Get a slice from index 2 to the end; prints "[2, 3, 4]"
-print nums[:2]     # Get a slice from the start to index 2 (exclusive); prints "[0, 1]"
-print nums[:]      # Get a slice of the whole list; prints ["0, 1, 2, 3, 4]"
-print nums[:-1]    # Slice indices can be negative; prints ["0, 1, 2, 3]"
+print nums         # 출력 "[0, 1, 2, 3, 4]"
+print nums[2:4]    # Get a slice from index 2 to 4 (exclusive); 출력 "[2, 3]"
+print nums[2:]     # Get a slice from index 2 to the end; 출력 "[2, 3, 4]"
+print nums[:2]     # Get a slice from the start to index 2 (exclusive); 출력 "[0, 1]"
+print nums[:]      # Get a slice of the whole list; 출력 ["0, 1, 2, 3, 4]"
+print nums[:-1]    # Slice indices can be negative; 출력 ["0, 1, 2, 3]"
 nums[2:4] = [8, 9] # Assign a new sublist to a slice
-print nums         # Prints "[0, 1, 8, 9, 4]"
+print nums         # 출력 "[0, 1, 8, 9, 4]"
 ~~~
 We will see slicing again in the context of numpy arrays.
 
@@ -208,7 +205,7 @@ We will see slicing again in the context of numpy arrays.
 animals = ['cat', 'dog', 'monkey']
 for animal in animals:
     print animal
-# Prints "cat", "dog", "monkey", each on its own line.
+# 출력 "cat", "dog", "monkey", each on its own line.
 ~~~
 
 If you want access to the index of each element within the body of a loop,
@@ -218,7 +215,7 @@ use the built-in `enumerate` function:
 animals = ['cat', 'dog', 'monkey']
 for idx, animal in enumerate(animals):
     print '#%d: %s' % (idx + 1, animal)
-# Prints "#1: cat", "#2: dog", "#3: monkey", each on its own line
+# 출력 "#1: cat", "#2: dog", "#3: monkey", each on its own line
 ~~~
 
 **List comprehensions:**
@@ -230,7 +227,7 @@ nums = [0, 1, 2, 3, 4]
 squares = []
 for x in nums:
     squares.append(x ** 2)
-print squares   # Prints [0, 1, 4, 9, 16]
+print squares   # 출력 [0, 1, 4, 9, 16]
 ~~~
 
 You can make this code simpler using a **list comprehension**:
@@ -238,7 +235,7 @@ You can make this code simpler using a **list comprehension**:
 ~~~python
 nums = [0, 1, 2, 3, 4]
 squares = [x ** 2 for x in nums]
-print squares   # Prints [0, 1, 4, 9, 16]
+print squares   # 출력 [0, 1, 4, 9, 16]
 ~~~
 
 List comprehensions can also contain conditions:
@@ -246,7 +243,7 @@ List comprehensions can also contain conditions:
 ~~~python
 nums = [0, 1, 2, 3, 4]
 even_squares = [x ** 2 for x in nums if x % 2 == 0]
-print even_squares  # Prints "[0, 4, 16]"
+print even_squares  # 출력 "[0, 4, 16]"
 ~~~
 
 <a name='python-dicts'></a>
@@ -256,15 +253,15 @@ an object in Javascript. You can use it like this:
 
 ~~~python
 d = {'cat': 'cute', 'dog': 'furry'}  # Create a new dictionary with some data
-print d['cat']       # Get an entry from a dictionary; prints "cute"
-print 'cat' in d     # Check if a dictionary has a given key; prints "True"
+print d['cat']       # Get an entry from a dictionary; 출력 "cute"
+print 'cat' in d     # Check if a dictionary has a given key; 출력 "True"
 d['fish'] = 'wet'    # Set an entry in a dictionary
-print d['fish']      # Prints "wet"
+print d['fish']      # 출력 "wet"
 # print d['monkey']  # KeyError: 'monkey' not a key of d
-print d.get('monkey', 'N/A')  # Get an element with a default; prints "N/A"
-print d.get('fish', 'N/A')    # Get an element with a default; prints "wet"
+print d.get('monkey', 'N/A')  # Get an element with a default; 출력 "N/A"
+print d.get('fish', 'N/A')    # Get an element with a default; 출력 "wet"
 del d['fish']        # Remove an element from a dictionary
-print d.get('fish', 'N/A') # "fish" is no longer a key; prints "N/A"
+print d.get('fish', 'N/A') # "fish" is no longer a key; 출력 "N/A"
 ~~~
 You can find all you need to know about dictionaries
 [in the documentation](https://docs.python.org/2/library/stdtypes.html#dict).
@@ -276,7 +273,7 @@ d = {'person': 2, 'cat': 4, 'spider': 8}
 for animal in d:
     legs = d[animal]
     print 'A %s has %d legs' % (animal, legs)
-# Prints "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs"
+# 출력 "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs"
 ~~~
 
 If you want access to keys and their corresponding values, use the `iteritems` method:
@@ -285,7 +282,7 @@ If you want access to keys and their corresponding values, use the `iteritems` m
 d = {'person': 2, 'cat': 4, 'spider': 8}
 for animal, legs in d.iteritems():
     print 'A %s has %d legs' % (animal, legs)
-# Prints "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs"
+# 출력 "A person has 2 legs", "A spider has 8 legs", "A cat has 4 legs"
 ~~~
 
 **Dictionary comprehensions:**
@@ -295,7 +292,7 @@ dictionaries. For example:
 ~~~python
 nums = [0, 1, 2, 3, 4]
 even_num_to_square = {x: x ** 2 for x in nums if x % 2 == 0}
-print even_num_to_square  # Prints "{0: 0, 2: 4, 4: 16}"
+print even_num_to_square  # 출력 "{0: 0, 2: 4, 4: 16}"
 ~~~
 
 <a name='python-sets'></a>
@@ -305,15 +302,15 @@ the following:
 
 ~~~python
 animals = {'cat', 'dog'}
-print 'cat' in animals   # Check if an element is in a set; prints "True"
-print 'fish' in animals  # prints "False"
+print 'cat' in animals   # Check if an element is in a set; 출력 "True"
+print 'fish' in animals  # 출력 "False"
 animals.add('fish')      # Add an element to a set
-print 'fish' in animals  # Prints "True"
-print len(animals)       # Number of elements in a set; prints "3"
+print 'fish' in animals  # 출력 "True"
+print len(animals)       # Number of elements in a set; 출력 "3"
 animals.add('cat')       # Adding an element that is already in the set does nothing
-print len(animals)       # Prints "3"
+print len(animals)       # 출력 "3"
 animals.remove('cat')    # Remove an element from a set
-print len(animals)       # Prints "2"
+print len(animals)       # 출력 "2"
 ~~~
 
 As usual, everything you want to know about sets can be found
@@ -329,7 +326,7 @@ in which you visit the elements of the set:
 animals = {'cat', 'dog', 'fish'}
 for idx, animal in enumerate(animals):
     print '#%d: %s' % (idx + 1, animal)
-# Prints "#1: fish", "#2: dog", "#3: cat"
+# 출력 "#1: fish", "#2: dog", "#3: cat"
 ~~~
 
 **Set comprehensions:**
@@ -338,7 +335,7 @@ Like lists and dictionaries, we can easily construct sets using set comprehensio
 ~~~python
 from math import sqrt
 nums = {int(sqrt(x)) for x in range(30)}
-print nums  # Prints "set([0, 1, 2, 3, 4, 5])"
+print nums  # 출력 "set([0, 1, 2, 3, 4, 5])"
 ~~~
 
 <a name='python-tuples'></a>
@@ -351,9 +348,9 @@ Here is a trivial example:
 ~~~python
 d = {(x, x + 1): x for x in range(10)}  # Create a dictionary with tuple keys
 t = (5, 6)       # Create a tuple
-print type(t)    # Prints "<type 'tuple'>"
-print d[t]       # Prints "5"
-print d[(1, 2)]  # Prints "1"
+print type(t)    # 출력 "<type 'tuple'>"
+print d[t]       # 출력 "5"
+print d[(1, 2)]  # 출력 "1"
 ~~~
 [The documentation](https://docs.python.org/2/tutorial/datastructures.html#tuples-and-sequences) has more information about tuples.
 
@@ -372,7 +369,7 @@ def sign(x):
 
 for x in [-1, 0, 1]:
     print sign(x)
-# Prints "negative", "zero", "positive"
+# 출력 "negative", "zero", "positive"
 ~~~
 
 We will often define functions to take optional keyword arguments, like this:
@@ -384,8 +381,8 @@ def hello(name, loud=False):
     else:
         print 'Hello, %s' % name
 
-hello('Bob') # Prints "Hello, Bob"
-hello('Fred', loud=True)  # Prints "HELLO, FRED!"
+hello('Bob') # 출력 "Hello, Bob"
+hello('Fred', loud=True)  # 출력 "HELLO, FRED!"
 ~~~
 There is a lot more information about Python functions
 [in the documentation](https://docs.python.org/2/tutorial/controlflow.html#defining-functions).
@@ -410,8 +407,8 @@ class Greeter(object):
             print 'Hello, %s' % self.name
         
 g = Greeter('Fred')  # Construct an instance of the Greeter class
-g.greet()            # Call an instance method; prints "Hello, Fred"
-g.greet(loud=True)   # Call an instance method; prints "HELLO, FRED!"
+g.greet()            # Call an instance method; 출력 "Hello, Fred"
+g.greet(loud=True)   # Call an instance method; 출력 "HELLO, FRED!"
 ~~~
 You can read a lot more about Python classes
 [in the documentation](https://docs.python.org/2/tutorial/classes.html).
@@ -437,15 +434,15 @@ and access elements using square brackets:
 import numpy as np
 
 a = np.array([1, 2, 3])  # Create a rank 1 array
-print type(a)            # Prints "<type 'numpy.ndarray'>"
-print a.shape            # Prints "(3,)"
-print a[0], a[1], a[2]   # Prints "1 2 3"
+print type(a)            # 출력 "<type 'numpy.ndarray'>"
+print a.shape            # 출력 "(3,)"
+print a[0], a[1], a[2]   # 출력 "1 2 3"
 a[0] = 5                 # Change an element of the array
-print a                  # Prints "[5, 2, 3]"
+print a                  # 출력 "[5, 2, 3]"
 
 b = np.array([[1,2,3],[4,5,6]])   # Create a rank 2 array
-print b.shape                     # Prints "(2, 3)"
-print b[0, 0], b[0, 1], b[1, 0]   # Prints "1 2 4"
+print b.shape                     # 출력 "(2, 3)"
+print b[0, 0], b[0, 1], b[1, 0]   # 출력 "1 2 4"
 ~~~
 
 Numpy also provides many functions to create arrays:
@@ -454,18 +451,18 @@ Numpy also provides many functions to create arrays:
 import numpy as np
 
 a = np.zeros((2,2))  # Create an array of all zeros
-print a              # Prints "[[ 0.  0.]
+print a              # 출력 "[[ 0.  0.]
                      #          [ 0.  0.]]"
     
 b = np.ones((1,2))   # Create an array of all ones
-print b              # Prints "[[ 1.  1.]]"
+print b              # 출력 "[[ 1.  1.]]"
 
 c = np.full((2,2), 7) # Create a constant array
-print c               # Prints "[[ 7.  7.]
+print c               # 출력 "[[ 7.  7.]
                       #          [ 7.  7.]]"
 
 d = np.eye(2)        # Create a 2x2 identity matrix
-print d              # Prints "[[ 1.  0.]
+print d              # 출력 "[[ 1.  0.]
                      #          [ 0.  1.]]"
     
 e = np.random.random((2,2)) # Create an array filled with random values
@@ -501,9 +498,9 @@ b = a[:2, 1:3]
 
 # A slice of an array is a view into the same data, so modifying it
 # will modify the original array.
-print a[0, 1]   # Prints "2"
+print a[0, 1]   # 출력 "2"
 b[0, 0] = 77    # b[0, 0] is the same piece of data as a[0, 1]
-print a[0, 1]   # Prints "77"
+print a[0, 1]   # 출력 "77"
 ~~~
 
 You can also mix integer indexing with slice indexing.
@@ -526,14 +523,14 @@ a = np.array([[1,2,3,4], [5,6,7,8], [9,10,11,12]])
 # original array:
 row_r1 = a[1, :]    # Rank 1 view of the second row of a  
 row_r2 = a[1:2, :]  # Rank 2 view of the second row of a
-print row_r1, row_r1.shape  # Prints "[5 6 7 8] (4,)"
-print row_r2, row_r2.shape  # Prints "[[5 6 7 8]] (1, 4)"
+print row_r1, row_r1.shape  # 출력 "[5 6 7 8] (4,)"
+print row_r2, row_r2.shape  # 출력 "[[5 6 7 8]] (1, 4)"
 
 # We can make the same distinction when accessing columns of an array:
 col_r1 = a[:, 1]
 col_r2 = a[:, 1:2]
-print col_r1, col_r1.shape  # Prints "[ 2  6 10] (3,)"
-print col_r2, col_r2.shape  # Prints "[[ 2]
+print col_r1, col_r1.shape  # 출력 "[ 2  6 10] (3,)"
+print col_r2, col_r2.shape  # 출력 "[[ 2]
                             #          [ 6]
                             #          [10]] (3, 1)"
 ~~~
@@ -551,17 +548,17 @@ a = np.array([[1,2], [3, 4], [5, 6]])
 
 # An example of integer array indexing.
 # The returned array will have shape (3,) and 
-print a[[0, 1, 2], [0, 1, 0]]  # Prints "[1 4 5]"
+print a[[0, 1, 2], [0, 1, 0]]  # 출력 "[1 4 5]"
 
 # The above example of integer array indexing is equivalent to this:
-print np.array([a[0, 0], a[1, 1], a[2, 0]])  # Prints "[1 4 5]"
+print np.array([a[0, 0], a[1, 1], a[2, 0]])  # 출력 "[1 4 5]"
 
 # When using integer array indexing, you can reuse the same
 # element from the source array:
-print a[[0, 0], [1, 1]]  # Prints "[2 2]"
+print a[[0, 0], [1, 1]]  # 출력 "[2 2]"
 
 # Equivalent to the previous integer array indexing example
-print np.array([a[0, 1], a[0, 1]])  # Prints "[2 2]"
+print np.array([a[0, 1], a[0, 1]])  # 출력 "[2 2]"
 ~~~
 
 One useful trick with integer array indexing is selecting or mutating one
@@ -573,7 +570,7 @@ import numpy as np
 # Create a new array from which we will select elements
 a = np.array([[1,2,3], [4,5,6], [7,8,9], [10, 11, 12]])
 
-print a  # prints "array([[ 1,  2,  3],
+print a  # 출력 "array([[ 1,  2,  3],
          #                [ 4,  5,  6],
          #                [ 7,  8,  9],
          #                [10, 11, 12]])"
@@ -582,12 +579,12 @@ print a  # prints "array([[ 1,  2,  3],
 b = np.array([0, 2, 0, 1])
 
 # Select one element from each row of a using the indices in b
-print a[np.arange(4), b]  # Prints "[ 1  6  7 11]"
+print a[np.arange(4), b]  # 출력 "[ 1  6  7 11]"
 
 # Mutate one element from each row of a using the indices in b
 a[np.arange(4), b] += 10
 
-print a  # prints "array([[11,  2,  3],
+print a  # 출력 "array([[11,  2,  3],
          #                [ 4,  5, 16],
          #                [17,  8,  9],
          #                [10, 21, 12]])
@@ -608,17 +605,17 @@ bool_idx = (a > 2)  # Find the elements of a that are bigger than 2;
                     # shape as a, where each slot of bool_idx tells
                     # whether that element of a is > 2.
             
-print bool_idx      # Prints "[[False False]
+print bool_idx      # 출력 "[[False False]
                     #          [ True  True]
                     #          [ True  True]]"
 
 # We use boolean array indexing to construct a rank 1 array
 # consisting of the elements of a corresponding to the True values
 # of bool_idx
-print a[bool_idx]  # Prints "[3 4 5 6]"
+print a[bool_idx]  # 출력 "[3 4 5 6]"
 
 # We can do all of the above in a single concise statement:
-print a[a > 2]     # Prints "[3 4 5 6]"
+print a[a > 2]     # 출력 "[3 4 5 6]"
 ~~~
 
 For brevity we have left out a lot of details about numpy array indexing;
@@ -637,13 +634,13 @@ Here is an example:
 import numpy as np
 
 x = np.array([1, 2])  # Let numpy choose the datatype
-print x.dtype         # Prints "int64"
+print x.dtype         # 출력 "int64"
 
 x = np.array([1.0, 2.0])  # Let numpy choose the datatype
-print x.dtype             # Prints "float64"
+print x.dtype             # 출력 "float64"
 
 x = np.array([1, 2], dtype=np.int64)  # Force a particular datatype
-print x.dtype                         # Prints "int64"
+print x.dtype                         # 출력 "int64"
 ~~~
 You can read all about numpy datatypes
 [in the documentation](http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html).
@@ -727,9 +724,9 @@ import numpy as np
 
 x = np.array([[1,2],[3,4]])
 
-print np.sum(x)  # Compute sum of all elements; prints "10"
-print np.sum(x, axis=0)  # Compute sum of each column; prints "[4 6]"
-print np.sum(x, axis=1)  # Compute sum of each row; prints "[3 7]"
+print np.sum(x)  # Compute sum of all elements; 출력 "10"
+print np.sum(x, axis=0)  # Compute sum of each column; 출력 "[4 6]"
+print np.sum(x, axis=1)  # Compute sum of each row; 출력 "[3 7]"
 ~~~
 You can find the full list of mathematical functions provided by numpy
 [in the documentation](http://docs.scipy.org/doc/numpy/reference/routines.math.html).
@@ -743,15 +740,15 @@ simply use the `T` attribute of an array object:
 import numpy as np
 
 x = np.array([[1,2], [3,4]])
-print x    # Prints "[[1 2]
+print x    # 출력 "[[1 2]
            #          [3 4]]"
-print x.T  # Prints "[[1 3]
+print x.T  # 출력 "[[1 3]
            #          [2 4]]"
 
 # Note that taking the transpose of a rank 1 array does nothing:
 v = np.array([1,2,3])
-print v    # Prints "[1 2 3]"
-print v.T  # Prints "[1 2 3]"
+print v    # 출력 "[1 2 3]"
+print v.T  # 출력 "[1 2 3]"
 ~~~
 Numpy provides many more functions for manipulating arrays; you can see the full list
 [in the documentation](http://docs.scipy.org/doc/numpy/reference/routines.array-manipulation.html).
@@ -802,12 +799,12 @@ import numpy as np
 x = np.array([[1,2,3], [4,5,6], [7,8,9], [10, 11, 12]])
 v = np.array([1, 0, 1])
 vv = np.tile(v, (4, 1))  # Stack 4 copies of v on top of each other
-print vv                 # Prints "[[1 0 1]
+print vv                 # 출력 "[[1 0 1]
                          #          [1 0 1]
                          #          [1 0 1]
                          #          [1 0 1]]"
 y = x + vv  # Add x and vv elementwise
-print y  # Prints "[[ 2  2  4
+print y  # 출력 "[[ 2  2  4
          #          [ 5  5  7]
          #          [ 8  8 10]
          #          [11 11 13]]"
@@ -824,7 +821,7 @@ import numpy as np
 x = np.array([[1,2,3], [4,5,6], [7,8,9], [10, 11, 12]])
 v = np.array([1, 0, 1])
 y = x + v  # Add v to each row of x using broadcasting
-print y  # Prints "[[ 2  2  4]
+print y  # 출력 "[[ 2  2  4]
          #          [ 5  5  7]
          #          [ 8  8 10]
          #          [11 11 13]]"
@@ -935,7 +932,7 @@ from scipy.misc import imread, imsave, imresize
 
 # Read an JPEG image into a numpy array
 img = imread('assets/cat.jpg')
-print img.dtype, img.shape  # Prints "uint8 (400, 248, 3)"
+print img.dtype, img.shape  # 출력 "uint8 (400, 248, 3)"
 
 # We can tint the image by scaling each of the color channels
 # by a different scalar constant. The image has shape (400, 248, 3);
