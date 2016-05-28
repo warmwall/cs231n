@@ -145,17 +145,17 @@ hw12 = '%s %s %d' % (hello, world, 12)  # sprintf 방식의 문자열 서식 지
 print hw12  # 출력 "hello world 12"
 ~~~
 
-String objects have a bunch of useful methods; for example:
+문자열 객체에는 유용한 메소드들이 많습니다; 예를 들어:
 
 ~~~python
 s = "hello"
-print s.capitalize()  # Capitalize a string; 출력 "Hello"
-print s.upper()       # Convert a string to uppercase; 출력 "HELLO"
-print s.rjust(7)      # Right-justify a string, padding with spaces; 출력 "  hello"
-print s.center(7)     # Center a string, padding with spaces; 출력 " hello "
-print s.replace('l', '(ell)')  # Replace all instances of one substring with another;
+print s.capitalize()  # 문자열을 대문자로 시작하게함; 출력 "Hello"
+print s.upper()       # 모든 문자를 대문자로 바꿈; 출력 "HELLO"
+print s.rjust(7)      # 문자열 오른쪽 정렬, 빈공간은 여백으로 채움; 출력 "  hello"
+print s.center(7)     # 문자열 가운데 정렬, 빈공간은 여백으로 채움; 출력 " hello "
+print s.replace('l', '(ell)')  # 첫번째 인자로 온 문자열을 두번째 인자 문자열로 바꿈;
                                # 출력 "he(ell)(ell)o"
-print '  world '.strip()  # Strip leading and trailing whitespace; 출력 "world"
+print '  world '.strip()  # 문자열 앞뒤 공백 제거; 출력 "world"
 ~~~
 모든 문자열 메소드는 [문서](https://docs.python.org/2/library/stdtypes.html#string-methods)에서 찾아볼 수 있습니다. 
 
