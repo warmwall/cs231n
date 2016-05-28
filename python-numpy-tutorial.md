@@ -160,27 +160,27 @@ print '  world '.strip()  # 문자열 앞뒤 공백 제거; 출력 "world"
 모든 문자열 메소드는 [문서](https://docs.python.org/2/library/stdtypes.html#string-methods)에서 찾아볼 수 있습니다. 
 
 <a name='python-containers'></a>
-### Containers
+### 컨테이너
 Python includes several built-in container types: lists, dictionaries, sets, and tuples.
+파이썬은 다음과 같은 컨테이너 타입이 구현되어 있습니다: 리스트, 딕셔너리, 집합, 튜플
 
 <a name='python-lists'></a>
-#### Lists
-A list is the Python equivalent of an array, but is resizeable
-and can contain elements of different types:
+#### 리스트
+리스트는 파이썬에서 배열같은 존재입니다. 그렇지만 배열과 달리 크기 변경이 가능하고
+서로 다른 자료형일지라도 하나의 리스트에 저장 될 수 있습니다:
 
 ~~~python
-xs = [3, 1, 2]   # Create a list
+xs = [3, 1, 2]   # 리스트 생성
 print xs, xs[2]  # 출력 "[3, 1, 2] 2"
-print xs[-1]     # Negative indices count from the end of the list; 출력 "2"
-xs[2] = 'foo'    # Lists can contain elements of different types
+print xs[-1]     # 인덱스가 음수일 경우 리스트의 끝에서부터 세어진다; 출력 "2"
+xs[2] = 'foo'    # 리스트는 자료형이 다른 요소들을 저장 할 수 있다
 print xs         # 출력 "[3, 1, 'foo']"
-xs.append('bar') # Add a new element to the end of the list
+xs.append('bar') # 리스트의 끝에 새 요소 추가
 print xs         # 출력 "[3, 1, 'foo', 'bar']"
-x = xs.pop()     # Remove and return the last element of the list
+x = xs.pop()     # 리스트의 마지막 요소 삭제하고 반환
 print x, xs      # 출력 "bar [3, 1, 'foo']"
 ~~~
-As usual, you can find all the gory details about lists
-[in the documentation](https://docs.python.org/2/tutorial/datastructures.html#more-on-lists).
+마찬가지로, 리스트에 대해 자세하 사항은 [문서](https://docs.python.org/2/tutorial/datastructures.html#more-on-lists)에서 찾아볼 수 있습니다.
 
 **Slicing:**
 In addition to accessing list elements one at a time, Python provides
