@@ -47,7 +47,7 @@ cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 �
   - [클래스](#python-classes)
 - [Numpy](#numpy)
   - [배열](#numpy-arrays)
-  - [배열 색인](#numpy-array-indexing)
+  - [배열 인덱싱](#numpy-array-indexing)
   - [데이터타입](#numpy-datatypes)
   - [배열 연산](#numpy-math)
   - [브로드캐스팅](#numpy-broadcasting)
@@ -414,70 +414,66 @@ g.greet(loud=True)   # 인스턴스 메소드 호출; 출력 "HELLO, FRED!"
 <a name='numpy'></a>
 ## Numpy
 
-[Numpy](http://www.numpy.org/) is the core library for scientific computing in Python.
-It provides a high-performance multidimensional array object, and tools for working with these
-arrays. If you are already familiar with MATLAB, you might find
-[this tutorial useful](http://wiki.scipy.org/NumPy_for_Matlab_Users) to get started with Numpy.
+[Numpy](http://www.numpy.org/)는 파이썬이 계산과학분야에 이용될때 핵심 역할을 하는 라이브러리입니다.
+Numpy는 고성능의 다차원 배열 객체와 이를 다룰 도구를 제공합니다. 만약 MATLAB에 익숙한 분이라면 넘파이 학습을 시작하는데 있어
+[이 튜토리얼](http://wiki.scipy.org/NumPy_for_Matlab_Users)이 유용할 것입니다.
 
 <a name='numpy-arrays'></a>
-### Arrays
-A numpy array is a grid of values, all of the same type, and is indexed by a tuple of
-nonnegative integers. The number of dimensions is the *rank* of the array; the *shape*
-of an array is a tuple of integers giving the size of the array along each dimension.
 
-We can initialize numpy arrays from nested Python lists,
-and access elements using square brackets:
+### 배열
+Numpy 배열은 동일한 자료형을 가지는 값들이 격자판 형태로 있는 것입니다. 각각의 값들은 튜플(이때 튜플은 양의 정수만을 요소값으로 갖습니다.) 형태로 색인됩니다. 
+*rank*는 배열이 몇차원인지를 의미합니다; *shape*는 는 각 차원의 크기를 알려주는 정수들이 모인 튜플입니다.
+
+파이썬의 리스트를 중첩해 Numpy 배열을 초기화 할 수 있고, 대괄호를 통해 각 요소에 접근할 수 있습니다: 
 
 ~~~python
 import numpy as np
 
-a = np.array([1, 2, 3])  # Create a rank 1 array
+a = np.array([1, 2, 3])  # rank가 1인 배열 생성
 print type(a)            # 출력 "<type 'numpy.ndarray'>"
 print a.shape            # 출력 "(3,)"
 print a[0], a[1], a[2]   # 출력 "1 2 3"
-a[0] = 5                 # Change an element of the array
+a[0] = 5                 # 요소를 변경
 print a                  # 출력 "[5, 2, 3]"
 
-b = np.array([[1,2,3],[4,5,6]])   # Create a rank 2 array
+b = np.array([[1,2,3],[4,5,6]])   # rank가 2인 배열 생성
 print b.shape                     # 출력 "(2, 3)"
 print b[0, 0], b[0, 1], b[1, 0]   # 출력 "1 2 4"
 ~~~
 
-Numpy also provides many functions to create arrays:
+리스트의 중첩이 아니더라도 Numpy는 배열을 만들기 위한 다양한 함수를 제공합니다.
 
 ~~~python
 import numpy as np
 
-a = np.zeros((2,2))  # Create an array of all zeros
+a = np.zeros((2,2))  # 모든 값이 0인 배열 생성
 print a              # 출력 "[[ 0.  0.]
-                     #          [ 0.  0.]]"
+                     #       [ 0.  0.]]"
     
-b = np.ones((1,2))   # Create an array of all ones
+b = np.ones((1,2))   # 모든 값이 1인 배열 생성
 print b              # 출력 "[[ 1.  1.]]"
 
-c = np.full((2,2), 7) # Create a constant array
+c = np.full((2,2), 7) # 모든 값이 특정 상수인 배열 생성
 print c               # 출력 "[[ 7.  7.]
-                      #          [ 7.  7.]]"
+                      #       [ 7.  7.]]"
 
-d = np.eye(2)        # Create a 2x2 identity matrix
+d = np.eye(2)        # 2x2 단위 행렬 생성
 print d              # 출력 "[[ 1.  0.]
-                     #          [ 0.  1.]]"
+                     #       [ 0.  1.]]"
     
-e = np.random.random((2,2)) # Create an array filled with random values
-print e                     # Might print "[[ 0.91940167  0.08143941]
+e = np.random.random((2,2)) # 임의의 값으로 채워진 배열 생성
+print e                     # 임의의 값 출력 "[[ 0.91940167  0.08143941]
                             #               [ 0.68744134  0.87236687]]"
 ~~~
-You can read about other methods of array creation
-[in the documentation](http://docs.scipy.org/doc/numpy/user/basics.creation.html#arrays-creation).
+배열 생성에 관한 다른 방법들은 [문서](http://docs.scipy.org/doc/numpy/user/basics.creation.html#arrays-creation)를 참조하세요.
 
 <a name='numpy-array-indexing'></a>
-### Array indexing
-Numpy offers several ways to index into arrays.
 
-**Slicing:**
-Similar to Python lists, numpy arrays can be sliced.
-Since arrays may be multidimensional, you must specify a slice for each dimension
-of the array:
+### 배열 인덱싱
+Numpy는 배열을 인덱싱하는 몇가지 방법을 제공합니다.
+
+**슬라이싱:**
+파이썬 리스트와 유사하게, Numpy 배열도 슬라이싱이 가능합니다. Numpy 배열은 다차원인 경우가 많기에, 각 차원별로 어떻게 슬라이스할건지 명확히 해야합니다:
 
 ~~~python
 import numpy as np
@@ -488,104 +484,103 @@ import numpy as np
 #  [ 9 10 11 12]]
 a = np.array([[1,2,3,4], [5,6,7,8], [9,10,11,12]])
 
-# Use slicing to pull out the subarray consisting of the first 2 rows
-# and columns 1 and 2; b is the following array of shape (2, 2):
+# 슬라이싱을 이용하여 첫 두행과 1열,2열로 이루어진 부분배열을 만들어 봅시다; 
+# b는 shape가 (2,2)인 배열이 됩니다:
 # [[2 3]
 #  [6 7]]
 b = a[:2, 1:3]
 
-# A slice of an array is a view into the same data, so modifying it
-# will modify the original array.
+# 슬라이싱된 배열은 원본 배열과 같은 데이터를 참조합니다, 즉 슬라이싱된 배열을 수정하면
+# 원본 배열 역시 수정됩니다.
 print a[0, 1]   # 출력 "2"
-b[0, 0] = 77    # b[0, 0] is the same piece of data as a[0, 1]
+b[0, 0] = 77    # b[0, 0]은 a[0, 1]과 같은 데이터입니다
 print a[0, 1]   # 출력 "77"
 ~~~
 
-You can also mix integer indexing with slice indexing.
-However, doing so will yield an array of lower rank than the original array.
-Note that this is quite different from the way that MATLAB handles array
-slicing:
+정수를 이용한 인덱싱과 슬라이싱을 혼합하여 사용할 수 있습니다.
+하지만 이렇게 할 경우, 기존의 배열보다 낮은 rank의 배열이 얻어집니다.
+이는 MATLAB이 배열을 다루는 방식과 차이가 있습니다.
+
+슬라이싱:
 
 ~~~python
 import numpy as np
 
-# Create the following rank 2 array with shape (3, 4)
+# 아래와 같은 요소를 가지는 rank가 2이고 shape가 (3, 4)인 배열 생성
 # [[ 1  2  3  4]
 #  [ 5  6  7  8]
 #  [ 9 10 11 12]]
 a = np.array([[1,2,3,4], [5,6,7,8], [9,10,11,12]])
 
-# Two ways of accessing the data in the middle row of the array.
-# Mixing integer indexing with slices yields an array of lower rank,
-# while using only slices yields an array of the same rank as the
-# original array:
-row_r1 = a[1, :]    # Rank 1 view of the second row of a  
-row_r2 = a[1:2, :]  # Rank 2 view of the second row of a
+# 배열의 중간 행에 접근하는 두가지 방법이 있습니다.
+# 정수 인덱싱과 슬라이싱을 혼합해서 사용하면 낮은 rank의 배열이 생성되지만,
+# 슬라이싱만 사용하면 원본 배열과 동일한 rank의 배열이 생성됩니다.
+row_r1 = a[1, :]    # 배열a의 두번째 행을 rank가 1인 배열로
+row_r2 = a[1:2, :]  # 배열a의 두번째 행을 rank가 2인 배열로
 print row_r1, row_r1.shape  # 출력 "[5 6 7 8] (4,)"
 print row_r2, row_r2.shape  # 출력 "[[5 6 7 8]] (1, 4)"
 
-# We can make the same distinction when accessing columns of an array:
+# 행이 아닌 열의 경우에도 마찬가지입니다:
 col_r1 = a[:, 1]
 col_r2 = a[:, 1:2]
 print col_r1, col_r1.shape  # 출력 "[ 2  6 10] (3,)"
 print col_r2, col_r2.shape  # 출력 "[[ 2]
-                            #          [ 6]
-                            #          [10]] (3, 1)"
+                            #       [ 6]
+                            #       [10]] (3, 1)"
 ~~~
 
-**Integer array indexing:**
-When you index into numpy arrays using slicing, the resulting array view
-will always be a subarray of the original array. In contrast, integer array
-indexing allows you to construct arbitrary arrays using the data from another
-array. Here is an example:
+**정수 배열 인덱싱:**
+Numpy 배열을 슬라이싱하면, 결과로 얻어지는 배열은 언제나 원본 배열의 부분 배열입니다.
+그러나 정수 배열 인덱싱을 한다면, 원본과 다른 배열을 만들수 있습니다.
+여기에 예시가 있습니다:
 
 ~~~python
 import numpy as np
 
 a = np.array([[1,2], [3, 4], [5, 6]])
 
-# An example of integer array indexing.
-# The returned array will have shape (3,) and 
+# 정수 배열 인덱싱의 예.
+# 반환되는 배열의 shape는 (3,)
 print a[[0, 1, 2], [0, 1, 0]]  # 출력 "[1 4 5]"
 
-# The above example of integer array indexing is equivalent to this:
+# 위에서 본 정수 배열 인덱싱 예제는 다음과 동일합니다:
 print np.array([a[0, 0], a[1, 1], a[2, 0]])  # 출력 "[1 4 5]"
 
-# When using integer array indexing, you can reuse the same
-# element from the source array:
+# 정수 배열 인덱싱을 사용할 때,
+# 원본 배열의 같은 요소를 재사용 할 수 있습니다:
 print a[[0, 0], [1, 1]]  # 출력 "[2 2]"
 
-# Equivalent to the previous integer array indexing example
+# 위 예제는 다음과 동일합니다
 print np.array([a[0, 1], a[0, 1]])  # 출력 "[2 2]"
 ~~~
 
-One useful trick with integer array indexing is selecting or mutating one
-element from each row of a matrix:
+정수 배열 인덱싱을 유용하게 사용하는 방법 중 하나는 행렬의 각 행에서 하나의 요소를 선택하거나 바꾸는 것입니다:
 
 ~~~python
 import numpy as np
 
-# Create a new array from which we will select elements
+# 요소를 선택할 새로운 배열 생성
 a = np.array([[1,2,3], [4,5,6], [7,8,9], [10, 11, 12]])
 
 print a  # 출력 "array([[ 1,  2,  3],
-         #                [ 4,  5,  6],
-         #                [ 7,  8,  9],
-         #                [10, 11, 12]])"
+         #             [ 4,  5,  6],
+         #             [ 7,  8,  9],
+         #             [10, 11, 12]])"
 
-# Create an array of indices
+# 인덱스를 저장할 배열 생성
 b = np.array([0, 2, 0, 1])
 
-# Select one element from each row of a using the indices in b
+
+# b에 저장된 인덱스를 이용해 각 행에서 하나의 요소를 선택합니다
 print a[np.arange(4), b]  # 출력 "[ 1  6  7 11]"
 
-# Mutate one element from each row of a using the indices in b
+# b에 저장된 인덱스를 이용해 각 행에서 하나의 요소를 변경합니다
 a[np.arange(4), b] += 10
 
 print a  # 출력 "array([[11,  2,  3],
-         #                [ 4,  5, 16],
-         #                [17,  8,  9],
-         #                [10, 21, 12]])
+         #             [ 4,  5, 16],
+         #             [17,  8,  9],
+         #             [10, 21, 12]])
 ~~~
 
 **Boolean array indexing:**
