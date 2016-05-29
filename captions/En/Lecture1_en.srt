@@ -1024,7 +1024,7 @@ I'm not saying anything
 
 208
 00:23:22,608 --> 00:23:29,839
-else does is useful clearly, but it
+else isn't useful clearly, but it
 take nature this long to develop this sensory system
 
 209
