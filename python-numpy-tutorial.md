@@ -583,65 +583,62 @@ print a  # 출력 "array([[11,  2,  3],
          #             [10, 21, 12]])
 ~~~
 
-**Boolean array indexing:**
-Boolean array indexing lets you pick out arbitrary elements of an array.
-Frequently this type of indexing is used to select the elements of an array
-that satisfy some condition. Here is an example:
+**불린 배열 인덱싱:**
+불린 배열 인덱싱을 통해 배열속 요소를 취사 선택할 수 있습니다.
+불린 배열 인덱싱은 특정 조건을 만족시키는 요소만 선택하고자 할 때 자주 사용됩니다.
+다음은 그 예시입니다:
 
 ~~~python
 import numpy as np
 
 a = np.array([[1,2], [3, 4], [5, 6]])
 
-bool_idx = (a > 2)  # Find the elements of a that are bigger than 2;
-                    # this returns a numpy array of Booleans of the same
-                    # shape as a, where each slot of bool_idx tells
-                    # whether that element of a is > 2.
+bool_idx = (a > 2)  # 2보다 큰 a의 요소를 찾습니다;
+                    # 이 코드는 a와 shape가 같고 불린 자료형을 요소로 하는 numpy 배열을 반환합니다,
+                    # bool_idx의 각 요소는 동일한 위치에 있는 a의 
+                    # 요소가 2보다 큰지를 말해줍니다.
             
 print bool_idx      # 출력 "[[False False]
-                    #          [ True  True]
-                    #          [ True  True]]"
+                    #       [ True  True]
+                    #       [ True  True]]"
 
-# We use boolean array indexing to construct a rank 1 array
-# consisting of the elements of a corresponding to the True values
-# of bool_idx
+# 불린 배열 인덱싱을 통해 bool_idx에서 
+# 참 값을 가지는 요소로 구성되는 
+# rank 1인 배열을 구성할 수 있습니다.
 print a[bool_idx]  # 출력 "[3 4 5 6]"
 
-# We can do all of the above in a single concise statement:
+# 위에서 한 모든것을 한 문장으로 할 수 있습니다:
 print a[a > 2]     # 출력 "[3 4 5 6]"
 ~~~
 
-For brevity we have left out a lot of details about numpy array indexing;
-if you want to know more you should
-[read the documentation](http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html).
+튜토리얼을 간결히 하고자 numpy 배열 인덱싱에 관한 많은 내용을 생략했습니다.
+조금 더 알고싶다면 [문서](http://docs.scipy.org/doc/numpy/reference/arrays.indexing.html)를 참조하세요.
 
 <a name='numpy-datatypes'></a>
-### Datatypes
-Every numpy array is a grid of elements of the same type.
-Numpy provides a large set of numeric datatypes that you can use to construct arrays.
-Numpy tries to guess a datatype when you create an array, but functions that construct
-arrays usually also include an optional argument to explicitly specify the datatype.
-Here is an example:
+
+### 자료형
+Numpy 배열은 동일한 자료형을 가지는 값들이 격자판 형태로 있는 것입니다.
+Numpy에선 배열을 구성하는데 사용할 수 있는 다양한 숫자 자료형을 제공합니다.
+Numpy는 배열이 생성될 때 자료형을 스스로 추측합니다, 그러나 배열을 생성할 때 명시적으로 특정 자료형을 지정할수도 있습니다. 예시:
 
 ~~~python
 import numpy as np
 
-x = np.array([1, 2])  # Let numpy choose the datatype
+x = np.array([1, 2])  # Numpy가 자료형을 추측해서 선택
 print x.dtype         # 출력 "int64"
 
-x = np.array([1.0, 2.0])  # Let numpy choose the datatype
+x = np.array([1.0, 2.0])  # Numpy가 자료형을 추측해서 선택
 print x.dtype             # 출력 "float64"
 
-x = np.array([1, 2], dtype=np.int64)  # Force a particular datatype
+x = np.array([1, 2], dtype=np.int64)  # 특정 자료형을 명시적으로 지정
 print x.dtype                         # 출력 "int64"
 ~~~
-You can read all about numpy datatypes
-[in the documentation](http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html).
+Numpy 자료형에 관한 자세한 사항은 [문서](http://docs.scipy.org/doc/numpy/reference/arrays.dtypes.html)를 참조하세요.
 
 <a name='numpy-math'></a>
-### Array math
-Basic mathematical functions operate elementwise on arrays, and are available
-both as operator overloads and as functions in the numpy module:
+
+### 배열 연산
+기본적인 수학함수는 배열의 각 요소별로 동작하며 연산자를 통해 동작하거나 numpy 함수모듈을 통해 동작합니다:
 
 ~~~python
 import numpy as np
@@ -649,41 +646,37 @@ import numpy as np
 x = np.array([[1,2],[3,4]], dtype=np.float64)
 y = np.array([[5,6],[7,8]], dtype=np.float64)
 
-# Elementwise sum; both produce the array
+# 요소별 합; 둘 다 다음의 배열을 만듭니다
 # [[ 6.0  8.0]
 #  [10.0 12.0]]
 print x + y
 print np.add(x, y)
 
-# Elementwise difference; both produce the array
+# 요소별 차; 둘 다 다음의 배열을 만듭니다
 # [[-4.0 -4.0]
 #  [-4.0 -4.0]]
 print x - y
 print np.subtract(x, y)
 
-# Elementwise product; both produce the array
+# 요소별 곱; 둘 다 다음의 배열을 만듭니다
 # [[ 5.0 12.0]
 #  [21.0 32.0]]
 print x * y
 print np.multiply(x, y)
 
-# Elementwise division; both produce the array
+# 요소별 나눗셈; 둘 다 다음의 배열을 만듭니다
 # [[ 0.2         0.33333333]
 #  [ 0.42857143  0.5       ]]
 print x / y
 print np.divide(x, y)
 
-# Elementwise square root; produces the array
+# 요소별 제곱근; 다음의 배열을 만듭니다
 # [[ 1.          1.41421356]
 #  [ 1.73205081  2.        ]]
 print np.sqrt(x)
 ~~~
 
-Note that unlike MATLAB, `*` is elementwise multiplication, not matrix
-multiplication. We instead use the `dot` function to compute inner
-products of vectors, to multiply a vector by a matrix, and to
-multiply matrices. `dot` is available both as a function in the numpy
-module and as an instance method of array objects:
+MATLAB과 달리, '*'은 행렬곱이 아니라 요소별 곱입니다. Numpy에선 벡터의 내적, 벡터와 행렬의 곱, 행렬곱을 위해 '*'대신 'dot'함수를 사용합니다. 'dot'은 Numpy 모듈 함수로서도 배열 객체의 인스턴스 메소드로서도 이용 가능한 합수입니다:
 
 ~~~python
 import numpy as np
@@ -694,40 +687,36 @@ y = np.array([[5,6],[7,8]])
 v = np.array([9,10])
 w = np.array([11, 12])
 
-# Inner product of vectors; both produce 219
+# 벡터의 내적; 둘 다 결과는 219
 print v.dot(w)
 print np.dot(v, w)
 
-# Matrix / vector product; both produce the rank 1 array [29 67]
+# 행렬과 벡터의 곱; 둘 다 결과는 rank 1 인 배열 [29 67]
 print x.dot(v)
 print np.dot(x, v)
 
-# Matrix / matrix product; both produce the rank 2 array
+# 행렬곱; 둘 다 결과는 rank 2인 배열
 # [[19 22]
 #  [43 50]]
 print x.dot(y)
 print np.dot(x, y)
 ~~~
 
-Numpy provides many useful functions for performing computations on
-arrays; one of the most useful is `sum`:
+Numpy는 배열 연산에 유용하게 쓰이는 많은 함수를 제공합니다. 가장 유용한건 'sum'입니다:
 
 ~~~python
 import numpy as np
 
 x = np.array([[1,2],[3,4]])
 
-print np.sum(x)  # Compute sum of all elements; 출력 "10"
-print np.sum(x, axis=0)  # Compute sum of each column; 출력 "[4 6]"
-print np.sum(x, axis=1)  # Compute sum of each row; 출력 "[3 7]"
+print np.sum(x)  # 모든 요소를 합한 값을 연산; 출력 "10"
+print np.sum(x, axis=0)  # 각 열에 대한 합을 연산; 출력 "[4 6]"
+print np.sum(x, axis=1)  # 각 행에 대한 합을 연산; 출력 "[3 7]"
 ~~~
-You can find the full list of mathematical functions provided by numpy
-[in the documentation](http://docs.scipy.org/doc/numpy/reference/routines.math.html).
+Numpy가 제공하는 모든 수학함수들의 목록은 [문서](http://docs.scipy.org/doc/numpy/reference/routines.math.html)를 참조하세요.
 
-Apart from computing mathematical functions using arrays, we frequently
-need to reshape or otherwise manipulate data in arrays. The simplest example
-of this type of operation is transposing a matrix; to transpose a matrix, 
-simply use the `T` attribute of an array object:
+배열연산을 하지 않더라도, 종종 배열의 모양을 바꾸거나 데이터를 처리해야할 때가 있습니다.
+가장 간단한 예는 행렬의 주대각선을 기준으로 대칭되는 요소끼리 뒤바꾸는 것입니다; 이를 전치라고 하며 행렬을 전치하기 위해선, 간단하게 배열 객체의 'T' 속성을 사용하면 됩니다:
 
 ~~~python
 import numpy as np
@@ -738,39 +727,33 @@ print x    # 출력 "[[1 2]
 print x.T  # 출력 "[[1 3]
            #          [2 4]]"
 
-# Note that taking the transpose of a rank 1 array does nothing:
+# rank 1인 배열을 전치할경우 아무일도 일어나지 않습니다:
 v = np.array([1,2,3])
 print v    # 출력 "[1 2 3]"
 print v.T  # 출력 "[1 2 3]"
 ~~~
-Numpy provides many more functions for manipulating arrays; you can see the full list
-[in the documentation](http://docs.scipy.org/doc/numpy/reference/routines.array-manipulation.html).
+Numpy는 배열을 다루는 다양한 함수들을 제공합니다; 이러한 함수의 전체 목록은 [문서](http://docs.scipy.org/doc/numpy/reference/routines.array-manipulation.html)를 참조하세요.
 
 
 <a name='numpy-broadcasting'></a>
-### Broadcasting
-Broadcasting is a powerful mechanism that allows numpy to work with arrays of different
-shapes when performing arithmetic operations. Frequently we have a smaller array and a
-larger array, and we want to use the smaller array multiple times to perform some operation
-on the larger array.
 
-For example, suppose that we want to add a constant vector to each
-row of a matrix. We could do it like this:
+### 브로드캐스팅
+브로트캐스팅은 Numpy에서 shape가 다른 배열간에도 산술 연산이 가능하게 하는 메커니즘입니다. 종종 작은 배열과 큰 배열이 있을 때, 큰 배열을 대상으로 작은 배열을 여러번 연산하고자 할 때가 있습니다. 예를 들어, 행렬의 각 행에 상수 벡터를 더하는걸 생각해보세요. 이는 다음과 같은 방식으로 처리될 수 있습니다:
 
 ~~~python
 import numpy as np
 
-# We will add the vector v to each row of the matrix x,
-# storing the result in the matrix y
+# 행렬 x의 각 행에 벡터 v를 더한 뒤,
+# 그 결과를 행렬 y에 저장하고자 합니다
 x = np.array([[1,2,3], [4,5,6], [7,8,9], [10, 11, 12]])
 v = np.array([1, 0, 1])
-y = np.empty_like(x)   # Create an empty matrix with the same shape as x
+y = np.empty_like(x)   # x와 동일한 shape를 가지며 비어있는 행렬 생성
 
-# Add the vector v to each row of the matrix x with an explicit loop
+# 명시적 반복문을 통해 행렬 x의 각 행에 벡터 v를 더하는 방법
 for i in range(4):
     y[i, :] = x[i, :] + v
 
-# Now y is the following
+# 이제 y는 다음과 같습니다
 # [[ 2  2  4]
 #  [ 5  5  7]
 #  [ 8  8 10]
@@ -778,11 +761,7 @@ for i in range(4):
 print y
 ~~~
 
-This works; however when the matrix `x` is very large, computing an explicit loop
-in Python could be slow. Note that adding the vector `v` to each row of the matrix
-`x` is equivalent to forming a matrix `vv` by stacking multiple copies of `v` vertically,
-then performing elementwise summation of `x` and `vv`. We could implement this
-approach like this:
+위의 방식대로 하면 됩니다; 그러나 'x'가 매우 큰 행렬이라면, 파이썬의 명시적 반복문을 통해 연산을 수행했을때 느릴 수 있습니다. 벡터 'v'를 행렬 'x'의 각 행에 더하는것은 'v'를 여러개 복사해 수직으로 쌓은 행렬 'vv'를 만들고 이 'vv'를 'x'에 더하는것과 동일합니다. 이 과정을 아래의 코드로 구현할 수 있습니다:
 
 ~~~python
 import numpy as np
