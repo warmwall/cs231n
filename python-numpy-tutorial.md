@@ -387,7 +387,8 @@ hello('Fred', loud=True)  # 출력 "HELLO, FRED!"
 파이썬 함수에 관한 더 많은 정보는 [문서](https://docs.python.org/2/tutorial/controlflow.html#defining-functions)를 참조하세요.
 
 <a name='python-classes'></a>
-### Classes
+
+### 클래스
 
 파이썬에서 클래스를 정의하는 구문은 복잡하지 않습니다:
 
@@ -412,6 +413,7 @@ g.greet(loud=True)   # 인스턴스 메소드 호출; 출력 "HELLO, FRED!"
 파이썬 클래스에 관한 더 많은 정보는 [문서](https://docs.python.org/2/tutorial/classes.html)를 참조하세요.
 
 <a name='numpy'></a>
+
 ## Numpy
 
 [Numpy](http://www.numpy.org/)는 파이썬이 계산과학분야에 이용될때 핵심 역할을 하는 라이브러리입니다.
