@@ -66,7 +66,7 @@ $$
 
 <a name='backprop'></a>
 
-### 체인룰을 이용한 복합 표현식
+### 체인룰(chain rule)을 이용한 복합 표현식
 
 이제 $f(x,y,z) = (x + y) z$ 같은 다수의 복합 함수(composed functions)를 수반하는 더 복잡한 표현식을 고려해보자. 이 표현식은 여전히 바로 미분하기에 충분히 간단하지만, 우리는 이 식에 특별한 접근법을 적용할 것이다. 이는 역전파 뒤에 있는 직관을 이해하는데 도움이 될 것이다. 특히 이 식이 두 개의 표현식 $q = x + y$와 $f = q z$ 으로 분해될 수 있음에 주목하자. 게다가 이전 섹션에서 본 것처럼 우리는 두 식에 대한 미분값을 어떻게 따로따로 계산할지 알고 있다. $f$ 는 단지 $q$와 $z$의 곱이다. 따라서 $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, 그리고 $q$는 $x$와 $y$의 합이므로 $\frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1$이다. 하지만, 중간결과값인 $q$에 대한 기울기($\frac{\partial f}{\partial q}$)를 신경쓸 필요가 없다. 대신 궁극적으로 입력 $x,y,z$에 대한 $f$의 기울기에 관심이 있다. **체인룰**은 이러한 기울기 표현식들을 함께 연결시키는 적절한 방법이 곱하는 것이라는 것을 보여준다. 예를 들면, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $와 같이 표현할 수 있다. 실제로 이는 단순히 두 기울기값을 담고 있는 두 수의 곱셈이다. 하나의 예를 통해 확인 해보자.
 
@@ -101,15 +101,15 @@ dfdy = 1.0 * dfdq # dq/dy = 1
 </div>
 
 <a name='intuitive'></a>
-### Intuitive understanding of backpropagation
+### 역전파(backpropagation)에 대한 직관적 이해
 
-Notice that backpropagation is a beautifully local process. Every gate in a circuit diagram gets some inputs and can right away compute two things: 1. its output value and 2. the *local* gradient of its inputs with respect to its output value. Notice that the gates can do this completely independently without being aware of any of the details of the full circuit that they are embedded in. However, once the forward pass is over, during backpropagation the gate will eventually learn about the gradient of its output value on the final output of the entire circuit. Chain rule says that the gate should take that gradient and multiply it into every gradient it normally computes for all of its inputs.
+역전파가 굉장히 지역적인(local) 프로세스임에 주목하자. 회로도 내의 모든 게이트(gate) 몇개의 입력을 받아드리고 곧 바로 두 가지를 계산할 수 있다: 1. 게이트의 출력 값, 2. 게이트 출력에 대한 입력들의 *지역적* 기울기 값. 여기서 게이트들이 포함된 전체 회로의 세세한 부분을 모르더라도 완전히 독립적으로 값들을 계산할 수 있음을 주목하라. 하지만, 일단 전방 전달이 끝나면 역전파 과정에서 게이트는 결국 전체 회로의 마지막 출력에 대한 게이트 출력의 기울기 값에 관해 학습할 것이다. 체인룰을 통해 게이트는 이 기울기 값을 받아들여 모든 입력에 대해서 계산한 게이트의 모든 기울기 값에 곱한다.
 
-> This extra multiplication (for each input) due to the chain rule can turn a single and relatively useless gate into a cog in a complex circuit such as an entire neural network.
+> 체인룰 덕분에 이러한 각 입력에 대한 추가 곱셈은 전체 신경망과 같은 복잡한 회로에서 상대적으로 쓸모 없는 개개의 게이트를 중요하지 않은 것으로 바꿀 수 있다.
 
-Lets get an intuition for how this works by referring again to the example. The add gate received inputs [-2, 5] and computed output 3. Since the gate is computing the addition operation, its local gradient for both of its inputs is +1. The rest of the circuit computed the final value, which is -12. During the backward pass in which the chain rule is applied recursively backwards through the circuit, the add gate (which is an input to the multiply gate) learns that the gradient for its output was -4. If we anthropomorphize the circuit as wanting to output a higher value (which can help with intuition), then we can think of the circuit as "wanting" the output of the add gate to be lower (due to negative sign), and with a *force* of 4. To continue the recurrence and to chain the gradient, the add gate takes that gradient and multiplies it to all of the local gradients for its inputs (making the gradient on both **x** and **y** 1 * -4 = -4). Notice that this has the desired effect: If **x,y** were to decrease (responding to their negative gradient) then the add gate's output would decrease, which in turn makes the multiply gate's output increase.
+다시 위 예를 통해 이것이 어떻게 동작하는지에 대한 직관을 얻자. 덧셈 게이트는 입력 [-2, 5]를 받아 3을 출력한다. 이 게이트는 덧셈 연산을 하고 있기 때문에 두 입력에 대한 게이트의 지역적 기울기 값은 +1이 된다. 회로의 나머지 부분을 통해 최종 출력 값으로 -12가 나온다. 체인룰이 회로를 역으로 가로질러 반복적으로 적용되는 후방 전달 과정 동안, (곱셈 게이트의 입력인) 덧셈 게이트는 출력 값에 대한 기울기 값이 -4였다는 것을 학습한다. 만약 회로가 높은 값을 출력하기를 원하는 것으로 의인화하면 (이는 직관에 도움이 될 수 있다), 이 회로가 덧셈 게이트의 출력 값이 4의 *힘*으로 낮아지길 (음의 부호이기 때문) "원하는" 것으로 볼 수 있다. 반복을 지속하고 기울기 값을 연결하기 위해 덧셈 게이트는 이 기울기 값을 받아들이고 이를 모든 입력들에 대한 지역적 기울기 값에 곱한다 (**x**와 **y**에 대한 기울기 값이 1 * -4 = -4가 되도록). 다음의 원하는 효과가 있다는 사실에 주목하자. 만약 **x,y**가 (음의 기울기 값에 대한 반응으로) 감소한다면, 이 덧셈 게이트의 출력은 감소할 것이고 이는 다시 곱셈 게이트의 출력이 증가하도록 만들 것이다. 
 
-Backpropagation can thus be thought of as gates communicating to each other (through the gradient signal) whether they want their outputs to increase or decrease (and how strongly), so as to make the final output value higher.
+따라서 역전파는 보다 큰 최종 출력 값을 얻도록 게이트들이 자신들의 출력이 (얼마나 강하게) 증가하길 원하는지 또는 감소하길 원하는지 서로 소통하는 것으로 간주할 수 있다.
 
 <a name='sigmoid'></a>
 ### Modularity: Sigmoid example
