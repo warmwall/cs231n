@@ -7,7 +7,7 @@ Table of Contents:
 
 - [소개(Introduction)](#intro)
 - [그라디언트(Gradient)에 대한 간단한 표현과 이해](#grad)
-- [복합적인 표현(Compound Expression), 체인룰(chain rule), Backpropagation)](#backprop)
+- [복합 표현식(Compound Expression), 체인룰(chain rule), 역전파(Backpropagation)](#backprop)
 - [역전파(Backpropation)에 대한 직관적인 이해](#intuitive)
 - [모듈성 : 시그모이(Sigmoid)드 예제](#sigmoid)
 - [역전파(Backprop) 실제: 단계별 계산](#staged)
@@ -19,9 +19,9 @@ Table of Contents:
 
 ### Introduction
 
-**Motivation**. 이번 섹션에서 우리는 **역전파(Backpropagation)**에 대한 직관적인 이해를 바탕으로 전문지식을 더 키우고자 한다. Backpropagation은 Network 전체에 대해 반복적인 **체인룰(Chain rule)**을 적용하여 그라디언트(Gradient)를 계산하는 방법 중 하나이다. Backpropagation 과정과 세부 요소들에 대한 이해는 여러분에게 있어서 Neural Networks를 효과적으로 개발하고, 디자인하고 디버그하는데 중요하다고 볼 수 있다. 
+**Motivation**. 이번 섹션에서 우리는 **역전파(Backpropagation)**에 대한 직관적인 이해를 바탕으로 전문지식을 더 키우고자 한다. Backpropagation은 Network 전체에 대해 반복적인 **체인룰(Chain rule)**을 적용하여 그라디언트(Gradient)를 계산하는 방법 중 하나이다. Backpropagation 과정과 세부 요소들에 대한 이해는 여러분에게 있어서 신경망을 효과적으로 개발하고, 디자인하고 디버그하는 데 중요하다고 볼 수 있다. 
 
-**Problem statement**. 이번 섹션에서 공부할 핵심 문제는 다음과 같다 : 주어진 함 $$f(x)$$ 가 있고, $$x$$ 는 입력 값으로 이루어진 벡터이고, 주어진 입력 $$x$$에 대해서 함수 $$f$$의 그라디언트를 계산하고자 한다. (i.e. $$\nabla f(x)$$ ).
+**Problem statement**. 이번 섹션에서 공부할 핵심 문제는 다음과 같다 : 주어진 함수 $$f(x)$$ 가 있고, $$x$$ 는 입력 값으로 이루어진 벡터이고, 주어진 입력 $$x$$에 대해서 함수 $$f$$의 그라디언트를 계산하고자 한다. (i.e. $$\nabla f(x)$$ ).
 
 **Motivation**. 우리가 이 문제에 관심을 기울이는 이유에 대해 Neural Network관점에서 좀더 구체적으로 살펴 보자. $$f$$는 Loss 함수 ( $$L$$ ) 에 해당하고 입력 값 $$x$$ 는 학습 데이터(Training data)와 Neural Network의 Weight라고 볼 수 있다. 예를 들면, Loss는 SVM Loss 함수가 될 수 있고, 입력 값은 학습 데이터 $$(x_i,y_i), i=1 \ldots N$$ 와 Weight, Bias $$W,b$$ 으로 볼 수 있다. 여기서 학습데이터는 미리 주어져서 고정 되어있는 값으로 볼 수 있고 (보통의 기계 학습에서 그러하듯..), Weight는 Neural Network의 학습을 위해 실제로 컨트롤 하는 값이다. 따라서 입력 값 $$x_i$$ 에 대한 그라디언트 계산이 쉬울지라도, 실제로는 파라미터(Parameter, Neural Network의 Weight) 값에 대한 Gradient를 일반적으로 계산하고, Gradient값을 활용하여 Parameter를 업데이트 할 수 있다. 하지만, Neural Network이 어떻게 작동하는지 해석하고, 시각화 하는 부분에서 입력 값 $x_i$에 대한 Gradient도 유용하게 활용 될 수 있는데, 이 부분은 본 강의의 뒷부분에 다룰 예정이다. 
 
@@ -66,9 +66,9 @@ $$
 
 <a name='backprop'></a>
 
-### Compound expressions with chain rule
+### 체인룰을 이용한 복합 표현식
 
-Lets now start to consider more complicated expressions that involve multiple composed functions, such as $f(x,y,z) = (x + y) z$. This expression is still simple enough to differentiate directly, but we'll take a particular approach to it that will be helpful with understanding the intuition behind backpropagation. In particular, note that this expression can be broken down into two expressions: $q = x + y$ and $f = q z$. Moreover, we know how to compute the derivatives of both expressions separately, as seen in the previous section. $f$ is just multiplication of $q$ and $z$, so $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, and $q$ is addition of $x$ and $y$ so $ \frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1 $. However, we don't necessarily care about the gradient on the intermediate value $q$ - the value of $\frac{\partial f}{\partial q}$ is not useful. Instead, we are ultimately interested in the gradient of $f$ with respect to its inputs $x,y,z$. The **chain rule** tells us that the correct way to "chain" these gradient expressions together is through multiplication. For example, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $. In practice this is simply a multiplication of the two numbers that hold the two gradients. Lets see this with an example:
+이제 $f(x,y,z) = (x + y) z$ 같은 다수의 복합 함수(composed functions)를 수반하는 더 복잡한 표현식을 고려해보자. 이 표현식은 여전히 바로 미분하기에 충분히 간단하지만, 우리는 이 식에 특별한 접근법을 적용할 것이다. 이는 역전파 뒤에 있는 직관을 이해하는데 도움이 될 것이다. 특히 이 식이 두 개의 표현식 $q = x + y$와 $f = q z$ 으로 분해될 수 있음에 주목하자. 게다가 이전 섹션에서 본 것처럼 우리는 두 식에 대한 미분값을 어떻게 따로따로 계산할지 알고 있다. $f$ 는 단지 $q$와 $z$의 곱이다. 따라서 $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, 그리고 $q$는 $x$와 $y$의 합이므로 $\frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1$이다. 하지만, 중간결과값인 $q$에 대한 기울기($\frac{\partial f}{\partial q}$)를 신경쓸 필요가 없다. 대신 궁극적으로 입력 $x,y,z$에 대한 $f$의 기울기에 관심이 있다. **체인룰**은 이러한 기울기 표현식들을 함께 연결시키는 적절한 방법이 곱하는 것이라는 것을 보여준다. 예를 들면, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $와 같이 표현할 수 있다. 실제로 이는 단순히 두 기울기값을 담고 있는 두 수의 곱셈이다. 하나의 예를 통해 확인 해보자.
 
 ~~~python
 # set some inputs
@@ -87,15 +87,15 @@ dfdx = 1.0 * dfdq # dq/dx = 1. And the multiplication here is the chain rule!
 dfdy = 1.0 * dfdq # dq/dy = 1
 ~~~
 
-At the end we are left with the gradient in the variables `[dfdx,dfdy,dfdz]`, which tell us the sensitivity of the variables `x,y,z` on `f`!. This is the simplest example of backpropagation. Going forward, we will want to use a more concise notation so that we don't have to keep writing the `df` part. That is, for example instead of `dfdq` we would simply write `dq`, and always assume that the gradient is with respect to the final output.
+결국 `[dfdx,dfdy,dfdz]` 변수들로 기울기가 표현되는데, 이는 `f`에 대한 변수 `x,y,z`의 민감도(sensitivity)를 보여준다. 이는 역전파의 가장 간단한 예이다. 더 나아가서 보다 간결한 표기법을 사용해서 `df` 파트를 계속 쓸 필요가 없도록 하고 싶을 것이다. 예를 들어 `dfdq` 대신에 단순히 `dq`를 쓰고 항상 기울기가 최종 출력에 관한 것이라 가정하는 것이다.
 
-This computation can also be nicely visualized with a circuit diagram:
+또한 이런 계산은 회로도를 가지고 다음과 같이 멋지게 시각화할 수 있다:
 
 <div class="fig figleft fighighlight">
 <svg width="420" height="220"><defs><marker id="arrowhead" refX="6" refY="2" markerWidth="6" markerHeight="4" orient="auto"><path d="M 0,0 V 4 L6,2 Z"></path></marker></defs><line x1="40" y1="30" x2="110" y2="30" stroke="black" stroke-width="1"></line><text x="45" y="24" font-size="16" fill="green">-2</text><text x="45" y="47" font-size="16" fill="red">-4</text><text x="35" y="24" font-size="16" text-anchor="end" fill="black">x</text><line x1="40" y1="100" x2="110" y2="100" stroke="black" stroke-width="1"></line><text x="45" y="94" font-size="16" fill="green">5</text><text x="45" y="117" font-size="16" fill="red">-4</text><text x="35" y="94" font-size="16" text-anchor="end" fill="black">y</text><line x1="40" y1="170" x2="110" y2="170" stroke="black" stroke-width="1"></line><text x="45" y="164" font-size="16" fill="green">-4</text><text x="45" y="187" font-size="16" fill="red">3</text><text x="35" y="164" font-size="16" text-anchor="end" fill="black">z</text><line x1="210" y1="65" x2="280" y2="65" stroke="black" stroke-width="1"></line><text x="215" y="59" font-size="16" fill="green">3</text><text x="215" y="82" font-size="16" fill="red">-4</text><text x="205" y="59" font-size="16" text-anchor="end" fill="black">q</text><circle cx="170" cy="65" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="170" y="70" font-size="20" fill="black" text-anchor="middle">+</text><line x1="110" y1="30" x2="150" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="110" y1="100" x2="150" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="190" y1="65" x2="210" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="380" y1="117" x2="450" y2="117" stroke="black" stroke-width="1"></line><text x="385" y="111" font-size="16" fill="green">-12</text><text x="385" y="134" font-size="16" fill="red">1</text><text x="375" y="111" font-size="16" text-anchor="end" fill="black">f</text><circle cx="340" cy="117" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="340" y="127" font-size="20" fill="black" text-anchor="middle">*</text><line x1="280" y1="65" x2="320" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="110" y1="170" x2="320" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="360" y1="117" x2="380" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line></svg>
 
 <div class="figcaption">
-  The real-valued <i>"circuit"</i> on left shows the visual representation of the computation. The <b>forward pass</b> computes values from inputs to output (shown in green). The <b>backward pass</b> then performs backpropagation which starts at the end and recursively applies the chain rule to compute the gradients (shown in red) all the way to the inputs of the circuit. The gradients can be thought of as flowing backwards through the circuit.
+  좌측에 실수 값으로 표현되는 <i>"회로"</i>는 이 계산에 대한 시각 표현을 보여준다. <b>전방 전달(forward pass)</b>은 입력부터 출력까지 값을 계산한다 (녹색으로 표시). 그리고 나서 <b>후방 전달(backward pass)</b>는 역전파를 수행하는데, 이는 끝에서 시작해서 반복적으로 체인 룰을 적용해 회로 입력에 대한 모든 길에서 기울기 값 (적색으로 표시) 을 계산한다. 기울기 값은 회로를 통해 거꾸로 흐르는 것으로 볼 수 있다.
 </div>
 <div style="clear:both;"></div>
 </div>
