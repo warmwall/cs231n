@@ -763,125 +763,115 @@ for i in range(4):
 print y
 ~~~
 
-위의 방식대로 하면 됩니다; 그러나 'x'가 매우 큰 행렬이라면, 파이썬의 명시적 반복문을 통해 연산을 수행했을때 느릴 수 있습니다. 벡터 'v'를 행렬 'x'의 각 행에 더하는것은 'v'를 여러개 복사해 수직으로 쌓은 행렬 'vv'를 만들고 이 'vv'를 'x'에 더하는것과 동일합니다. 이 과정을 아래의 코드로 구현할 수 있습니다:
+위의 방식대로 하면 됩니다; 그러나 'x'가 매우 큰 행렬이라면, 파이썬의 명시적 반복문을 이용한 위 코드는 매우 느려질 수 있습니다. 벡터 'v'를 행렬 'x'의 각 행에 더하는것은 'v'를 여러개 복사해 수직으로 쌓은 행렬 'vv'를 만들고 이 'vv'를 'x'에 더하는것과 동일합니다. 이 과정을 아래의 코드로 구현할 수 있습니다:
 
 ~~~python
 import numpy as np
 
-# We will add the vector v to each row of the matrix x,
-# storing the result in the matrix y
+# 벡터 v를 행렬 x의 각 행에 더한 뒤,
+# 그 결과를 행렬 y에 저장하고자 합니다
 x = np.array([[1,2,3], [4,5,6], [7,8,9], [10, 11, 12]])
 v = np.array([1, 0, 1])
-vv = np.tile(v, (4, 1))  # Stack 4 copies of v on top of each other
+vv = np.tile(v, (4, 1))  # v의 복사본 4개를 위로 차곡차곡 쌓은게 vv
 print vv                 # 출력 "[[1 0 1]
-                         #          [1 0 1]
-                         #          [1 0 1]
-                         #          [1 0 1]]"
-y = x + vv  # Add x and vv elementwise
+                         #       [1 0 1]
+                         #       [1 0 1]
+                         #       [1 0 1]]"
+y = x + vv  # x와 vv의 요소별 합
 print y  # 출력 "[[ 2  2  4
-         #          [ 5  5  7]
-         #          [ 8  8 10]
-         #          [11 11 13]]"
+         #       [ 5  5  7]
+         #       [ 8  8 10]
+         #       [11 11 13]]"
 ~~~
 
-Numpy broadcasting allows us to perform this computation without actually
-creating multiple copies of `v`. Consider this version, using broadcasting:
+Numpy 브로드캐스팅을 이용한다면 이렇게 v의 복사본을 여러개 만들지 않아도 동일한 연산을 할 수 있습니다.
+아래는 브로드캐스팅을 이용한 예시 코드입니다:
 
 ~~~python
 import numpy as np
 
-# We will add the vector v to each row of the matrix x,
-# storing the result in the matrix y
+# 벡터 v를 행렬 x의 각 행에 더한 뒤,
+# 그 결과를 행렬 y에 저장하고자 합니다
 x = np.array([[1,2,3], [4,5,6], [7,8,9], [10, 11, 12]])
 v = np.array([1, 0, 1])
-y = x + v  # Add v to each row of x using broadcasting
+y = x + v  # 브로드캐스팅을 이용하여 v를 x의 각 행에 더하기
 print y  # 출력 "[[ 2  2  4]
-         #          [ 5  5  7]
-         #          [ 8  8 10]
-         #          [11 11 13]]"
+         #       [ 5  5  7]
+         #       [ 8  8 10]
+         #       [11 11 13]]"
 ~~~
 
-The line `y = x + v` works even though `x` has shape `(4, 3)` and `v` has shape
-`(3,)` due to broadcasting; this line works as if `v` actually had shape `(4, 3)`,
-where each row was a copy of `v`, and the sum was performed elementwise.
+`x`의 shape가 `(4, 3)`이고 `v`의 shape가 `(3,)`라도 브로드캐스팅으로 인해 `y = x + v`는 문제없이 수행됩니다;
+이때 'v'는 'v'의 복사본이 차곡차곡 쌓인 shape `(4, 3)`처럼 간주되어 'x'와 동일한 shape가 되며 이들간의 요소별 덧셈연산이 y에 저장됩니다.
 
-Broadcasting two arrays together follows these rules:
+두 배열의 브로드캐스팅은 아래의 규칙을 따릅니다:
 
-1. If the arrays do not have the same rank, prepend the shape of the lower rank array
-   with 1s until both shapes have the same length.
-2. The two arrays are said to be *compatible* in a dimension if they have the same
-   size in the dimension, or if one of the arrays has size 1 in that dimension.
-3. The arrays can be broadcast together if they are compatible in all dimensions.
-4. After broadcasting, each array behaves as if it had shape equal to the elementwise
-   maximum of shapes of the two input arrays.
-5. In any dimension where one array had size 1 and the other array had size greater than 1,
-   the first array behaves as if it were copied along that dimension
+1. 두 배열이 동일한 rank를 가지고 있지 않다면, 낮은 rank의 1차원 배열이 높은 rank 배열의 shape로 간주됩니다.
+2. 특정 차원에서 두 배열이 동일한 크기를 갖거나, 두 배열들 중 하나의 크기가 1이라면 그 두 배열은 특정 차원에서 *compatible*하다고 여겨집니다.
+3. 두 행렬이 모든 차원에서 compatible하다면, 브로드캐스팅이 가능합니다.
+4. 브로드캐스팅이 이뤄지면, 각 배열 shape의 요소별 최소공배수로 이루어진 shape가 두 배열의 shape로 간주됩니다.
+5. 차원에 상관없이 크기가 1인 배열과 1보다 큰 배열이 있을때, 크기가 1인 배열은 자신의 차원수만큼 복사되어 쌓인것처럼 간주된다.
+   
+설명이 이해하기 부족하다면 [scipy문서](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)나 [scipy위키](http://wiki.scipy.org/EricsBroadcastingDoc)를 참조하세요.
 
-If this explanation does not make sense, try reading the explanation
-[from the documentation](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-or [this explanation](http://wiki.scipy.org/EricsBroadcastingDoc).
+브로드캐스팅을 지원하는 함수를 *universal functions*라고 합니다. 
+*universal functions* 목록은 [문서](http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs)를 참조하세요.
 
-Functions that support broadcasting are known as *universal functions*. You can find
-the list of all universal functions
-[in the documentation](http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs).
-
-Here are some applications of broadcasting:
+브로드캐스팅을 응용한 예시들입니다:
 
 ~~~python
 import numpy as np
 
-# Compute outer product of vectors
-v = np.array([1,2,3])  # v has shape (3,)
-w = np.array([4,5])    # w has shape (2,)
-# To compute an outer product, we first reshape v to be a column
-# vector of shape (3, 1); we can then broadcast it against w to yield
-# an output of shape (3, 2), which is the outer product of v and w:
+# 벡터의 외적을 계산
+v = np.array([1,2,3])  # v의 shape는 (3,)
+w = np.array([4,5])    # w의 shape는 (2,)
+# 외적을 게산하기 위해, 먼저 v를 shape가 (3,1)인 행벡터로 바꿔야 합니다; 
+# 그다음 이것을 w에 맞춰 브로드캐스팅한뒤 결과물로 shape가 (3,2)인 행렬을 얻습니다,
+# 이 행렬은 v 와 w의 외적의 결과입니다:
 # [[ 4  5]
 #  [ 8 10]
 #  [12 15]]
 print np.reshape(v, (3, 1)) * w
 
-# Add a vector to each row of a matrix
+# 벡터를 행렬의 각 행에 더하기
 x = np.array([[1,2,3], [4,5,6]])
-# x has shape (2, 3) and v has shape (3,) so they broadcast to (2, 3),
-# giving the following matrix:
+# x는 shape가 (2, 3)이고 v는 shape가 (3,)이므로 이 둘을 브로드캐스팅하면 shape가 (2, 3)인
+# 아래와 같은 행렬이 나옵니다:
 # [[2 4 6]
 #  [5 7 9]]
 print x + v
 
-# Add a vector to each column of a matrix
-# x has shape (2, 3) and w has shape (2,).
-# If we transpose x then it has shape (3, 2) and can be broadcast
-# against w to yield a result of shape (3, 2); transposing this result
-# yields the final result of shape (2, 3) which is the matrix x with
-# the vector w added to each column. Gives the following matrix:
+# 벡터를 행렬의 각 행에 더하기
+# x는 shape가 (2, 3)이고 w는 shape가 (2,)입니다.
+# x의 전치행렬은 shape가 (3,2)이며 이는 w와 브로드캐스팅이 가능하고 결과로 shape가 (3,2)인 행렬이 생깁니다; 
+# 이 행렬을 전치하면 shape가 (2,3)인 행렬이 나오며 
+# 이는 행렬 x의 각 열에 벡터 w을 더한 결과와 동일합니다.
+# 아래의 행렬입니다:
 # [[ 5  6  7]
 #  [ 9 10 11]]
 print (x.T + w).T
-# Another solution is to reshape w to be a row vector of shape (2, 1);
-# we can then broadcast it directly against x to produce the same
-# output.
+# 다른 방법은 w를 shape가 (2,1)인 열벡터로 변환하는 것입니다;
+# 그런다음 이를 바로 x에 브로드캐스팅해 더하면 
+# 동일한 결과가 나옵니다.
 print x + np.reshape(w, (2, 1))
 
-# Multiply a matrix by a constant:
-# x has shape (2, 3). Numpy treats scalars as arrays of shape ();
-# these can be broadcast together to shape (2, 3), producing the
-# following array:
+# 행렬의 스칼라배:
+# x 의 shape는 (2, 3)입니다. Numpy는 스칼라를 shape가 ()인 배열로 취급합니다;
+# 그렇기에 스칼라 값은 (2,3) shape로 브로드캐스트 될 수 있고,
+# 아래와 같은 결과를 만들어 냅니다:
 # [[ 2  4  6]
 #  [ 8 10 12]]
 print x * 2
 ~~~
 
-Broadcasting typically makes your code more concise and faster, so you
-should strive to use it where possible.
+브로드캐스팅은 보통 코드를 간결하고 빠르게 해줍니다, 그러므로 가능하다면 최대한 사용하세요.
 
 ### Numpy Documentation
-This brief overview has touched on many of the important things that you need to
-know about numpy, but is far from complete. Check out the
-[numpy reference](http://docs.scipy.org/doc/numpy/reference/)
-to find out much more about numpy.
+이 문서는 여러분이 numpy에 대해 알아야할 많은 중요한 사항들을 다루지만 완벽하진 않습니다.
+numpy에 관한 더 많은 사항은 [numpy 레퍼런스](http://docs.scipy.org/doc/numpy/reference/)를 참조하세요.
 
 <a name='scipy'></a>
+
 ## SciPy
 Numpy provides a high-performance multidimensional array and basic tools to
 compute with and manipulate these arrays.
