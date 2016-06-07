@@ -1034,86 +1034,84 @@ and it takes the intro this much real estate space to be
 210
 00:23:37,579 --> 00:23:43,148
 used for the system. Why?
-because it's so important and it's so damn hard.
+Because it's so important and it's so damn hard.
 
 211
 00:23:43,148 --> 00:23:50,959
-That's why we need to get back to human reason
-they were really ambitious they wanna
+That's why we need to use this much space.
+OK, back to Hubel and Wiesel. They were really ambitious.
 
 212
 00:23:50,960 --> 00:23:56,028
-know what primary visual cortex is doing
+They wanna know what primary visual cortex is doing
 because this is the beginning of our
 
 213
 00:23:56,028 --> 00:24:02,878
-knowledge for deep learning neural
-network cats social then put the cats in
+knowledge for deep learning neural network.
+So, they were showing cats. so they put the cats in this room
 
 214
 00:24:02,878 --> 00:24:07,709
-this room and they were recording your
-activities when I say recording your
+and they were recording neural activities.
+When I say recording neural activity,
 
 215
 00:24:07,710 --> 00:24:11,659
-activities fair trial there basically
-trying to see you know if I put the
+they're basically trying to see,
+you know if I put the
 
 216
 00:24:11,659 --> 00:24:18,059
-electrode here like to the new office to
-the new house fire when they see
+neural electrode here,
+Do the neurons fire when they see something?
 
 217
-00:24:18,058 --> 00:24:25,308
-something so for example if they show if
-they show cat their ideas if I showed
+00:24:18,059 --> 00:24:25,308
+So, for example if they show cats,
+their idea is..,
 
 218
 00:24:25,308 --> 00:24:30,519
-this kind of fish you know apparently at
-that time comes to eat fish rather than
+if I showed this kind of fish, you know,
+apparently at that time cats eat fish rather than these beans.
 
 219
 00:24:30,519 --> 00:24:42,019
-these beings with the cats no I like
-yellow happy and spikes and here's a
+With the cat's neuron like, you know,
+they're happy and start sending spikes.
 
 220
 00:24:42,019 --> 00:24:48,128
-story of scientific discovery is
-scientific discovery takes both luck and
+and the funny thing of a story of scientific discovery is
 
 221
 00:24:48,128 --> 00:24:52,449
-care and thoughtfulness they were shown
+scientific discovery takes both luck and care and thoughtfulness.
 
 222
 00:24:52,450 --> 00:24:58,740
-whatever mouse flower it just doesn't
-work the cats new are in the primary
+They were showing this cat fish, whatever mouse, flower.
+It just doesn't work. The cat's neuron in the primary
 
 223
 00:24:58,740 --> 00:25:02,839
-visual cortex was silent there was no
-spiking
+visual cortex was silent there was no spiking.
 
 224
 00:25:02,839 --> 00:25:09,079
-very little spike in there were really
-frustrated but the good news is that
+Very little spike and they were really frustrated.
+but the good news is that
 
 225
 00:25:09,079 --> 00:25:14,509
 there was no computer at that time so
-what they have to do when they showed us
+what they have to do when they showed this cats
 
 226
 00:25:14,509 --> 00:25:21,740
-cats is they have to use a slight
-protector so they put his foot a slide
+that is a stimulus, they have to use a slide
+projector so they put his foot a slide
 
 227
 00:25:21,740 --> 00:25:26,799
