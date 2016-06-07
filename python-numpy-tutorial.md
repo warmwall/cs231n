@@ -873,43 +873,41 @@ numpy에 관한 더 많은 사항은 [numpy 레퍼런스](http://docs.scipy.org/
 <a name='scipy'></a>
 
 ## SciPy
-Numpy provides a high-performance multidimensional array and basic tools to
-compute with and manipulate these arrays.
-[SciPy](http://docs.scipy.org/doc/scipy/reference/)
-builds on this, and provides
-a large number of functions that operate on numpy arrays and are useful for
-different types of scientific and engineering applications.
 
-The best way to get familiar with SciPy is to
-[browse the documentation](http://docs.scipy.org/doc/scipy/reference/index.html).
-We will highlight some parts of SciPy that you might find useful for this class.
+Numpy는 고성능의 다차원 배열 객체와 이를 다룰 도구를 제공합니다.
+numpy를 바탕으로 만들어진 [SciPy](http://docs.scipy.org/doc/scipy/reference/)는,
+numpy 배열을 다루는 많은 함수들을 제공하며 다양한 과학, 공학분야에서 유용하게 사용됩니다.
+
+SciPy에 익숙해지는 최고의 방법은 [SciPy 공식 문서](http://docs.scipy.org/doc/scipy/reference/index.html)를 보는 것입니다.
+이 문서에서는 scipy중 cs231n 수업에서 유용하게 쓰일 일부분만을 소개할것입니다.
 
 <a name='scipy-image'></a>
-### Image operations
-SciPy provides some basic functions to work with images.
-For example, it has functions to read images from disk into numpy arrays,
-to write numpy arrays to disk as images, and to resize images.
-Here is a simple example that showcases these functions:
+
+### 이미지 작업
+SciPy는 이미지를 다룰 기본적인 함수들을 제공합니다.
+예를들자면, 디스크에 저장된 이미지를 numpy 배열로 읽어들이는 함수가 있으며,
+numpy 배열을 디스크에 이미지로 저장하는 함수도 있고, 이미지의 크기를 바꾸는 함수도 있습니다.
+이 함수들의 간단한 사용 예시입니다:
 
 ~~~python
 from scipy.misc import imread, imsave, imresize
 
-# Read an JPEG image into a numpy array
+# JPEG 이미지를 numpy 배열로 읽어들이기
 img = imread('assets/cat.jpg')
 print img.dtype, img.shape  # 출력 "uint8 (400, 248, 3)"
 
-# We can tint the image by scaling each of the color channels
-# by a different scalar constant. The image has shape (400, 248, 3);
-# we multiply it by the array [1, 0.95, 0.9] of shape (3,);
-# numpy broadcasting means that this leaves the red channel unchanged,
-# and multiplies the green and blue channels by 0.95 and 0.9
-# respectively.
+# 각각의 색깔 채널을 다른 상수값으로 스칼라배함으로써 
+# 이미지의 색을 변화시킬수 있습니다.
+# 이미지의 shape는 (400, 248, 3)입니다;
+# 여기에 shape가 (3,)인 배열 [1, 0.95, 0.9]를 곱합니다;
+# numpy 브로드캐스팅에 의해 이 배열이 곱해지며 붉은색 채널은 변하지 않으며,
+# 초록색, 파란색 채널에는 각각 0.95, 0.9가 곱해집니다
 img_tinted = img * [1, 0.95, 0.9]
 
-# Resize the tinted image to be 300 by 300 pixels.
+# 색변경 이미지를 300x300 픽셀로 크기 조절.
 img_tinted = imresize(img_tinted, (300, 300))
 
-# Write the tinted image back to disk
+# 색변경 이미지를 디스크에 기록하기
 imsave('assets/cat_tinted.jpg', img_tinted)
 ~~~
 
@@ -917,94 +915,93 @@ imsave('assets/cat_tinted.jpg', img_tinted)
   <img src='{{site.baseurl}}/assets/cat.jpg'>
   <img src='{{site.baseurl}}/assets/cat_tinted.jpg'>
   <div class='figcaption'>
-    Left: The original image.
-    Right: The tinted and resized image.
+    Left: 원본 이미지.
+    Right: 색변경 & 크기변경 이미지.
   </div>
 </div>
 
 <a name='scipy-matlab'></a>
-### MATLAB files
-The functions `scipy.io.loadmat` and `scipy.io.savemat` allow you to read and
-write MATLAB files. You can read about them
-[in the documentation](http://docs.scipy.org/doc/scipy/reference/io.html).
+
+### MATLAB 파일
+`scipy.io.loadmat` 와 `scipy.io.savemat`함수를 통해 
+matlab 파일을 읽고 쓸 수 있습니다.
+[문서](http://docs.scipy.org/doc/scipy/reference/io.html)를 참조하세요.
 
 <a name='scipy-dist'></a>
-### Distance between points
-SciPy defines some useful functions for computing distances between sets of points.
 
-The function `scipy.spatial.distance.pdist` computes the distance between all pairs
-of points in a given set:
+### 두 점 사이의 거리
+SciPy에는 점들간의 거리를 계산하기 위한 유용한 함수들이 정의되어 있습니다.
+
+`scipy.spatial.distance.pdist`함수는 주어진 점들 사이의 모든 거리를 계산합니다:
 
 ~~~python
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
-# Create the following array where each row is a point in 2D space:
+# 각 행이 2차원 공간에서의 한 점을 의미하는 행렬을 생성:
 # [[0 1]
 #  [1 0]
 #  [2 0]]
 x = np.array([[0, 1], [1, 0], [2, 0]])
 print x
 
-# Compute the Euclidean distance between all rows of x.
-# d[i, j] is the Euclidean distance between x[i, :] and x[j, :],
-# and d is the following array:
+# x가 나타내는 모든 점 사이의 유클리디안 거리를 계산.
+# d[i, j]는 x[i, :]와 x[j, :]사이의 유클리디안 거리를 의미하며,   
+# d는 아래의 행렬입니다:
 # [[ 0.          1.41421356  2.23606798]
 #  [ 1.41421356  0.          1.        ]
 #  [ 2.23606798  1.          0.        ]]
 d = squareform(pdist(x, 'euclidean'))
 print d
 ~~~
-You can read all the details about this function
-[in the documentation](http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html).
+이 함수에 대한 자세한 사항은 [pidst 공식 문서](http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.pdist.html)를 참조하세요.
 
-A similar function (`scipy.spatial.distance.cdist`) computes the distance between all pairs
-across two sets of points; you can read about it
-[in the documentation](http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html).
+`scipy.spatial.distance.cdist`도 위와 유사하게 점들 사이의 거리를 계산합니다. 자세한 사항은 [cdist 공식 문서](http://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html)를 참조하세요.
 
 <a name='matplotlib'></a>
+
 ## Matplotlib
-[Matplotlib](http://matplotlib.org/) is a plotting library. 
-In this section give a brief introduction to the `matplotlib.pyplot` module,
-which provides a plotting system similar to that of MATLAB.
+[Matplotlib](http://matplotlib.org/)는 plotting 라이브러리입니다. 
+이번에는 MATLAB의 plotting 시스템과 유사한 기능을 제공하는
+`matplotlib.pyplot` 모듈에 관한 간략한 소개가 있곘습니다.,
 
 <a name='matplotlib-plot'></a>
+
 ### Plotting
-The most important function in matplotlib is `plot`,
-which allows you to plot 2D data. Here is a simple example:
+matplotlib에서 가장 중요한 함수는 2차원 데이터를 그릴수 있게 해주는 `plot`입니다.
+여기 간단한 예시가 있습니다:
 
 ~~~python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Compute the x and y coordinates for points on a sine curve
+# 사인과 코사인 곡선의 x,y 좌표를 계산 
 x = np.arange(0, 3 * np.pi, 0.1)
 y = np.sin(x)
 
-# Plot the points using matplotlib
+# matplotlib를 이용해 점들을 그리기
 plt.plot(x, y)
-plt.show()  # You must call plt.show() to make graphics appear.
+plt.show()  # 그래프를 나타나게 하기 위해선 plt.show()함수를 호출해야만 합니다.
 ~~~
 
-Running this code produces the following plot:
+이 코드를 실행하면 아래의 그래프가 생성됩니다:
 
 <div class='fig figcenter fighighlight'>
   <img src='{{site.baseurl}}/assets/sine.png'>
 </div>
 
-With just a little bit of extra work we can easily plot multiple lines
-at once, and add a title, legend, and axis labels:
+약간의 몇가지 추가적인 작업을 통해 여러개의 그래프와, 제목, 범주, 축 이름을 한번에 쉽게 나타낼 수 있습니다:
 
 ~~~python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Compute the x and y coordinates for points on sine and cosine curves
+# 사인과 코사인 곡선의 x,y 좌표를 계산 
 x = np.arange(0, 3 * np.pi, 0.1)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
 
-# Plot the points using matplotlib
+# matplotlib를 이용해 점들을 그리기
 plt.plot(x, y_sin)
 plt.plot(x, y_cos)
 plt.xlabel('x axis label')
@@ -1017,37 +1014,38 @@ plt.show()
   <img src='{{site.baseurl}}/assets/sine_cosine.png'>
 </div>
 
-You can read much more about the `plot` function
-[in the documentation](http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot).
+`plot`함수에 관한 더 많은 내용은 [문서](http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot)를 참조하세요.
 
 <a name='matplotlib-subplots'></a>
+
 ### Subplots
-You can plot different things in the same figure using the `subplot` function.
-Here is an example:
+
+'subplot'함수를 통해 다른 내용들도 동일한 그림위에 나타낼수 있습니다.
+여기 간단한 예시가 있습니다:
 
 ~~~python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Compute the x and y coordinates for points on sine and cosine curves
+# 사인과 코사인 곡선의 x,y 좌표를 계산 
 x = np.arange(0, 3 * np.pi, 0.1)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
 
-# Set up a subplot grid that has height 2 and width 1,
-# and set the first such subplot as active.
+# 높이가 2이고 너비가 1인 subplot 구획을 설정하고,
+# 첫번째 구획을 활성화.
 plt.subplot(2, 1, 1)
 
-# Make the first plot
+# 첫번째 그리기
 plt.plot(x, y_sin)
 plt.title('Sine')
 
-# Set the second subplot as active, and make the second plot.
+# 두번째 subplot 구획을 활성화 하고 그리기
 plt.subplot(2, 1, 2)
 plt.plot(x, y_cos)
 plt.title('Cosine')
 
-# Show the figure.
+# 그림 보이기.
 plt.show()
 ~~~
 
@@ -1055,12 +1053,13 @@ plt.show()
   <img src='{{site.baseurl}}/assets/sine_cosine_subplot.png'>
 </div>
 
-You can read much more about the `subplot` function
-[in the documentation](http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.subplot).
+`subplot`함수에 관한 더 많은 내용은
+[문서](http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.subplot)를 참조하세요.
 
 <a name='matplotlib-images'></a>
-### Images
-You can use the `imshow` function to show images. Here is an example:
+
+### 이미지
+`imshow`함수를 사용해 이미지를 나타낼 수 있습니다. 여기 예시가 있습니다:
 
 ~~~python
 import numpy as np
@@ -1070,16 +1069,17 @@ import matplotlib.pyplot as plt
 img = imread('assets/cat.jpg')
 img_tinted = img * [1, 0.95, 0.9]
 
-# Show the original image
+# 원본 이미지 나타내기
 plt.subplot(1, 2, 1)
 plt.imshow(img)
 
-# Show the tinted image
+# 색변화된 이미지 나타내기
 plt.subplot(1, 2, 2)
 
-# A slight gotcha with imshow is that it might give strange results
-# if presented with data that is not uint8. To work around this, we
-# explicitly cast the image to uint8 before displaying it.
+# imshow를 이용하며 주의할 점은 데이터의 자료형이 
+# uint8이 아니라면 이상한 결과를 보여줄수도 있다는 것입니다.
+# 그러므로 이미지를 나타내기 전에 명시적으로 자료형을 uint8로 형변환 해줍니다.
+
 plt.imshow(np.uint8(img_tinted))
 plt.show()
 ~~~
