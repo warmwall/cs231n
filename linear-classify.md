@@ -363,7 +363,7 @@ We now saw one way to take a dataset of images and map each one to class scores 
 
 <a name='furtherreading'></a>
 
-### 추가 읽기 자료료
+### 추가 읽기 자료
 
 These readings are optional and contain pointers of interest.
 
