@@ -996,7 +996,7 @@ plt.show()  # 그래프를 나타나게 하기 위해선 plt.show()함수를 호
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 사인과 코사인 곡선의 x,y 좌표를 계산 
+# 사인과 코사인 곡선의 x,y 좌표를 계산
 x = np.arange(0, 3 * np.pi, 0.1)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
