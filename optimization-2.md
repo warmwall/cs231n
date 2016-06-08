@@ -7,10 +7,10 @@ Table of Contents:
 
 - [소개(Introduction)](#intro)
 - [그라디언트(Gradient)에 대한 간단한 표현과 이해](#grad)
-- [복합 표현식(Compound Expression), 체인룰(chain rule), 역전파(Backpropagation)](#backprop)
-- [역전파(Backpropation)에 대한 직관적인 이해](#intuitive)
+- [복합 표현식(Compound Expression), 연쇄 법칙(Chain rule), Backpropagation](#backprop)
+- [Backpropation에 대한 직관적인 이해](#intuitive)
 - [모듈성 : 시그모이드(Sigmoid) 예제](#sigmoid)
-- [역전파(Backprop) 실제: 단계별 계산](#staged)
+- [Backprop 실제: 단계별 계산](#staged)
 - [역박향 흐름의 패턴](#patters)
 - [벡터 기반의 그라디언트(Gradient) 계산)](#mat)
 - [요약](#summary)
@@ -19,14 +19,14 @@ Table of Contents:
 
 ### Introduction
 
-**Motivation**. 이번 섹션에서 우리는 **역전파(Backpropagation)**에 대한 직관적인 이해를 바탕으로 전문지식을 더 키우고자 한다. Backpropagation은 Network 전체에 대해 반복적인 **체인룰(Chain rule)**을 적용하여 그라디언트(Gradient)를 계산하는 방법 중 하나이다. Backpropagation 과정과 세부 요소들에 대한 이해는 여러분에게 있어서 신경망을 효과적으로 개발하고, 디자인하고 디버그하는 데 중요하다고 볼 수 있다. 
+**Motivation**. 이번 섹션에서 우리는 **Backpropagation**에 대한 직관적인 이해를 바탕으로 전문지식을 더 키우고자 한다. Backpropagation은 네트워크 전체에 대해 반복적인 **연쇄 법칙(Chain rule)**을 적용하여 그라디언트(Gradient)를 계산하는 방법 중 하나이다. Backpropagation 과정과 세부 요소들에 대한 이해는 여러분에게 있어서 신경망을 효과적으로 개발하고, 디자인하고 디버그하는 데 중요하다고 볼 수 있다. 
 
 **Problem statement**. 이번 섹션에서 공부할 핵심 문제는 다음과 같다 : 주어진 함수 $$f(x)$$ 가 있고, $$x$$ 는 입력 값으로 이루어진 벡터이고, 주어진 입력 $$x$$에 대해서 함수 $$f$$의 그라디언트를 계산하고자 한다. (i.e. $$\nabla f(x)$$ ).
 
-**Motivation**. 우리가 이 문제에 관심을 기울이는 이유에 대해 Neural Network관점에서 좀더 구체적으로 살펴 보자. $$f$$는 Loss 함수 ( $$L$$ ) 에 해당하고 입력 값 $$x$$ 는 학습 데이터(Training data)와 Neural Network의 Weight라고 볼 수 있다. 예를 들면, Loss는 SVM Loss 함수가 될 수 있고, 입력 값은 학습 데이터 $$(x_i,y_i), i=1 \ldots N$$ 와 Weight, Bias $$W,b$$ 으로 볼 수 있다. 여기서 학습데이터는 미리 주어져서 고정 되어있는 값으로 볼 수 있고 (보통의 기계 학습에서 그러하듯..), Weight는 Neural Network의 학습을 위해 실제로 컨트롤 하는 값이다. 따라서 입력 값 $$x_i$$ 에 대한 그라디언트 계산이 쉬울지라도, 실제로는 파라미터(Parameter, Neural Network의 Weight) 값에 대한 Gradient를 일반적으로 계산하고, Gradient값을 활용하여 Parameter를 업데이트 할 수 있다. 하지만, Neural Network이 어떻게 작동하는지 해석하고, 시각화 하는 부분에서 입력 값 $x_i$에 대한 Gradient도 유용하게 활용 될 수 있는데, 이 부분은 본 강의의 뒷부분에 다룰 예정이다. 
+**Motivation**. 우리가 이 문제에 관심을 기울이는 이유에 대해 신경망 관점에서 좀더 구체적으로 살펴 보자. $$f$$는 손실 함수 ( $$L$$ ) 에 해당하고 입력 값 $$x$$ 는 학습 데이터(Training data)와 신경망의 Weight라고 볼 수 있다. 예를 들면, 손실 함수는 SVM Loss 함수가 될 수 있고, 입력 값은 학습 데이터 $$(x_i,y_i), i=1 \ldots N$$ 와 Weight, Bias $$W,b$$ 으로 볼 수 있다. 여기서 학습데이터는 미리 주어져서 고정 되어있는 값으로 볼 수 있고 (보통의 기계 학습에서 그러하듯..), Weight는 신경망의 학습을 위해 실제로 컨트롤 하는 값이다. 따라서 입력 값 $$x_i$$ 에 대한 그라디언트 계산이 쉬울지라도, 실제로는 파라미터(Parameter) 값에 대한 그라디언트를 일반적으로 계산하고, 그라디언트 값을 활용하여 파라미터를 업데이트 할 수 있다. 하지만, 신경망이 어떻게 작동하는지 해석하고, 시각화 하는 부분에서 입력 값 $x_i$에 대한 그라디언트도 유용하게 활용 될 수 있는데, 이 부분은 본 강의의 뒷부분에 다룰 예정이다. 
 
 
-여러분이 이미 Chain Rule을 통해 Gradient를 도출하는데 익숙하더라도 이 섹션을 간략히 훑어보기를 권장한다. 왜냐하면 이 섹션에서는 다른데서는 보기 힘든 Backpropagation에 대한 실제 숫자를 활용한 역방향 흐름(Backward Flow)에 대해 설명을 할 것이고, 이를 통해 여러분이 얻게 될 통찰력은 이번 강의 전체에 있어 도움이 될 것이라 생각하기 때문이다.
+여러분이 이미 연쇄 법칙을 통해 그라디언트를 도출하는데 익숙하더라도 이 섹션을 간략히 훑어보기를 권장한다. 왜냐하면 이 섹션에서는 다른데서는 보기 힘든 Backpropagation에 대한 실제 숫자를 활용한 역방향 흐름(Backward Flow)에 대해 설명을 할 것이고, 이를 통해 여러분이 얻게 될 통찰력은 이번 강의 전체에 있어 도움이 될 것이라 생각하기 때문이다.
 
 <a name='grad'></a>
 
@@ -68,7 +68,7 @@ $$
 
 ### 체인룰(chain rule)을 이용한 복합 표현식
 
-이제 $f(x,y,z) = (x + y) z$ 같은 다수의 복합 함수(composed functions)를 수반하는 더 복잡한 표현식을 고려해보자. 이 표현식은 여전히 바로 미분하기에 충분히 간단하지만, 우리는 이 식에 특별한 접근법을 적용할 것이다. 이는 역전파 뒤에 있는 직관을 이해하는데 도움이 될 것이다. 특히 이 식이 두 개의 표현식 $q = x + y$와 $f = q z$ 으로 분해될 수 있음에 주목하자. 게다가 이전 섹션에서 본 것처럼 우리는 두 식에 대한 미분값을 어떻게 따로따로 계산할지 알고 있다. $f$ 는 단지 $q$와 $z$의 곱이다. 따라서 $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, 그리고 $q$는 $x$와 $y$의 합이므로 $\frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1$이다. 하지만, 중간 결과값인 $q$에 대한 그라디언트($\frac{\partial f}{\partial q}$)를 신경쓸 필요가 없다. 대신 궁극적으로 입력 $x,y,z$에 대한 $f$의 그라디언트에 관심이 있다. **체인룰**은 이러한 그라디언트 표현식들을 함께 연결시키는 적절한 방법이 곱하는 것이라는 것을 보여준다. 예를 들면, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $와 같이 표현할 수 있다. 실제로 이는 단순히 두 그라디언트를 담고 있는 두 수의 곱셈이다. 하나의 예를 통해 확인 해보자.
+이제 $f(x,y,z) = (x + y) z$ 같은 다수의 복합 함수(composed functions)를 수반하는 더 복잡한 표현식을 고려해보자. 이 표현식은 여전히 바로 미분하기에 충분히 간단하지만, 우리는 이 식에 특별한 접근법을 적용할 것이다. 이는 backpropagation 뒤에 있는 직관을 이해하는데 도움이 될 것이다. 특히 이 식이 두 개의 표현식 $q = x + y$와 $f = q z$ 으로 분해될 수 있음에 주목하자. 게다가 이전 섹션에서 본 것처럼 우리는 두 식에 대한 미분값을 어떻게 따로따로 계산할지 알고 있다. $f$ 는 단지 $q$와 $z$의 곱이다. 따라서 $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, 그리고 $q$는 $x$와 $y$의 합이므로 $\frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1$이다. 하지만, 중간 결과값인 $q$에 대한 그라디언트($\frac{\partial f}{\partial q}$)를 신경쓸 필요가 없다. 대신 궁극적으로 입력 $x,y,z$에 대한 $f$의 그라디언트에 관심이 있다. **체인룰**은 이러한 그라디언트 표현식들을 함께 연결시키는 적절한 방법이 곱하는 것이라는 것을 보여준다. 예를 들면, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $와 같이 표현할 수 있다. 실제로 이는 단순히 두 그라디언트를 담고 있는 두 수의 곱셈이다. 하나의 예를 통해 확인 해보자.
 
 ~~~python
 # set some inputs
@@ -87,7 +87,7 @@ dfdx = 1.0 * dfdq # dq/dx = 1. And the multiplication here is the chain rule!
 dfdy = 1.0 * dfdq # dq/dy = 1
 ~~~
 
-결국 `[dfdx,dfdy,dfdz]` 변수들로 그라디언트가 표현되는데, 이는 `f`에 대한 변수 `x,y,z`의 민감도(sensitivity)를 보여준다. 이는 역전파의 가장 간단한 예이다. 더 나아가서 보다 간결한 표기법을 사용해서 `df` 파트를 계속 쓸 필요가 없도록 하고 싶을 것이다. 예를 들어 `dfdq` 대신에 단순히 `dq`를 쓰고 항상 그라디언트가 최종 출력에 관한 것이라 가정하는 것이다.
+결국 `[dfdx,dfdy,dfdz]` 변수들로 그라디언트가 표현되는데, 이는 `f`에 대한 변수 `x,y,z`의 민감도(sensitivity)를 보여준다. 이는 backpropagation의 가장 간단한 예이다. 더 나아가서 보다 간결한 표기법을 사용해서 `df` 파트를 계속 쓸 필요가 없도록 하고 싶을 것이다. 예를 들어 `dfdq` 대신에 단순히 `dq`를 쓰고 항상 그라디언트가 최종 출력에 관한 것이라 가정하는 것이다.
 
 또한 이런 계산은 회로도를 가지고 다음과 같이 멋지게 시각화할 수 있다:
 
@@ -95,21 +95,21 @@ dfdy = 1.0 * dfdq # dq/dy = 1
 <svg width="420" height="220"><defs><marker id="arrowhead" refX="6" refY="2" markerWidth="6" markerHeight="4" orient="auto"><path d="M 0,0 V 4 L6,2 Z"></path></marker></defs><line x1="40" y1="30" x2="110" y2="30" stroke="black" stroke-width="1"></line><text x="45" y="24" font-size="16" fill="green">-2</text><text x="45" y="47" font-size="16" fill="red">-4</text><text x="35" y="24" font-size="16" text-anchor="end" fill="black">x</text><line x1="40" y1="100" x2="110" y2="100" stroke="black" stroke-width="1"></line><text x="45" y="94" font-size="16" fill="green">5</text><text x="45" y="117" font-size="16" fill="red">-4</text><text x="35" y="94" font-size="16" text-anchor="end" fill="black">y</text><line x1="40" y1="170" x2="110" y2="170" stroke="black" stroke-width="1"></line><text x="45" y="164" font-size="16" fill="green">-4</text><text x="45" y="187" font-size="16" fill="red">3</text><text x="35" y="164" font-size="16" text-anchor="end" fill="black">z</text><line x1="210" y1="65" x2="280" y2="65" stroke="black" stroke-width="1"></line><text x="215" y="59" font-size="16" fill="green">3</text><text x="215" y="82" font-size="16" fill="red">-4</text><text x="205" y="59" font-size="16" text-anchor="end" fill="black">q</text><circle cx="170" cy="65" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="170" y="70" font-size="20" fill="black" text-anchor="middle">+</text><line x1="110" y1="30" x2="150" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="110" y1="100" x2="150" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="190" y1="65" x2="210" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="380" y1="117" x2="450" y2="117" stroke="black" stroke-width="1"></line><text x="385" y="111" font-size="16" fill="green">-12</text><text x="385" y="134" font-size="16" fill="red">1</text><text x="375" y="111" font-size="16" text-anchor="end" fill="black">f</text><circle cx="340" cy="117" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="340" y="127" font-size="20" fill="black" text-anchor="middle">*</text><line x1="280" y1="65" x2="320" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="110" y1="170" x2="320" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="360" y1="117" x2="380" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line></svg>
 
 <div class="figcaption">
-  좌측에 실수 값으로 표현되는 <i>"회로"</i>는 이 계산에 대한 시각 표현을 보여준다. <b>전방 전달(forward pass)</b>은 입력부터 출력까지 값을 계산한다 (녹색으로 표시). 그리고 나서 <b>후방 전달(backward pass)</b>는 역전파를 수행하는데, 이는 끝에서 시작해서 반복적으로 체인 룰을 적용해 회로 입력에 대한 모든 길에서 그라디언트 값 (적색으로 표시) 을 계산한다. 그라디언트 값은 회로를 통해 거꾸로 흐르는 것으로 볼 수 있다.
+  좌측에 실수 값으로 표현되는 <i>"회로"</i>는 이 계산에 대한 시각 표현을 보여준다. <b>전방 전달(forward pass)</b>은 입력부터 출력까지 값을 계산한다 (녹색으로 표시). 그리고 나서 <b>후방 전달(backward pass)</b>는 backpropagation을 수행하는데, 이는 끝에서 시작해서 반복적으로 체인 룰을 적용해 회로 입력에 대한 모든 길에서 그라디언트 값 (적색으로 표시) 을 계산한다. 그라디언트 값은 회로를 통해 거꾸로 흐르는 것으로 볼 수 있다.
 </div>
 <div style="clear:both;"></div>
 </div>
 
 <a name='intuitive'></a>
-### 역전파(backpropagation)에 대한 직관적 이해
+### Backpropagation에 대한 직관적 이해
 
-역전파가 굉장히 지역적인(local) 프로세스임에 주목하자. 회로도 내의 모든 게이트(gate) 몇개의 입력을 받아드리고 곧 바로 두 가지를 계산할 수 있다: 1. 게이트의 출력 값, 2. 게이트 출력에 대한 입력들의 *지역적* 그라디언트 값. 여기서 게이트들이 포함된 전체 회로의 세세한 부분을 모르더라도 완전히 독립적으로 값들을 계산할 수 있음을 주목하라. 하지만, 일단 전방 전달이 끝나면 역전파 과정에서 게이트는 결국 전체 회로의 마지막 출력에 대한 게이트 출력의 그라디언트 값에 관해 학습할 것이다. 체인룰을 통해 게이트는 이 그라디언트 값을 받아들여 모든 입력에 대해서 계산한 게이트의 모든 그라디언트 값에 곱한다.
+backpropagation이 굉장히 지역적인(local) 프로세스임에 주목하자. 회로도 내의 모든 게이트(gate) 몇개의 입력을 받아드리고 곧 바로 두 가지를 계산할 수 있다: 1. 게이트의 출력 값, 2. 게이트 출력에 대한 입력들의 *지역적* 그라디언트 값. 여기서 게이트들이 포함된 전체 회로의 세세한 부분을 모르더라도 완전히 독립적으로 값들을 계산할 수 있음을 주목하라. 하지만, 일단 전방 전달이 끝나면 backpropagation 과정에서 게이트는 결국 전체 회로의 마지막 출력에 대한 게이트 출력의 그라디언트 값에 관해 학습할 것이다. 체인룰을 통해 게이트는 이 그라디언트 값을 받아들여 모든 입력에 대해서 계산한 게이트의 모든 그라디언트 값에 곱한다.
 
 > 체인룰 덕분에 이러한 각 입력에 대한 추가 곱셈은 전체 신경망과 같은 복잡한 회로에서 상대적으로 쓸모 없는 개개의 게이트를 중요하지 않은 것으로 바꿀 수 있다.
 
 다시 위 예를 통해 이것이 어떻게 동작하는지에 대한 직관을 얻자. 덧셈 게이트는 입력 [-2, 5]를 받아 3을 출력한다. 이 게이트는 덧셈 연산을 하고 있기 때문에 두 입력에 대한 게이트의 지역적 그라디언트 값은 +1이 된다. 회로의 나머지 부분을 통해 최종 출력 값으로 -12가 나온다. 체인룰이 회로를 역으로 가로질러 반복적으로 적용되는 후방 전달 과정 동안, (곱셈 게이트의 입력인) 덧셈 게이트는 출력 값에 대한 그라디언트 값이 -4였다는 것을 학습한다. 만약 회로가 높은 값을 출력하기를 원하는 것으로 의인화하면 (이는 직관에 도움이 될 수 있다), 이 회로가 덧셈 게이트의 출력 값이 4의 *힘*으로 낮아지길 (음의 부호이기 때문) "원하는" 것으로 볼 수 있다. 반복을 지속하고 그라디언트 값을 연결하기 위해 덧셈 게이트는 이 그라디언트 값을 받아들이고 이를 모든 입력들에 대한 지역적 그라디언트 값에 곱한다 (**x**와 **y**에 대한 그라디언트 값이 1 * -4 = -4가 되도록). 다음의 원하는 효과가 있다는 사실에 주목하자. 만약 **x,y**가 (음의 그라디언트 값에 대한 반응으로) 감소한다면, 이 덧셈 게이트의 출력은 감소할 것이고 이는 다시 곱셈 게이트의 출력이 증가하도록 만들 것이다. 
 
-따라서 역전파는 보다 큰 최종 출력 값을 얻도록 게이트들이 자신들의 출력이 (얼마나 강하게) 증가하길 원하는지 또는 감소하길 원하는지 서로 소통하는 것으로 간주할 수 있다.
+따라서 backpropagation은 보다 큰 최종 출력 값을 얻도록 게이트들이 자신들의 출력이 (얼마나 강하게) 증가하길 원하는지 또는 감소하길 원하는지 서로 소통하는 것으로 간주할 수 있다.
 
 <a name='sigmoid'></a>
 ### 모듈성: 시그모이드(Sigmoid) 예제
