@@ -143,7 +143,7 @@ $$
 **L2 regularization**은 가장 일반적으로 사용되는 regularization 기법이다. 모든 파라미터 제곱 만큼의 크기를 목적 함수에 제약을 거는 방식으로 구현된다. 다시말해, 가중치 벡터 $$w$$가 있을때, 목적 함수에 $$\frac{1}{2} \lambda w^2$$를 더한다 (여가서 $$lambda$$는 regulrization의 강도를 의미). $$\frac{1}{2}$$ 부분이 항상 존재하는데 이는 앞서 본 regularization 값을 $$w$$로 미분했을 때 $$2 \lambda w$$가 아닌 $$ \lambda w$$의 값을 갖도록 하기 위함이다. L2 reguralization은 큰 값이 많이 존재하는 가중치에 제약을 주고, 가중치 값을 가능한 널리 퍼지도록 하는 효과를 주는 것으로 볼 수 있다. 선형 분류(Linear Classification) 장에서도 이야기 했던 가중치와 입력 데이터가 곱해지는 연산이므로 특정 몇개의 입력 데이터에 강하게 적용되기 보다는 모든 입력데이터에 약하게 적용되도록 하는 것이 일반적이다. gradient descent 업데이트 과정에서 L2 regularization을 적용하는 것은 모든 가중치 값이 선형적으로 감소하게 된다: `W += -lambda * W`이 0으로 감소하게 된다.
 
 
-**L1 regularization** 또한 상대적으로 많이 사용되는 regularization 기법으로 가중치 벡터$$w$$가 있을때, 목적 함수에 $$\lamda \mid w \mid$$를 더한다. 다음과 같이 L1 regularization과 L2 regularization을 동시에 사용할 수도 있다: $$\lambad_1 \mid w \mid + \lamda_2 w^2$$([Elastic net regularization](http://web.stanford.edu/~hastie/Papers/B67.2%20%282005%29%20301-320%20Zou%20&%20Hastie.pdf)라고도 불린다). L1 regularization은 최적화 과정 동안 가중치 벡터들을 sparse하게(거의 0에 가깝게) 만드는 흥미로운 특성이 있다. 다시 말해, L1 regularization이 적용된 뉴런들은 결국 입력 데이터의 sparse한 부분만을 사용하고, "noisy" 입력 데이터에 거의 영향을 받지 않는다. 이에 반해, L2 regularization을 적용하면 최종 가중치 벡터들은 작은 값들이 퍼져있는 형태로 나타나게 된다. 실제 신경망 학습에 적용할 때, 만약 특정한 feature selection 후 학습하는 것이 아니라면 많은 경우에 L2 regularization을 사용하면 훨씬 좋은 성능을 기대할 수 있다.
+**L1 regularization** 또한 상대적으로 많이 사용되는 regularization 기법으로 가중치 벡터$$w$$가 있을때, 목적 함수에 $$\lambda \mid w \mid$$를 더한다. 다음과 같이 L1 regularization과 L2 regularization을 동시에 사용할 수도 있다: $$\lambda_1 \mid w \mid + \lambda_2 w^2$$([Elastic net regularization](http://web.stanford.edu/~hastie/Papers/B67.2%20%282005%29%20301-320%20Zou%20&%20Hastie.pdf)라고도 불린다). L1 regularization은 최적화 과정 동안 가중치 벡터들을 sparse하게(거의 0에 가깝게) 만드는 흥미로운 특성이 있다. 다시 말해, L1 regularization이 적용된 뉴런들은 결국 입력 데이터의 sparse한 부분만을 사용하고, "noisy" 입력 데이터에 거의 영향을 받지 않는다. 이에 반해, L2 regularization을 적용하면 최종 가중치 벡터들은 작은 값들이 퍼져있는 형태로 나타나게 된다. 실제 신경망 학습에 적용할 때, 만약 특정한 feature selection 후 학습하는 것이 아니라면 많은 경우에 L2 regularization을 사용하면 훨씬 좋은 성능을 기대할 수 있다.
 
 **Max norm constrains**. regularizatio 기법 중 하나로 가중치 벡터의 길이가 미리 정해 놓은 상한 값을 넘지 못하도록 제한하면서 gradient descent 연산도 제한 된 조건 안에서만 계산하도록 하는 projected gradient descent를 사용한다. 신경망 학습에 실제 적용하는 방법은, 먼저 일반적인 방법으로 파라미터를 업데이트 하고, 모든 뉴런의 가중치 벡터 $$\vec{w}$$이 대해서 $$\Vert2 \vec{w} \Vert2 < c$$를 만족하도록 제한을 가한다. 일반적으로 c값은 3 혹은 4로 설정한다. 이 regularization 기법을 적용한 몇몇 연구를 통하여 성능 향상이 있음이 알려졌다. 이 기법의 흥미로운 사실 중 하나는 학습률(learning rate)을 큰 값을로 설정하고 학습 시키더라도 신경망이 "explode"하지 않는 다는 것인데 이는 업데이트 될 때마다 제한된 범위 내의 값을 갖기 때문이다.
 
@@ -155,7 +155,7 @@ $$
   <div class="figcaption">Figure taken from the <a href="http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf">Dropout paper</a> that illustrates the idea. During training, Dropout can be interpreted as sampling a Neural Network within the full Neural Network, and only updating the parameters of the sampled network based on the input data. (However, the exponential number of possible sampled networks are not independent because they share the parameters.) During testing there is no dropout applied, with the interpretation of evaluating an averaged prediction across the exponentially-sized ensemble of all sub-networks (more about ensembles in the next section).</div>
 </div>
 
-Vanilla dropout in an example 3-layer Neural Network would be implemented as follows:
+3-레이어 신경망 회로에 적용된 Vanilla dropout 예제를 아래 구현하였다.
 
 ~~~python
 """ Vanilla Dropout: Not recommended implementation (see notes below) """
@@ -164,7 +164,7 @@ p = 0.5 # probability of keeping a unit active. higher = less dropout
 
 def train_step(X):
   """ X contains the data """
-  
+
   # forward pass for example 3-layer neural network
   H1 = np.maximum(0, np.dot(W1, X) + b1)
   U1 = np.random.rand(*H1.shape) < p # first dropout mask
@@ -173,10 +173,10 @@ def train_step(X):
   U2 = np.random.rand(*H2.shape) < p # second dropout mask
   H2 *= U2 # drop!
   out = np.dot(W3, H2) + b3
-  
+
   # backward pass: compute gradients... (not shown)
   # perform parameter update... (not shown)
-  
+
 def predict(X):
   # ensembled forward pass
   H1 = np.maximum(0, np.dot(W1, X) + b1) * p # NOTE: scale the activations
@@ -184,14 +184,14 @@ def predict(X):
   out = np.dot(W3, H2) + b3
 ~~~
 
-In the code above, inside the `train_step` function we have performed dropout twice: on the first hidden layer and on the second hidden layer. It is also possible to perform dropout right on the input layer, in which case we would also create a binary mask for the input `X`. The backward pass remains unchanged, but of course has to take into account the generated masks `U1,U2`. 
+train_step 함수를 보면 첫번째 히든 레이어와 두번째 히든레이어 총 2 부분에서 dropout이 적용된 것을 볼 수 있다. 물론 입력 데이터 `X`를 위한 p=0.5 마스크를 만들어 입력 단에도 dropout을 적용할 수 있다. 역전파(backward pass) 과정에서는 forward에서 사용된 `U1, U2`를 사용하여 수행한다.
 
-Crucially, note that in the `predict` function we are not dropping anymore, but we are performing a scaling of both hidden layer outputs by $p$. This is important because at test time all neurons see all their inputs, so we want the outputs of neurons at test time to be identical to their expected outputs at training time. For example, in case of $p = 0.5$, the neurons must halve their outputs at test time to have the same output as they had during training time (in expectation). To see this, consider an output of a neuron $x$ (before dropout). With dropout, the expected output from this neuron will become $px + (1-p)0$, because the neuron's output will be set to zero with probability $1-p$. At test time, when we keep the neuron always active, we must adjust $x \rightarrow px$ to keep the same expected output. It can also be shown that performing this attenuation at test time can be related to the process of iterating over all the possible binary masks (and therefore all the exponentially many sub-networks) and computing their ensemble prediction.
+`predict` 함수을 보면 dropout을 적용하지 않았지만 히든 레이어 출력 데이터에 $$p$$ 만큼 스케일링 한 것을 주목할 필요가 있다. 테스트 과정에서 모든 뉴런은 모든 입력 데이터를 받기 때문에 학습 과정에서 얻을 수 있는 출력값과 동일한 조건으로 맞추어 보정해야한다. dropout 확률 $$p = 0.5$$ 인 경우를 가정해 보자. 테스트 과정 동안 뉴런의 출력 값은 모두 1/2만큼 줄어들어야 하는데 이는 학습 과정 동안 뉴런 출력 데이터의 기대값과 동일하게 맞추기 위함이다. 뉴런 $$x$$가 있을때 dropout 적용하지 않은 출력 데이터가 있다고 가정하자. dropout을 적용하면 이 뉴런에서의 기대값은 $$px + (1-p)0$$가 되는데 이는 $$1-p$$의 확률로 뉴런의 출력 데이터 값이 0이 되기 때문이다. 테스트 과정에서는 모든 뉴런을 사용하기 때문에 동일한 기대값을 갖기 위해서는 $$x \rightarrow px$$로 보정해 주어야 한다. 또 다른 관점에서 보면 $$p$$만큼 값을 줄이는 과정은 모든 가능한 dropout 마스크를 적용한 후 그 결과를 이용하여 ensemble prediction을 수행하는 것으로 해석 할 수 있다.
 
-The undesirable property of the scheme presented above is that we must scale the activations by $p$ at test time. Since test-time performance is so critical, it is always preferable to use **inverted dropout**, which performs the scaling at train time, leaving the forward pass at test time untouched. Additionally, this has the appealing property that the prediction code can remain untouched when you decide to tweak where you apply dropout, or if at all. Inverted dropout looks as follows:
+위에서 소개한 방법은 테스트 과정에서 뉴런 출력에 $$p$$를 곱하는 연산이 수행해야 하는데 이는 원하지 않는 방식인 경우가 많다. 테스트 과정에서의 성능은 매우 중요한 이슈이기 때문에 많은 경우에 **inverted droptou** 방식이 더 선호된다. 이는 스케일링 연산을 학습 과정에서 적용하고 테스트 과정에서는 추가적인 스케일링 연산없이 바로 사용하는 방식이다. 이 기법의 또 다른 장점은 만약 dropout을 수정하기로 했을때 prediction 코드에는 여전히 변화가 없다는 것이다. Inverted dropout은 다음과 같이 구현할 수 있다.
 
 ~~~python
-""" 
+"""
 Inverted Dropout: Recommended implementation example.
 We drop and scale at train time and don't do anything at test time.
 """
@@ -207,10 +207,10 @@ def train_step(X):
   U2 = (np.random.rand(*H2.shape) < p) / p # second dropout mask. Notice /p!
   H2 *= U2 # drop!
   out = np.dot(W3, H2) + b3
-  
+
   # backward pass: compute gradients... (not shown)
   # perform parameter update... (not shown)
-  
+
 def predict(X):
   # ensembled forward pass
   H1 = np.maximum(0, np.dot(W1, X) + b1) # no scaling necessary
@@ -218,18 +218,18 @@ def predict(X):
   out = np.dot(W3, H2) + b3
 ~~~
 
-There has a been a large amount of research after the first introduction of dropout that tries to understand the source of its power in practice, and its relation to the other regularization techniques. Recommended further reading for an interested reader includes:
+dropout이 처음 소개된 이후로 실제 적용 사례에서 나타난 성능 향상의 근본 원인과 기존의 다른 regularization 기법과의 관계등에 대한 수많은 연구가 진행되었다. 관련하여 다음의 자료들을 읽어보는 것인 도움이 될 것이라 생각된다:
 
-- [Dropout paper](http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf) by Srivastava et al. 2014.
+- [Dropout 논문](http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf) by Srivastava et al. 2014.
 - [Dropout Training as Adaptive Regularization](http://papers.nips.cc/paper/4882-dropout-training-as-adaptive-regularization.pdf): "we show that the dropout regularizer is first-order equivalent to an L2 regularizer applied after scaling the features by an estimate of the inverse diagonal Fisher information matrix".
 
-**Theme of noise in forward pass**. Dropout falls into a more general category of methods that introduce stochastic behavior in the forward pass of the network. During testing, the noise is marginalized over *analytically* (as is the case with dropout when multiplying by $p$), or *numerically* (e.g. via sampling, by performing several forward passes with different random decisions and then averaging over them). An example of other research in this direction includes [DropConnect](http://cs.nyu.edu/~wanli/dropc/), where a random set of weights is instead set to zero during forward pass. As foreshadowing, Convolutional Neural Networks also take advantage of this theme with methods such as stochastic pooling, fractional pooling, and data augmentation. We will go into details of these methods later.
+**forward pass에서 노이즈 관련하여** 넓은 의미에서 보자면 dropout은 신경망의 forward pass에서 stochastic(확률적) 접근을 도입하는 것으로 볼 수 있다. testing 과정에서 노이즈 감소하게 되는데 이는 *분석적 해석*은 `확률 $p$ 만큼 곱해진 결과`라고 볼 수 있고, *수치적 해석*은 `랜덤하게 선택된 forward pass를 여러차례 수행한 결과의 평균`이라고 볼 수 있다. 동일한 관점에서의 연구들 중 하나인 [DropConnect](http://cs.nyu.edu/~wanli/dropc/)를 보면 forward pass 동안 가중치 값을 0으로 설정하는 것으로 볼 수 있다. Convolutional 신경망에서 dropout과 함께 stochastic(확률적) 풀링(pooling), 부분 풀링, 데이터 augmentation 등의 기법을 같이 사용하여 추가적인 성능 향상을 기대할 수 있다. 이에 대해서는 뒤에서 더 자세히 살펴 볼 것이다.
 
-**Bias regularization**. As we already mentioned in the Linear Classification section, it is not common to regularize the bias parameters because they do not interact with the data through multiplicative interactions, and therefore do not have the interpretation of controlling the influence of a data dimension on the final objective. However, in practical applications (and with proper data preprocessing) regularizing the bias rarely leads to significantly worse performance. This is likely because there are very few bias terms compared to all the weights, so the classifier can "afford to" use the biases if it needs them to obtain a better data loss.
+**Bias resularization**. Linear Classification 파트에서 설명했듯이, bias 텀은 regularization을 적용하지 않는 것이 일반적인데, 이는 학습된 가중치와 곱셈 연산을 하지 않기 때문에 목적 함수에서 데이터 dimension을 결정하는 요소로 작용하지 않는다. 그러나 실제 적용 사례들을 보면 bias 텀에 regularization을 적용하였을 때 심각한 성능 저하가 나타나는 경우는 극히 드문 것으로 알려져 있다. 이는 모든 가중치 텀의 갯수와 비교했을 때 bais 텀의 갯수는 무시할 만한 수준이어서 so the classifier can "afford to" use the biases if it needs them to obtain a better data loss.
 
-**Per-layer regularization**. It is not very common to regularize different layers to different amounts (except perhaps the output layer). Relatively few results regarding this idea have been published in the literature.
+**레이어별 정규화**. 마지막 출력 레이어를 제외하고 레이어를 각각 따로 정규화 하는 것은 일반적인 방법이 아니다. 레이어 별 정규화를 적용한 논문수도 상대적으로 매우 적은 편이다.
 
-**In practice**: It is most common to use a single, global L2 regularization strength that is cross-validated. It is also common to combine this with dropout applied after all layers. The value of $p = 0.5$ is a reasonable default, but this can be tuned on validation data.
+**실전 응용**: 하나의 공통된 L2 정규화를 사용하는 것이 일반적이다. 또한 모든 레이어 이후에 dropout을 적용하는 것 또한 일반적으로 많이 사용된다. dropout rate로 $p = 0.5*이 주로 사용되지만 validation 과정에서 값을 조정하기도 한다.
 
 <a name='losses'></a>
 
@@ -257,7 +257,7 @@ $$
 L_i = \sum_j \max(0, 1 - y_{ij} f_j)
 $$
 
-where the sum is over all categories $j$, and $y_{ij}$ is either +1 or -1 depending on whether the i-th example is labeled with the j-th attribute, and the score vector $f_j$ will be positive when the class is predicted to be present and negative otherwise. Notice that loss is accumulated if a positive example has score less than +1, or when a negative example has score greater than -1. 
+where the sum is over all categories $j$, and $y_{ij}$ is either +1 or -1 depending on whether the i-th example is labeled with the j-th attribute, and the score vector $f_j$ will be positive when the class is predicted to be present and negative otherwise. Notice that loss is accumulated if a positive example has score less than +1, or when a negative example has score greater than -1.
 
 An alternative to this loss would be to train a logistic regression classifier for every attribute independently. A binary logistic regression classifier has only two classes (0,1), and calculates the probability of class 1 as:
 
@@ -306,3 +306,8 @@ In summary:
 - We discussed different tasks you might want to perform in practice, and the most common loss functions for each task
 
 We've now preprocessed the data and set up and initialized the model. In the next section we will look at the learning process and its dynamics.
+
+---
+<p style="text-align:right"><b>
+번역: 서종한 <a href="https://github.com/salopge" style="color:black">(salopge)</a>
+</b></p>

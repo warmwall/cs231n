@@ -5,67 +5,70 @@ permalink: /optimization-2/
 
 Table of Contents:
 
-- [Introduction](#intro)
-- [Simple expressions, interpreting the gradient](#grad)
-- [Compound expressions, chain rule, backpropagation](#backprop)
-- [Intuitive understanding of backpropagation](#intuitive)
-- [Modularity: Sigmoid example](#sigmoid)
-- [Backprop in practice: Staged computation](#staged)
-- [Patterns in backward flow](#patters)
-- [Gradients for vectorized operations](#mat)
-- [Summary](#summary)
+- [소개(Introduction)](#intro)
+- [그라디언트(Gradient)에 대한 간단한 표현과 이해](#grad)
+- [복합 표현식(Compound Expression), 연쇄 법칙(Chain rule), Backpropagation](#backprop)
+- [Backpropation에 대한 직관적인 이해](#intuitive)
+- [모듈성 : 시그모이드(Sigmoid) 예제](#sigmoid)
+- [Backprop 실제: 단계별 계산](#staged)
+- [역박향 흐름의 패턴](#patters)
+- [벡터 기반의 그라디언트(Gradient) 계산)](#mat)
+- [요약](#summary)
 
 <a name='intro'></a>
+
 ### Introduction
 
-**Motivation**. In this section we will develop expertise with an intuitive understanding of **backpropagation**, which is a way of computing gradients of expressions through recursive application of **chain rule**. Understanding of this process and its subtleties is critical for you to understand, and effectively develop, design and debug Neural Networks.
+**Motivation**. 이번 섹션에서 우리는 **Backpropagation**에 대한 직관적인 이해를 바탕으로 전문지식을 더 키우고자 한다. Backpropagation은 네트워크 전체에 대해 반복적인 **연쇄 법칙(Chain rule)**을 적용하여 그라디언트(Gradient)를 계산하는 방법 중 하나이다. Backpropagation 과정과 세부 요소들에 대한 이해는 여러분에게 있어서 신경망을 효과적으로 개발하고, 디자인하고 디버그하는 데 중요하다고 볼 수 있다. 
 
-**Problem statement**. The core problem studied in this section is as follows: We are given some function $f(x)$ where $x$ is a vector of inputs and we are interested in computing the gradient of $f$ at $x$ (i.e. $\nabla f(x)$ ).
+**Problem statement**. 이번 섹션에서 공부할 핵심 문제는 다음과 같다 : 주어진 함수 $$f(x)$$ 가 있고, $$x$$ 는 입력 값으로 이루어진 벡터이고, 주어진 입력 $$x$$에 대해서 함수 $$f$$의 그라디언트를 계산하고자 한다. (i.e. $$\nabla f(x)$$ ).
 
-**Motivation**. Recall that the primary reason we are interested in this problem is that in the specific case of Neural Networks, $f$ will correspond to the loss function ( $L$ ) and the inputs $x$ will consist of the training data and the neural network weights. For example, the loss could be the SVM loss function and the inputs are both the training data $(x_i,y_i), i=1 \ldots N$ and the weights and biases $W,b$. Note that (as is usually the case in Machine Learning) we think of the training data as given and fixed, and of the weights as variables we have control over. Hence, even though we can easily use backpropagation to compute the gradient on the input examples $x_i$, in practice we usually only compute the gradient for the parameters (e.g. $W,b$) so that we can use it to perform a parameter update. However, as we will see later in the class the gradient on $x_i$ can still be useful sometimes, for example for purposes of visualization and interpreting what the Neural Network might be doing.
+**Motivation**. 우리가 이 문제에 관심을 기울이는 이유에 대해 신경망 관점에서 좀더 구체적으로 살펴 보자. $$f$$는 손실 함수 ( $$L$$ ) 에 해당하고 입력 값 $$x$$ 는 학습 데이터(Training data)와 신경망의 Weight라고 볼 수 있다. 예를 들면, 손실 함수는 SVM Loss 함수가 될 수 있고, 입력 값은 학습 데이터 $$(x_i,y_i), i=1 \ldots N$$ 와 Weight, Bias $$W,b$$ 으로 볼 수 있다. 여기서 학습데이터는 미리 주어져서 고정 되어있는 값으로 볼 수 있고 (보통의 기계 학습에서 그러하듯..), Weight는 신경망의 학습을 위해 실제로 컨트롤 하는 값이다. 따라서 입력 값 $$x_i$$ 에 대한 그라디언트 계산이 쉬울지라도, 실제로는 파라미터(Parameter) 값에 대한 그라디언트를 일반적으로 계산하고, 그라디언트 값을 활용하여 파라미터를 업데이트 할 수 있다. 하지만, 신경망이 어떻게 작동하는지 해석하고, 시각화 하는 부분에서 입력 값 $x_i$에 대한 그라디언트도 유용하게 활용 될 수 있는데, 이 부분은 본 강의의 뒷부분에 다룰 예정이다. 
 
-If you are coming to this class and you're comfortable with deriving gradients with chain rule, we would still like to encourage you to at least skim this section, since it presents a rarely developed view of backpropagation as backward flow in real-valued circuits and any insights you'll gain may help you throughout the class.
+
+여러분이 이미 연쇄 법칙을 통해 그라디언트를 도출하는데 익숙하더라도 이 섹션을 간략히 훑어보기를 권장한다. 왜냐하면 이 섹션에서는 다른데서는 보기 힘든 Backpropagation에 대한 실제 숫자를 활용한 역방향 흐름(Backward Flow)에 대해 설명을 할 것이고, 이를 통해 여러분이 얻게 될 통찰력은 이번 강의 전체에 있어 도움이 될 것이라 생각하기 때문이다.
 
 <a name='grad'></a>
-### Simple expressions and interpretation of the gradient
 
-Lets start simple so that we can develop the notation and conventions for more complex expressions. Consider a simple multiplication function of two numbers $f(x,y) = x y$. It is a matter of simple calculus to derive the partial derivative for either input:
+### 그라디언트(Gradient)에 대한 간단한 표현과 이해
+
+복잡한 모델에 대한 수식등을 만들기에 앞서 간단하게 시작을 해보자. x와 y 두 숫자의 곱을 계산하는 간단한 함수 f를 정의하자. $$f(x,y) = x y$$. 각각의 입력 변수에 대한 편미분은 간단한 수학으로 아래와 같이 구해 진다. : 
 
 $$
 f(x,y) = x y \hspace{0.5in} \rightarrow \hspace{0.5in} \frac{\partial f}{\partial x} = y \hspace{0.5in} \frac{\partial f}{\partial y} = x 
 $$
 
-**Interpretation**. Keep in mind what the derivatives tell you: They indicate the rate of change of a function with respect to that variable surrounding an infinitesimally small region near a particular point:
+**Interpretation**. 미분이 여러분에게 시사하는 바를 명심하자 : 미분은 입력 변수 부근의 아주 작은(0에 매우 가까운) 변화에 대한 해당 함수 값의 변화량이다. : 
 
 $$
 \frac{df(x)}{dx} = \lim_{h\ \to 0} \frac{f(x + h) - f(x)}{h}
 $$
 
-A technical note is that the division sign on the left-hand sign is, unlike the division sign on the right-hand sign, not a division. Instead, this notation indicates that the operator $  \frac{d}{dx} $ is being applied to the function $f$, and returns a different function (the derivative). A nice way to think about the expression above is that when $h$ is very small, then the function is well-approximated by a straight line, and the derivative is its slope. In other words, the derivative on each variable tells you the sensitivity of the whole expression on its value. For example, if $x = 4, y = -3$ then $f(x,y) = -12$ and the derivative on $x$ $\frac{\partial f}{\partial x} = -3$. This tells us that if we were to increase the value of this variable by a tiny amount, the effect on the whole expression would be to decrease it (due to the negative sign), and by three times that amount. This can be seen by rearranging the above equation ( $ f(x + h) = f(x) + h \frac{df(x)}{dx} $ ). Analogously, since $\frac{\partial f}{\partial y} = 4$, we expect that increasing the value of $y$ by some very small amount $h$ would also increase the output of the function (due to the positive sign), and by $4h$.
+위에 수식을 기술적인 관점에서 보면, 왼쪽에 있는 분수 기호(가로바)는 오른쪽 분수 기호와 달리 나누기를 뜻하지는 않는다. 대신 연산자 $$  \frac{d}{dx} $$ 가 함수 $$f$$에 적용 되어 미분 된 함수를 의미 하는 것이다. 위의 수식을 이해하는 가장 좋은 방법은 $$h$$가 매우 작으면 함수 $$f$$는 직선으로 근사(Approximated) 될 수 있고, 미분 값은 그 직선의 기울기를 뜻한다. 다시말해, 만약 $$x = 4, y = -3$$ 이면 $$f(x,y) = -12$$ 가 되고, $$x$$에 대한 편미분 값은 $$x$$ $$\frac{\partial f}{\partial x} = -3$$ 으로 얻어진다. 이말은 즉슨, 우리가 x를 아주 조금 증가 시키면 전체 함수 값은 3배로 작아진다는 의미이다. (미분 값이 음수이므로). 이 것은 위의 수식을 재구성하면 이와 같이 간단히 보여 줄 수 있다 ( $$ f(x + h) = f(x) + h \frac{df(x)}{dx} $$ ). 비슷하게, $$\frac{\partial f}{\partial y} = 4$$, 이므로, $$y$$ 값을 아주 작은 $$h$$ 만큼 증가 시킨다면 $$4h$$ 만큼 전체 함수 값은 증가하게 될 것이다. (이번에는 미분 값이 양수)
 
-> The derivative on each variable tells you the sensitivity of the whole expression on its value.
+> 미분은 각 변수가 해당 값에서 전체 함수(Expression)의 결과 값에 영향을 미치는 민감도와 같은 개념이다.
 
-As mentioned, the gradient $\nabla f$ is the vector of partial derivatives, so we have that $\nabla f = [\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}] = [y, x]$. Even though the gradient is technically a vector, we will often use terms such as *"the gradient on x"* instead of the technically correct phrase *"the partial derivative on x"* for simplicity.
+앞서 말했듯이, 그라디언트 $$\nabla f$$는 편미분 값들의 벡터이다. 따라서 수식으로 표현하면 다음과 같다: $$\nabla f = [\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}] = [y, x]$$, 그라디언트가 기술적으로 벡터일지라도 심플한 표현을 위해 *"X에 대한 편미분"* 이라는 정확한 표현 대신 *"X에 대한 그라디언트"* 와 같은 표현을 종종 쓰게 될 예정이다. 
 
-We can also derive the derivatives for the addition operation:
+다음과 같은 수식에 대해서도 미분값(그라디언트)을 한번 구해보자:
 
 $$
 f(x,y) = x + y \hspace{0.5in} \rightarrow \hspace{0.5in} \frac{\partial f}{\partial x} = 1 \hspace{0.5in} \frac{\partial f}{\partial y} = 1
 $$
 
-that is, the derivative on both $x,y$ is one regardless of what the values of $x,y$ are. This makes sense, since increasing either $x,y$ would increase the output of $f$, and the rate of that increase would be independent of what the actual values of $x,y$ are (unlike the case of multiplication above). The last function we'll use quite a bit in the class is the *max* operation:
+위의 수식에서 볼 수 있듯이, $$x,y$$에 대한 미분은 $$x,y$$ 값에 관계 없이 1이다. 당연히, $$x,y$$ 값이 증가하면 $$f$$가 증가하기 때문이다. 그리고 $$f$$ 값의 증가율 또한 $$x,y$$ 값에 관계 없이 일정하다 (앞서 살펴본 곱셈의 경우와 다름). 마지막으로 살펴볼 함수는 우리가 수업에서 자주 다루는 *Max* 함수 이다 :
 
 $$
 f(x,y) = \max(x, y) \hspace{0.5in} \rightarrow \hspace{0.5in} \frac{\partial f}{\partial x} = \mathbb{1}(x >= y) \hspace{0.5in} \frac{\partial f}{\partial y} = \mathbb{1}(y >= x)
 $$
 
-That is, the (sub)gradient is 1 on the input that was larger and 0 on the other input. Intuitively, if the inputs are $x = 4,y = 2$, then the max is 4, and the function is not sensitive to the setting of $y$. That is, if we were to increase it by a tiny amount $h$, the function would keep outputting 4, and therefore the gradient is zero: there is no effect. Of course, if we were to change $y$ by a large amount (e.g. larger than 2), then the value of $f$ would change, but the derivatives tell us nothing about the effect of such large changes on the inputs of a function; They are only informative for tiny, infinitesimally small changes on the inputs, as indicated by the $\lim_{h \rightarrow 0}$ in its definition.
-
+입력 값이 더 큰 값에 대한 (서브)그라디언트는 1이고, 다른 입력 값의 그라디언트는 0이 된다. 직관적으로 보면, $$x = 4,y = 2$$ 인 경우 max 값은 4 이고, 이 함수는 현재의 $$y$$ 값에 영향을 받지 않는다. 바꾸어말하면, $$y$$값을 아주 작은 값인 $$h$$ 만큼 증가시키더라도 이 함수의 결과 값은 4로 유지된다. 따라서 그라디언트는 0이다 (y값의 영향이 없다). 물론 $$y$$값을 매우 크게 증가 시킨다면 (예를 들면 2이상) 함수 $$f$$ 값은 바뀌겠지만, 미분은 이런 큰 변화 값과는 관련이 없다. 미분이라는 것이 본래 그 정의에도 있듯($$\lim_{h \rightarrow 0}$$) 아주 작은 입력 값 변화에 대해서 의미를 갖는 값이기 때문이다.
 
 <a name='backprop'></a>
-### Compound expressions with chain rule
 
-Lets now start to consider more complicated expressions that involve multiple composed functions, such as $f(x,y,z) = (x + y) z$. This expression is still simple enough to differentiate directly, but we'll take a particular approach to it that will be helpful with understanding the intuition behind backpropagation. In particular, note that this expression can be broken down into two expressions: $q = x + y$ and $f = q z$. Moreover, we know how to compute the derivatives of both expressions separately, as seen in the previous section. $f$ is just multiplication of $q$ and $z$, so $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, and $q$ is addition of $x$ and $y$ so $ \frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1 $. However, we don't necessarily care about the gradient on the intermediate value $q$ - the value of $\frac{\partial f}{\partial q}$ is not useful. Instead, we are ultimately interested in the gradient of $f$ with respect to its inputs $x,y,z$. The **chain rule** tells us that the correct way to "chain" these gradient expressions together is through multiplication. For example, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $. In practice this is simply a multiplication of the two numbers that hold the two gradients. Lets see this with an example:
+### 연쇄 법칙(Chain rule)을 이용한 복합 표현식
+
+이제 $f(x,y,z) = (x + y) z$ 같은 다수의 복합 함수(composed functions)를 수반하는 더 복잡한 표현식을 고려해보자. 이 표현식은 여전히 바로 미분하기에 충분히 간단하지만, 우리는 이 식에 특별한 접근법을 적용할 것이다. 이는 backpropagation 뒤에 있는 직관을 이해하는데 도움이 될 것이다. 특히 이 식이 두 개의 표현식 $q = x + y$와 $f = q z$ 으로 분해될 수 있음에 주목하자. 게다가 이전 섹션에서 본 것처럼 우리는 두 식에 대한 미분값을 어떻게 따로따로 계산할지 알고 있다. $f$ 는 단지 $q$와 $z$의 곱이다. 따라서 $\frac{\partial f}{\partial q} = z, \frac{\partial f}{\partial z} = q$, 그리고 $q$는 $x$와 $y$의 합이므로 $\frac{\partial q}{\partial x} = 1, \frac{\partial q}{\partial y} = 1$이다. 하지만, 중간 결과값인 $q$에 대한 그라디언트($\frac{\partial f}{\partial q}$)를 신경쓸 필요가 없다. 대신 궁극적으로 입력 $x,y,z$에 대한 $f$의 그라디언트에 관심이 있다. **연쇄 법칙**은 이러한 그라디언트 표현식들을 함께 연결시키는 적절한 방법이 곱하는 것이라는 것을 보여준다. 예를 들면, $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \frac{\partial q}{\partial x} $와 같이 표현할 수 있다. 실제로 이는 단순히 두 그라디언트를 담고 있는 두 수의 곱셈이다. 하나의 예를 통해 확인 해보자.
 
 ~~~python
 # set some inputs
@@ -84,40 +87,40 @@ dfdx = 1.0 * dfdq # dq/dx = 1. And the multiplication here is the chain rule!
 dfdy = 1.0 * dfdq # dq/dy = 1
 ~~~
 
-At the end we are left with the gradient in the variables `[dfdx,dfdy,dfdz]`, which tell us the sensitivity of the variables `x,y,z` on `f`!. This is the simplest example of backpropagation. Going forward, we will want to use a more concise notation so that we don't have to keep writing the `df` part. That is, for example instead of `dfdq` we would simply write `dq`, and always assume that the gradient is with respect to the final output.
+결국 `[dfdx,dfdy,dfdz]` 변수들로 그라디언트가 표현되는데, 이는 `f`에 대한 변수 `x,y,z`의 민감도(sensitivity)를 보여준다. 이는 backpropagation의 가장 간단한 예이다. 더 나아가서 보다 간결한 표기법을 사용해서 `df` 파트를 계속 쓸 필요가 없도록 하고 싶을 것이다. 예를 들어 `dfdq` 대신에 단순히 `dq`를 쓰고 항상 그라디언트가 최종 출력에 관한 것이라 가정하는 것이다.
 
-This computation can also be nicely visualized with a circuit diagram:
+또한 이런 계산은 회로도를 가지고 다음과 같이 멋지게 시각화할 수 있다:
 
 <div class="fig figleft fighighlight">
 <svg width="420" height="220"><defs><marker id="arrowhead" refX="6" refY="2" markerWidth="6" markerHeight="4" orient="auto"><path d="M 0,0 V 4 L6,2 Z"></path></marker></defs><line x1="40" y1="30" x2="110" y2="30" stroke="black" stroke-width="1"></line><text x="45" y="24" font-size="16" fill="green">-2</text><text x="45" y="47" font-size="16" fill="red">-4</text><text x="35" y="24" font-size="16" text-anchor="end" fill="black">x</text><line x1="40" y1="100" x2="110" y2="100" stroke="black" stroke-width="1"></line><text x="45" y="94" font-size="16" fill="green">5</text><text x="45" y="117" font-size="16" fill="red">-4</text><text x="35" y="94" font-size="16" text-anchor="end" fill="black">y</text><line x1="40" y1="170" x2="110" y2="170" stroke="black" stroke-width="1"></line><text x="45" y="164" font-size="16" fill="green">-4</text><text x="45" y="187" font-size="16" fill="red">3</text><text x="35" y="164" font-size="16" text-anchor="end" fill="black">z</text><line x1="210" y1="65" x2="280" y2="65" stroke="black" stroke-width="1"></line><text x="215" y="59" font-size="16" fill="green">3</text><text x="215" y="82" font-size="16" fill="red">-4</text><text x="205" y="59" font-size="16" text-anchor="end" fill="black">q</text><circle cx="170" cy="65" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="170" y="70" font-size="20" fill="black" text-anchor="middle">+</text><line x1="110" y1="30" x2="150" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="110" y1="100" x2="150" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="190" y1="65" x2="210" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="380" y1="117" x2="450" y2="117" stroke="black" stroke-width="1"></line><text x="385" y="111" font-size="16" fill="green">-12</text><text x="385" y="134" font-size="16" fill="red">1</text><text x="375" y="111" font-size="16" text-anchor="end" fill="black">f</text><circle cx="340" cy="117" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="340" y="127" font-size="20" fill="black" text-anchor="middle">*</text><line x1="280" y1="65" x2="320" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="110" y1="170" x2="320" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="360" y1="117" x2="380" y2="117" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line></svg>
 
 <div class="figcaption">
-  The real-valued <i>"circuit"</i> on left shows the visual representation of the computation. The <b>forward pass</b> computes values from inputs to output (shown in green). The <b>backward pass</b> then performs backpropagation which starts at the end and recursively applies the chain rule to compute the gradients (shown in red) all the way to the inputs of the circuit. The gradients can be thought of as flowing backwards through the circuit.
+  좌측에 실수 값으로 표현되는 <i>"회로"</i>는 이 계산에 대한 시각 표현을 보여준다. <b>전방 전달(forward pass)</b>은 입력부터 출력까지 값을 계산한다 (녹색으로 표시). 그리고 나서 <b>후방 전달(backward pass)</b>는 backpropagation을 수행하는데, 이는 끝에서 시작해서 반복적으로 체인 룰을 적용해 회로 입력에 대한 모든 길에서 그라디언트 값 (적색으로 표시) 을 계산한다. 그라디언트 값은 회로를 통해 거꾸로 흐르는 것으로 볼 수 있다.
 </div>
 <div style="clear:both;"></div>
 </div>
 
 <a name='intuitive'></a>
-### Intuitive understanding of backpropagation
+### Backpropagation에 대한 직관적 이해
 
-Notice that backpropagation is a beautifully local process. Every gate in a circuit diagram gets some inputs and can right away compute two things: 1. its output value and 2. the *local* gradient of its inputs with respect to its output value. Notice that the gates can do this completely independently without being aware of any of the details of the full circuit that they are embedded in. However, once the forward pass is over, during backpropagation the gate will eventually learn about the gradient of its output value on the final output of the entire circuit. Chain rule says that the gate should take that gradient and multiply it into every gradient it normally computes for all of its inputs.
+backpropagation이 굉장히 지역적인(local) 프로세스임에 주목하자. 회로도 내의 모든 게이트(gate) 몇개의 입력을 받아드리고 곧 바로 두 가지를 계산할 수 있다: 1. 게이트의 출력 값, 2. 게이트 출력에 대한 입력들의 *지역적* 그라디언트 값. 여기서 게이트들이 포함된 전체 회로의 세세한 부분을 모르더라도 완전히 독립적으로 값들을 계산할 수 있음을 주목하라. 하지만, 일단 전방 전달이 끝나면 backpropagation 과정에서 게이트는 결국 전체 회로의 마지막 출력에 대한 게이트 출력의 그라디언트 값에 관해 학습할 것이다. 연쇄 법칙을 통해 게이트는 이 그라디언트 값을 받아들여 모든 입력에 대해서 계산한 게이트의 모든 그라디언트 값에 곱한다.
 
-> This extra multiplication (for each input) due to the chain rule can turn a single and relatively useless gate into a cog in a complex circuit such as an entire neural network.
+> 연쇄 법칙 덕분에 이러한 각 입력에 대한 추가 곱셈은 전체 신경망과 같은 복잡한 회로에서 상대적으로 쓸모 없는 개개의 게이트를 중요하지 않은 것으로 바꿀 수 있다.
 
-Lets get an intuition for how this works by referring again to the example. The add gate received inputs [-2, 5] and computed output 3. Since the gate is computing the addition operation, its local gradient for both of its inputs is +1. The rest of the circuit computed the final value, which is -12. During the backward pass in which the chain rule is applied recursively backwards through the circuit, the add gate (which is an input to the multiply gate) learns that the gradient for its output was -4. If we anthropomorphize the circuit as wanting to output a higher value (which can help with intuition), then we can think of the circuit as "wanting" the output of the add gate to be lower (due to negative sign), and with a *force* of 4. To continue the recurrence and to chain the gradient, the add gate takes that gradient and multiplies it to all of the local gradients for its inputs (making the gradient on both **x** and **y** 1 * -4 = -4). Notice that this has the desired effect: If **x,y** were to decrease (responding to their negative gradient) then the add gate's output would decrease, which in turn makes the multiply gate's output increase.
+다시 위 예를 통해 이것이 어떻게 동작하는지에 대한 직관을 얻자. 덧셈 게이트는 입력 [-2, 5]를 받아 3을 출력한다. 이 게이트는 덧셈 연산을 하고 있기 때문에 두 입력에 대한 게이트의 지역적 그라디언트 값은 +1이 된다. 회로의 나머지 부분을 통해 최종 출력 값으로 -12가 나온다. 연쇄 법칙이 회로를 역으로 가로질러 반복적으로 적용되는 후방 전달 과정 동안, (곱셈 게이트의 입력인) 덧셈 게이트는 출력 값에 대한 그라디언트 값이 -4였다는 것을 학습한다. 만약 회로가 높은 값을 출력하기를 원하는 것으로 의인화하면 (이는 직관에 도움이 될 수 있다), 이 회로가 덧셈 게이트의 출력 값이 4의 *힘*으로 낮아지길 (음의 부호이기 때문) "원하는" 것으로 볼 수 있다. 반복을 지속하고 그라디언트 값을 연결하기 위해 덧셈 게이트는 이 그라디언트 값을 받아들이고 이를 모든 입력들에 대한 지역적 그라디언트 값에 곱한다 (**x**와 **y**에 대한 그라디언트 값이 1 * -4 = -4가 되도록). 다음의 원하는 효과가 있다는 사실에 주목하자. 만약 **x,y**가 (음의 그라디언트 값에 대한 반응으로) 감소한다면, 이 덧셈 게이트의 출력은 감소할 것이고 이는 다시 곱셈 게이트의 출력이 증가하도록 만들 것이다. 
 
-Backpropagation can thus be thought of as gates communicating to each other (through the gradient signal) whether they want their outputs to increase or decrease (and how strongly), so as to make the final output value higher.
+따라서 backpropagation은 보다 큰 최종 출력 값을 얻도록 게이트들이 자신들의 출력이 (얼마나 강하게) 증가하길 원하는지 또는 감소하길 원하는지 서로 소통하는 것으로 간주할 수 있다.
 
 <a name='sigmoid'></a>
-### Modularity: Sigmoid example
+### 모듈성: 시그모이드(Sigmoid) 예제
 
-The gates we introduced above are relatively arbitrary. Any kind of differentiable function can act as a gate, and we can group multiple gates into a single gate, or decompose a function into multiple gates whenever it is convenient. Lets look at another expression that illustrates this point:
+위에서 본 게이트들은 상대적으로 임의로 선택된 것이다. 어떤 종류의 함수도 미분가능하다면 게이트로서 역할을 할 수 있다. 필요한 경우 여러 개의 게이트를 그룹지어서 하나의 게이트로 만들거나, 하나의 함수를 여러 개의 게이트로 분해할 수도 있다. 이러한 요점을 보여주는 다른 표현식을 살펴보자:
 
 $$
 f(w,x) = \frac{1}{1+e^{-(w_0x_0 + w_1x_1 + w_2)}}
 $$
 
-as we will see later in the class, this expression describes a 2-dimensional neuron (with inputs **x** and weights **w**) that uses the *sigmoid activation* function. But for now lets think of this very simply as just a function from inputs *w,x* to a single number. The function is made up of multiple gates. In addition to the ones described already above (add, mul, max), there are four more:
+나중에 다른 수업에서 보겠지만, 이 표현식은 *시그모이드 활성* 함수를 사용하는 2차원 뉴런(입력 **x**와 가중치 **w**를 갖는)을 나타낸다. 그러나 지금은 이를 매우 단순하게 *w, x*를 입력으로 받아 하나의 단일 숫자를 출력하는 하나의 함수정도로 생각하자. 이 함수는 여러개의 게이트로 구성된다. 위에서 이미 설명한 게이트들(덧셈, 곱셈, 최대)에 더해 네 종류의 게이트가 더 있다:
 
 $$
 f(x) = \frac{1}{x} 
@@ -137,7 +140,7 @@ f_a(x) = ax
 \frac{df}{dx} = a
 $$
 
-Where the functions $f_c, f_a$ translate the input by a constant of $c$ and scale the input by a constant of $a$, respectively. These are technically special cases of addition and multiplication, but we introduce them as (new) unary gates here since we do need the gradients for the constants. $c,a$. The full circuit then looks as follows:
+여기서 $f_c, f_a$는 각각 입력을 상수 $c$만큼 이동시키고, 상수 $a$만큼 크기를 조정하는 함수이다. 이 함수들은 덧셈과 곰셈의 기술적으로 특별한 경우에 해당하지만, 여기서는 상수 $c,a$에 대한 그라디언트가 필요한 것이기에 (새로운) 단일 게이트로써 소개하고자 한다. 그러면 전체 회로는 다음과 같이 나타난다.
 
 <div class="fig figleft fighighlight">
 <svg width="799" height="306"><g transform="scale(0.8)"><defs><marker id="arrowhead" refX="6" refY="2" markerWidth="6" markerHeight="4" orient="auto"><path d="M 0,0 V 4 L6,2 Z"></path></marker></defs><line x1="50" y1="30" x2="90" y2="30" stroke="black" stroke-width="1"></line><text x="55" y="24" font-size="16" fill="green">2.00</text><text x="55" y="47" font-size="16" fill="red">-0.20</text><text x="45" y="24" font-size="16" text-anchor="end" fill="black">w0</text><line x1="50" y1="100" x2="90" y2="100" stroke="black" stroke-width="1"></line><text x="55" y="94" font-size="16" fill="green">-1.00</text><text x="55" y="117" font-size="16" fill="red">0.39</text><text x="45" y="94" font-size="16" text-anchor="end" fill="black">x0</text><line x1="50" y1="170" x2="90" y2="170" stroke="black" stroke-width="1"></line><text x="55" y="164" font-size="16" fill="green">-3.00</text><text x="55" y="187" font-size="16" fill="red">-0.39</text><text x="45" y="164" font-size="16" text-anchor="end" fill="black">w1</text><line x1="50" y1="240" x2="90" y2="240" stroke="black" stroke-width="1"></line><text x="55" y="234" font-size="16" fill="green">-2.00</text><text x="55" y="257" font-size="16" fill="red">-0.59</text><text x="45" y="234" font-size="16" text-anchor="end" fill="black">x1</text><line x1="50" y1="310" x2="90" y2="310" stroke="black" stroke-width="1"></line><text x="55" y="304" font-size="16" fill="green">-3.00</text><text x="55" y="327" font-size="16" fill="red">0.20</text><text x="45" y="304" font-size="16" text-anchor="end" fill="black">w2</text><line x1="170" y1="65" x2="210" y2="65" stroke="black" stroke-width="1"></line><text x="175" y="59" font-size="16" fill="green">-2.00</text><text x="175" y="82" font-size="16" fill="red">0.20</text><circle cx="130" cy="65" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="130" y="75" font-size="20" fill="black" text-anchor="middle">*</text><line x1="90" y1="30" x2="110" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="90" y1="100" x2="110" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="150" y1="65" x2="170" y2="65" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="170" y1="205" x2="210" y2="205" stroke="black" stroke-width="1"></line><text x="175" y="199" font-size="16" fill="green">6.00</text><text x="175" y="222" font-size="16" fill="red">0.20</text><circle cx="130" cy="205" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="130" y="215" font-size="20" fill="black" text-anchor="middle">*</text><line x1="90" y1="170" x2="110" y2="205" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="90" y1="240" x2="110" y2="205" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="150" y1="205" x2="170" y2="205" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="290" y1="135" x2="330" y2="135" stroke="black" stroke-width="1"></line><text x="295" y="129" font-size="16" fill="green">4.00</text><text x="295" y="152" font-size="16" fill="red">0.20</text><circle cx="250" cy="135" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="250" y="140" font-size="20" fill="black" text-anchor="middle">+</text><line x1="210" y1="65" x2="230" y2="135" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="210" y1="205" x2="230" y2="135" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="270" y1="135" x2="290" y2="135" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="410" y1="222" x2="450" y2="222" stroke="black" stroke-width="1"></line><text x="415" y="216" font-size="16" fill="green">1.00</text><text x="415" y="239" font-size="16" fill="red">0.20</text><circle cx="370" cy="222" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="370" y="227" font-size="20" fill="black" text-anchor="middle">+</text><line x1="330" y1="135" x2="350" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="90" y1="310" x2="350" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="390" y1="222" x2="410" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="530" y1="222" x2="570" y2="222" stroke="black" stroke-width="1"></line><text x="535" y="216" font-size="16" fill="green">-1.00</text><text x="535" y="239" font-size="16" fill="red">-0.20</text><circle cx="490" cy="222" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="490" y="227" font-size="20" fill="black" text-anchor="middle">*-1</text><line x1="450" y1="222" x2="470" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="510" y1="222" x2="530" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="650" y1="222" x2="690" y2="222" stroke="black" stroke-width="1"></line><text x="655" y="216" font-size="16" fill="green">0.37</text><text x="655" y="239" font-size="16" fill="red">-0.53</text><circle cx="610" cy="222" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="610" y="227" font-size="20" fill="black" text-anchor="middle">exp</text><line x1="570" y1="222" x2="590" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="630" y1="222" x2="650" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="770" y1="222" x2="810" y2="222" stroke="black" stroke-width="1"></line><text x="775" y="216" font-size="16" fill="green">1.37</text><text x="775" y="239" font-size="16" fill="red">-0.53</text><circle cx="730" cy="222" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="730" y="227" font-size="20" fill="black" text-anchor="middle">+1</text><line x1="690" y1="222" x2="710" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="750" y1="222" x2="770" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="890" y1="222" x2="930" y2="222" stroke="black" stroke-width="1"></line><text x="895" y="216" font-size="16" fill="green">0.73</text><text x="895" y="239" font-size="16" fill="red">1.00</text><circle cx="850" cy="222" fill="white" stroke="black" stroke-width="1" r="20"></circle><text x="850" y="227" font-size="20" fill="black" text-anchor="middle">1/x</text><line x1="810" y1="222" x2="830" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line><line x1="870" y1="222" x2="890" y2="222" stroke="black" stroke-width="1" marker-end="url(#arrowhead)"></line></g></svg>

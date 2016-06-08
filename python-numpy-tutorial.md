@@ -24,7 +24,7 @@ Numpy
 이 튜토리얼은 [Justin Johnson](http://cs.stanford.edu/people/jcjohns/) 에 의해 작성되었습니다.
 
 cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 사용할 것입니다.
-파이썬은 그 자체만으로도 훌륭한 범용 프로그래밍 언어이지만, 몇몇 라이브러리(numpy, scipy, matplotlib)의 도움으로 
+파이썬은 그 자체만으로도 훌륭한 범용 프로그래밍 언어이지만, 몇몇 라이브러리(numpy, scipy, matplotlib)의 도움으로
 계산과학 분야에서 강력한 개발 환경을 갖추게 됩니다.  
 
 많은 분들이 파이썬과 numpy를 경험 해보셨을 거라고 생각합니다. 경험하지 못했을지라도 이 문서를 통해  
@@ -62,10 +62,17 @@ cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 �
 
 <a name='python'></a>
 
+<<<<<<< HEAD
 ## 파이썬
 파이썬은 고급 프로그래밍 언어(사람이 이해하기 쉽게 작성된 언어)이며, 다중패러다임을 지원하는 동적 프로그래밍 언어입니다. 
 짧지만 가독성 높은 코드 몇 줄로 수준 높은 아이디어들을 표현할 수 있기에 파이썬 코드는 거의 수도코드처럼 보인다고도 합니다. 
 아래는 quicksort 알고리즘을 파이썬으로 구현한 예시입니다:
+=======
+## Python
+파이썬은 고차원이고, 다중패러다임을 지원하는 동적 프로그래밍 언어입니다.
+짧지만 가독성 높은 코드 몇 줄로 수준 높은 아이디어들을 표현할수있기에 파이썬 코드는 거의 수도코드처럼 보인다고도 합니다.
+아래는 quicksort알고리즘의 파이썬 구현 예시입니다:
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 
 ~~~python
 def quicksort(arr):
@@ -76,13 +83,17 @@ def quicksort(arr):
     middle = [x for x in arr if x == pivot]
     right = [x for x in arr if x > pivot]
     return quicksort(left) + middle + quicksort(right)
-    
+
 print quicksort([3,6,8,10,1,2,1])
 # 출력 "[1, 1, 2, 3, 6, 8, 10]"
 ~~~
 
 ### 파이썬 버전
+<<<<<<< HEAD
 현재 파이썬에는 두 가지 버전이 있습니다. 파이썬 2.7 그리고 파이썬 3.4입니다. 
+=======
+현재 파이썬에는 두가지 버전이 있습니다. 파이썬 2.7 그리고 파이썬 3.4입니다.
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 혼란스럽게도, 파이썬3은 기존 파이썬2와 호환되지 않게 변경된 부분이 있습니다.
 그러므로 파이썬 2.7로 쓰여진 코드는 3.4환경에서 동작하지 않고 그 반대도 마찬가지입니다.
 이 수업에선 파이썬 2.7을 사용합니다.
@@ -117,10 +128,14 @@ print y, y + 1, y * 2, y ** 2 # 출력 "2.5 3.5 5.0 6.25"
 ~~~
 다른 언어들과는 달리, 파이썬에는 증감 단항연산자(`x++`, `x--`)가 없습니다.
 
-파이썬 역시 long 정수형과 복소수 데이터 타입이 구현되어 있습니다. 
+파이썬 역시 long 정수형과 복소수 데이터 타입이 구현되어 있습니다.
 자세한 사항은 [문서](https://docs.python.org/2/library/stdtypes.html#numeric-types-int-float-long-complex)에서 찾아볼 수 있습니다.
 
+<<<<<<< HEAD
 **불리언(Booleans):** 파이썬에는 논리 자료형의 모든 연산자가 구현되어 있습니다. 
+=======
+**불리언(Booleans):** 파이썬에는 논리 자료형의 모든 연산자들이 구현되어 있습니다.
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 그렇지만 기호(`&&`, `||`, 등.) 대신 영어 단어로 구현되어 있습니다 :
 
 ~~~python
@@ -130,7 +145,7 @@ print type(t) # 출력 "<type 'bool'>"
 print t and f # 논리 AND; 출력 "False"
 print t or f  # 논리 OR; 출력 "True"
 print not t   # 논리 NOT; 출력 "False"
-print t != f  # 논리 XOR; 출력 "True" 
+print t != f  # 논리 XOR; 출력 "True"
 ~~~
 
 **문자열:** 파이썬은 문자열과 연관된 다양한 기능을 지원합니다:
@@ -158,7 +173,7 @@ print s.replace('l', '(ell)')  # 첫 번째 인자로 온 문자열을 두 번�
                                # 출력 "he(ell)(ell)o"
 print '  world '.strip()  # 문자열 앞뒤 공백 제거; 출력 "world"
 ~~~
-모든 문자열 메소드는 [문서](https://docs.python.org/2/library/stdtypes.html#string-methods)에서 찾아볼 수 있습니다. 
+모든 문자열 메소드는 [문서](https://docs.python.org/2/library/stdtypes.html#string-methods)에서 찾아볼 수 있습니다.
 
 <a name='python-containers'></a>
 
@@ -394,18 +409,18 @@ hello('Fred', loud=True)  # 출력 "HELLO, FRED!"
 
 ~~~python
 class Greeter(object):
-    
+
     # 생성자
     def __init__(self, name):
         self.name = name  # 인스턴스 변수 선언
-        
+
     # 인스턴스 메소드
     def greet(self, loud=False):
         if loud:
             print 'HELLO, %s!' % self.name.upper()
         else:
             print 'Hello, %s' % self.name
-        
+
 g = Greeter('Fred')  # Greeter 클래스의 인스턴스 생성
 g.greet()            # 인스턴스 메소드 호출; 출력 "Hello, Fred"
 g.greet(loud=True)   # 인스턴스 메소드 호출; 출력 "HELLO, FRED!"
@@ -423,10 +438,15 @@ Numpy는 고성능의 다차원 배열 객체와 이를 다룰 도구를 제공�
 <a name='numpy-arrays'></a>
 
 ### 배열
+<<<<<<< HEAD
 Numpy 배열은 동일한 자료형을 가지는 값들이 격자판 형태로 있는 것입니다. 각각의 값들은 튜플(이때 튜플은 양의 정수만을 요소값으로 갖습니다.) 형태로 색인 됩니다. 
 *rank*는 배열이 몇 차원인지를 의미합니다; *shape*는 는 각 차원의 크기를 알려주는 정수들이 모인 튜플입니다.
+=======
+Numpy 배열은 동일한 자료형을 가지는 값들이 격자판 형태로 있는 것입니다. 각각의 값들은 튜플(이때 튜플은 양의 정수만을 요소값으로 갖습니다.) 형태로 색인됩니다.
+*rank*는 배열이 몇차원인지를 의미합니다; *shape*는 는 각 차원의 크기를 알려주는 정수들이 모인 튜플입니다.
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 
-파이썬의 리스트를 중첩해 Numpy 배열을 초기화 할 수 있고, 대괄호를 통해 각 요소에 접근할 수 있습니다: 
+파이썬의 리스트를 중첩해 Numpy 배열을 초기화 할 수 있고, 대괄호를 통해 각 요소에 접근할 수 있습니다:
 
 ~~~python
 import numpy as np
@@ -451,7 +471,7 @@ import numpy as np
 a = np.zeros((2,2))  # 모든 값이 0인 배열 생성
 print a              # 출력 "[[ 0.  0.]
                      #       [ 0.  0.]]"
-    
+
 b = np.ones((1,2))   # 모든 값이 1인 배열 생성
 print b              # 출력 "[[ 1.  1.]]"
 
@@ -462,7 +482,7 @@ print c               # 출력 "[[ 7.  7.]
 d = np.eye(2)        # 2x2 단위행렬 생성
 print d              # 출력 "[[ 1.  0.]
                      #       [ 0.  1.]]"
-    
+
 e = np.random.random((2,2)) # 임의의 값으로 채워진 배열 생성
 print e                     # 임의의 값 출력 "[[ 0.91940167  0.08143941]
                             #               [ 0.68744134  0.87236687]]"
@@ -486,7 +506,11 @@ import numpy as np
 #  [ 9 10 11 12]]
 a = np.array([[1,2,3,4], [5,6,7,8], [9,10,11,12]])
 
+<<<<<<< HEAD
 # 슬라이싱을 이용하여 첫 두 행과 1열, 2열로 이루어진 부분배열을 만들어 봅시다; 
+=======
+# 슬라이싱을 이용하여 첫 두행과 1열,2열로 이루어진 부분배열을 만들어 봅시다;
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 # b는 shape가 (2,2)인 배열이 됩니다:
 # [[2 3]
 #  [6 7]]
@@ -597,15 +621,15 @@ a = np.array([[1,2], [3, 4], [5, 6]])
 
 bool_idx = (a > 2)  # 2보다 큰 a의 요소를 찾습니다;
                     # 이 코드는 a와 shape가 같고 불리언 자료형을 요소로 하는 numpy 배열을 반환합니다,
-                    # bool_idx의 각 요소는 동일한 위치에 있는 a의 
+                    # bool_idx의 각 요소는 동일한 위치에 있는 a의
                     # 요소가 2보다 큰지를 말해줍니다.
-            
+
 print bool_idx      # 출력 "[[False False]
                     #       [ True  True]
                     #       [ True  True]]"
 
-# 불리언 배열 인덱싱을 통해 bool_idx에서 
-# 참 값을 가지는 요소로 구성되는 
+# 불리언 배열 인덱싱을 통해 bool_idx에서
+# 참 값을 가지는 요소로 구성되는
 # rank 1인 배열을 구성할 수 있습니다.
 print a[bool_idx]  # 출력 "[3 4 5 6]"
 
@@ -809,12 +833,18 @@ print y  # 출력 "[[ 2  2  4]
 1. 두 배열이 동일한 rank를 가지고 있지 않다면, 낮은 rank의 1차원 배열이 높은 rank 배열의 shape로 간주합니다.
 2. 특정 차원에서 두 배열이 동일한 크기를 갖거나, 두 배열 중 하나의 크기가 1이라면 그 두 배열은 특정 차원에서 *compatible*하다고 여겨집니다.
 3. 두 행렬이 모든 차원에서 compatible하다면, 브로드캐스팅이 가능합니다.
+<<<<<<< HEAD
 4. 브로드캐스팅이 이뤄지면, 각 배열 shape의 요소별 최소공배수로 이루어진 shape가 두 배열의 shape로 간주합니다.
 5. 차원에 상관없이 크기가 1인 배열과 1보다 큰 배열이 있을 때, 크기가 1인 배열은 자신의 차원 수만큼 복사되어 쌓인 것처럼 간주합니다.
    
+=======
+4. 브로드캐스팅이 이뤄지면, 각 배열 shape의 요소별 최소공배수로 이루어진 shape가 두 배열의 shape로 간주됩니다.
+5. 차원에 상관없이 크기가 1인 배열과 1보다 큰 배열이 있을때, 크기가 1인 배열은 자신의 차원수만큼 복사되어 쌓인것처럼 간주된다.
+
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 설명이 이해하기 부족하다면 [scipy문서](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)나 [scipy위키](http://wiki.scipy.org/EricsBroadcastingDoc)를 참조하세요.
 
-브로드캐스팅을 지원하는 함수를 *universal functions*라고 합니다. 
+브로드캐스팅을 지원하는 함수를 *universal functions*라고 합니다.
 *universal functions* 목록은 [문서](http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs)를 참조하세요.
 
 브로드캐스팅을 응용한 예시들입니다:
@@ -825,7 +855,11 @@ import numpy as np
 # 벡터의 외적을 계산
 v = np.array([1,2,3])  # v의 shape는 (3,)
 w = np.array([4,5])    # w의 shape는 (2,)
+<<<<<<< HEAD
 # 외적을 계산하기 위해, 먼저 v를 shape가 (3,1)인 행벡터로 바꿔야 합니다; 
+=======
+# 외적을 게산하기 위해, 먼저 v를 shape가 (3,1)인 행벡터로 바꿔야 합니다;
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 # 그다음 이것을 w에 맞춰 브로드캐스팅한뒤 결과물로 shape가 (3,2)인 행렬을 얻습니다,
 # 이 행렬은 v와 w 외적의 결과입니다:
 # [[ 4  5]
@@ -843,15 +877,19 @@ print x + v
 
 # 벡터를 행렬의 각 행에 더하기
 # x는 shape가 (2, 3)이고 w는 shape가 (2,)입니다.
-# x의 전치행렬은 shape가 (3,2)이며 이는 w와 브로드캐스팅이 가능하고 결과로 shape가 (3,2)인 행렬이 생깁니다; 
-# 이 행렬을 전치하면 shape가 (2,3)인 행렬이 나오며 
+# x의 전치행렬은 shape가 (3,2)이며 이는 w와 브로드캐스팅이 가능하고 결과로 shape가 (3,2)인 행렬이 생깁니다;
+# 이 행렬을 전치하면 shape가 (2,3)인 행렬이 나오며
 # 이는 행렬 x의 각 열에 벡터 w을 더한 결과와 동일합니다.
 # 아래의 행렬입니다:
 # [[ 5  6  7]
 #  [ 9 10 11]]
 print (x.T + w).T
 # 다른 방법은 w를 shape가 (2,1)인 열벡터로 변환하는 것입니다;
+<<<<<<< HEAD
 # 그런 다음 이를 바로 x에 브로드캐스팅해 더하면 
+=======
+# 그런다음 이를 바로 x에 브로드캐스팅해 더하면
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 # 동일한 결과가 나옵니다.
 print x + np.reshape(w, (2, 1))
 
@@ -896,8 +934,13 @@ from scipy.misc import imread, imsave, imresize
 img = imread('assets/cat.jpg')
 print img.dtype, img.shape  # 출력 "uint8 (400, 248, 3)"
 
+<<<<<<< HEAD
 # 각각의 색깔 채널을 다른 상수값으로 스칼라배함으로써 
 # 이미지의 색을 변화시킬 수 있습니다.
+=======
+# 각각의 색깔 채널을 다른 상수값으로 스칼라배함으로써
+# 이미지의 색을 변화시킬수 있습니다.
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 # 이미지의 shape는 (400, 248, 3)입니다;
 # 여기에 shape가 (3,)인 배열 [1, 0.95, 0.9]를 곱합니다;
 # numpy 브로드캐스팅에 의해 이 배열이 곱해지며 붉은색 채널은 변하지 않으며,
@@ -923,7 +966,7 @@ imsave('assets/cat_tinted.jpg', img_tinted)
 <a name='scipy-matlab'></a>
 
 ### MATLAB 파일
-`scipy.io.loadmat` 와 `scipy.io.savemat`함수를 통해 
+`scipy.io.loadmat` 와 `scipy.io.savemat`함수를 통해
 matlab 파일을 읽고 쓸 수 있습니다.
 [문서](http://docs.scipy.org/doc/scipy/reference/io.html)를 참조하세요.
 
@@ -961,7 +1004,7 @@ print d
 <a name='matplotlib'></a>
 
 ## Matplotlib
-[Matplotlib](http://matplotlib.org/)는 plotting 라이브러리입니다. 
+[Matplotlib](http://matplotlib.org/)는 plotting 라이브러리입니다.
 이번에는 MATLAB의 plotting 시스템과 유사한 기능을 제공하는
 `matplotlib.pyplot` 모듈에 관한 간략한 소개가 있겠습니다.,
 
@@ -975,7 +1018,7 @@ matplotlib에서 가장 중요한 함수는 2차원 데이터를 그릴 수 있�
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 사인과 코사인 곡선의 x,y 좌표를 계산 
+# 사인과 코사인 곡선의 x,y 좌표를 계산
 x = np.arange(0, 3 * np.pi, 0.1)
 y = np.sin(x)
 
@@ -996,7 +1039,7 @@ plt.show()  # 그래프를 나타나게 하기 위해선 plt.show()함수를 호
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 사인과 코사인 곡선의 x,y 좌표를 계산 
+# 사인과 코사인 곡선의 x,y 좌표를 계산
 x = np.arange(0, 3 * np.pi, 0.1)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
@@ -1027,7 +1070,7 @@ plt.show()
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 사인과 코사인 곡선의 x,y 좌표를 계산 
+# 사인과 코사인 곡선의 x,y 좌표를 계산
 x = np.arange(0, 3 * np.pi, 0.1)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
@@ -1076,8 +1119,13 @@ plt.imshow(img)
 # 색변화된 이미지 나타내기
 plt.subplot(1, 2, 2)
 
+<<<<<<< HEAD
 # imshow를 이용하며 주의할 점은 데이터의 자료형이 
 # uint8이 아니라면 이상한 결과를 보여줄 수도 있다는 것입니다.
+=======
+# imshow를 이용하며 주의할 점은 데이터의 자료형이
+# uint8이 아니라면 이상한 결과를 보여줄수도 있다는 것입니다.
+>>>>>>> 5b00df6adc57e61e9ec7627036d093ccddae1ac6
 # 그러므로 이미지를 나타내기 전에 명시적으로 자료형을 uint8로 형변환 해줍니다.
 
 plt.imshow(np.uint8(img_tinted))
@@ -1087,3 +1135,8 @@ plt.show()
 <div class='fig figcenter fighighlight'>
   <img src='{{site.baseurl}}/assets/cat_tinted_imshow.png'>
 </div>
+
+---
+<p style="text-align:right"><b>
+번역: 강상훈 <a href="https://github.com/sanghkaang" style="color:black">(sanghkaang)</a>
+</b></p>

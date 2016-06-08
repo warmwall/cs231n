@@ -791,18 +791,18 @@ attributed to this amazing guy Leonardo Da Vinci. so before
 
 161
 00:18:19,220 --> 00:18:23,740
-other songs you know throughout human
+Renaissance you know throughout human
 civilization from Asia to Europe to
 
 162
 00:18:23,740 --> 00:18:30,400
-India to Arabic world we have seen
+India to Arabic world, we have seen
 models of cameras so Aristotle has
 
 163
 00:18:30,400 --> 00:18:36,360
-proposed the camera through the Leafs
-Chinese philosopher moses have proposed
+proposed the camera through the Leaves.
+Chinese philosopher Mozi have proposed
 
 164
 00:18:36,359 --> 00:18:40,939
@@ -812,7 +812,7 @@ but
 165
 00:18:40,940 --> 00:18:47,750
 if you look at the first documentation
-really modern looking camera it's called
+of really modern looking camera it's called
 
 166
 00:18:47,750 --> 00:18:49,180
@@ -820,58 +820,58 @@ camera obscura
 
 167
 00:18:49,180 --> 00:18:56,610
-and that is documented by Leonardo da da
-Vinci I'm not gonna get into the details
+and that is documented by Leonardo da 
+Vinci. I'm not gonna get into the details
 
 168
 00:18:56,609 --> 00:19:07,240
 but this is you know you get the idea
-that there is some kind of a whole to
+that there is some kind of lens or at least a whole to
 
 169
 00:19:07,240 --> 00:19:12,240
-capture light reflected from the real
+capture lights reflected from the real
 world and then there is some kind of
 
 170
 00:19:12,240 --> 00:19:20,319
-protection to capture the information of
+projection to capture the information of
 the of the of the real-world image so
 
 171
 00:19:20,319 --> 00:19:27,779
-that's the beginning of the modern you
-know engineering
+That's the beginning of the modern, you
+know, engineering of vision.
 
 172
 00:19:27,779 --> 00:19:36,170
-vision it started with one team to copy
-the world and wanted to make a copy of
+It's started with wanting to copy
+the world and wanting to make a copy of
 
 173
 00:19:36,170 --> 00:19:42,350
-the visual world it hasn't gone anywhere
-close to wanting to engineer the
+the visual world.
+It hasn't got anywhere close to wanting to engineer the
 
 174
 00:19:42,349 --> 00:19:46,879
-understanding of the visual world right
-now we're just talking about duplicating
+understanding of the visual world.
+Right now, we're just talking about duplicating
 
 175
 00:19:46,880 --> 00:19:53,760
-the visual world so that's one important
+the visual world. so that's one important
 work to remember and of course after
 
 176
 00:19:53,759 --> 00:20:01,299
-camera obscura although we we we start
-to see a whole series of successful in
+camera Obscura that we we we start
+to see a whole series of successful, you
 
 177
 00:20:01,299 --> 00:20:07,539
-all some film gets developed you know
-like kodak was one of the first
+know, some film gets developed, you know
+like Kodak was one of the first
 
 178
 00:20:07,539 --> 00:20:12,329
@@ -880,23 +880,23 @@ and then we start to have camcorders and
 
 179
 00:20:12,329 --> 00:20:21,889
-and and all this very important
+and and all this. Another very important
 important piece of work that I want you
 
 180
 00:20:21,890 --> 00:20:28,050
 to be aware of as vision student is
-absolutely nothing engineering work but
+actually not a engineering work but
 
 181
 00:20:28,049 --> 00:20:32,710
-do you think science piece of science
+science piece of science
 work that's starting to ask the question
 
 182
 00:20:32,710 --> 00:20:38,130
-is how does Visual work in our
-biological bring you know we
+is how does Vision work in our
+biological brain? you know we
 
 183
 00:20:38,130 --> 00:20:45,760
@@ -905,217 +905,213 @@ years of evolution to get to really
 
 184
 00:20:45,759 --> 00:20:54,579
-fantastic visual system in humans but
-what did evolution do during this time
+fantastic visual system in mammals and humans but
+what did evolution do during this time?
 
 185
 00:20:54,579 --> 00:21:01,759
-what kind of architecture did develop
-from that simple trilobite to today
+what kind of architecture did it develop
+from that simple trilobite eye to today
 
 186
 00:21:01,759 --> 00:21:07,950
-yours and mine while very important
-piece of work happened at Harvard lied
+yours and mine? Well, very important
+piece of work happened at Harvard like
 
 187
 00:21:07,950 --> 00:21:12,690
-to that time too young to very young
-ambitious pulls the occupant in the
+two at that time two young two very young
+ambitious post-doc Hubel and Wiesel.
 
 188
 00:21:12,690 --> 00:21:21,500
-vehicle what they did is that they used
+What they did is that they used
 awake but anaesthetized cats and then
 
 189
 00:21:21,500 --> 00:21:28,529
-there was not technology to build this
-little needle electrode to push the
+there was enough technology to build this
+little needle called electrode to push the
 
 190
 00:21:28,529 --> 00:21:35,129
-electrons through to the the the the
-skull is open until the bringing of the
+electrode through into the the the the
+skull is open into the brain of the
 
 191
 00:21:35,130 --> 00:21:42,180
-cut into an area what we already know
-come primary visual cortex primary
+cat into an area what we already know
+called primary visual cortex.
 
 192
 00:21:42,180 --> 00:21:49,490
-visual cortex area do a lot of things
-for for visual processing but before
+Primary visual cortex is the area that
+nuerons do a lot of things for for visual processing
 
 193
 00:21:49,490 --> 00:21:54,779
-visa we don't really know what primary
-visual cortex is to be winter snow is
+but before Hubel and Wiesel,
+we don't really know what primary visual cortex is doing.
 
 194
 00:21:54,779 --> 00:22:02,369
-one of the earliest stage of the UI is
-of course but earliest stage for visual
+We just know it's one of the earliest stage on the eyes,
+of course, but earliest stage for visual processing.
 
 195
 00:22:02,369 --> 00:22:07,299
-processing then there is tons and tons
-of new orleans working on vision then we
+And then there is tons and tons
+of neurons working on vision. 
 
 196
 00:22:07,299 --> 00:22:12,419
-really alter our to know what this is
+And we really ought to know what this is
 because that's the beginning of vision
 
 197
 00:22:12,420 --> 00:22:20,300
-visual process in the bring so they they
-put this electrode into the primary
+visual process in the brain.
+So they they put this electrode into the primary visual cortex
 
 198
-00:22:20,299 --> 00:22:25,930
-visual cortex and an interesting this is
-another interesting fact I don't drop my
+00:22:20,300 --> 00:22:25,930
+and an interestingly,
+this is another interesting fact.
 
 199
 00:22:25,930 --> 00:22:34,880
-stuff for sure you probably visual
-cortex the first they come from being
+I will drop off my stuff. I will show you.
+Primary visual cortex, the first stage, or second depending on where they come from.
 
 200
 00:22:34,880 --> 00:22:40,910
-very very rough prosecutor first aid of
-your cortical visual processing stage is
+I'm being very very rough.
+The First stage of your cortical visual processing stage is
 
 201
 00:22:40,910 --> 00:22:47,180
-in the back of your bring not near your
-I know it's very interesting because
+in the back of your brain not near your eye.
+Okay? It's very interesting because
 
 202
 00:22:47,180 --> 00:22:51,788
-your own factory in cortical processing
-is right
+your olfactory cortical processing is right behind your nose.
 
 203
 00:22:51,788 --> 00:22:58,519
-behind her nose your auditory is right
-behind every year but your primary
+Your auditory is right behind your ear.
+
 
 204
 00:22:58,519 --> 00:23:05,798
-visual cortex is the furthest from your
-eye and another very interesting that in
+but your primary visual cortex is the furthest from your eye
+and another very interesting fact.
 
 205
 00:23:05,798 --> 00:23:11,099
-fact not only the primary there's a huge
-area working on vision almost 50% of
+In fact, not only the primary,
+there's a huge area working on vision.
 
 206
 00:23:11,099 --> 00:23:17,888
-your brain is a love division this in
-this the hardest and most important
+Almost 50% of your brain is involved in vision.
+Vision is the hardest and most important
 
 207
 00:23:17,888 --> 00:23:22,608
-sensory perceptual cognitive system in
-the break and I'm not saying anything
+sensory perceptual cognitive system in the brain.
+I'm not saying anything
 
 208
 00:23:22,608 --> 00:23:29,839
-else does is not useful clearly but it
-take nature of this long to develop this
+else isn't useful clearly, but it
+take nature this long to develop this sensory system
 
 209
 00:23:29,839 --> 00:23:37,579
-this sensory system and it takes the
-troop this much realist a space to be
+and it takes the intro this much real estate space to be
 
 210
 00:23:37,579 --> 00:23:43,148
-used for the system why because it's so
-important and it's so damn hard that's
+used for the system. Why?
+Because it's so important and it's so damn hard.
 
 211
 00:23:43,148 --> 00:23:50,959
-why we need to get back to human reason
-they were really ambitious they wanna
+That's why we need to use this much space.
+OK, back to Hubel and Wiesel. They were really ambitious.
 
 212
 00:23:50,960 --> 00:23:56,028
-know what primary visual cortex is doing
+They wanna know what primary visual cortex is doing
 because this is the beginning of our
 
 213
 00:23:56,028 --> 00:24:02,878
-knowledge for deep learning neural
-network cats social then put the cats in
+knowledge for deep learning neural network.
+So, they were showing cats. so they put the cats in this room
 
 214
 00:24:02,878 --> 00:24:07,709
-this room and they were recording your
-activities when I say recording your
+and they were recording neural activities.
+When I say recording neural activity,
 
 215
 00:24:07,710 --> 00:24:11,659
-activities fair trial there basically
-trying to see you know if I put the
+they're basically trying to see,
+you know if I put the
 
 216
 00:24:11,659 --> 00:24:18,059
-electrode here like to the new office to
-the new house fire when they see
+neural electrode here,
+Do the neurons fire when they see something?
 
 217
-00:24:18,058 --> 00:24:25,308
-something so for example if they show if
-they show cat their ideas if I showed
+00:24:18,059 --> 00:24:25,308
+So, for example if they show cats,
+their idea is..,
 
 218
 00:24:25,308 --> 00:24:30,519
-this kind of fish you know apparently at
-that time comes to eat fish rather than
+if I showed this kind of fish, you know,
+apparently at that time cats eat fish rather than these beans.
 
 219
 00:24:30,519 --> 00:24:42,019
-these beings with the cats no I like
-yellow happy and spikes and here's a
+With the cat's neuron like, you know,
+they're happy and start sending spikes.
 
 220
 00:24:42,019 --> 00:24:48,128
-story of scientific discovery is
-scientific discovery takes both luck and
+and the funny thing of a story of scientific discovery is
 
 221
 00:24:48,128 --> 00:24:52,449
-care and thoughtfulness they were shown
+scientific discovery takes both luck and care and thoughtfulness.
 
 222
 00:24:52,450 --> 00:24:58,740
-whatever mouse flower it just doesn't
-work the cats new are in the primary
+They were showing this cat fish, whatever mouse, flower.
+It just doesn't work. The cat's neuron in the primary
 
 223
 00:24:58,740 --> 00:25:02,839
-visual cortex was silent there was no
-spiking
+visual cortex was silent there was no spiking.
 
 224
 00:25:02,839 --> 00:25:09,079
-very little spike in there were really
-frustrated but the good news is that
+Very little spike and they were really frustrated.
+but the good news is that
 
 225
 00:25:09,079 --> 00:25:14,509
 there was no computer at that time so
-what they have to do when they showed us
+what they have to do when they showed this cats
 
 226
 00:25:14,509 --> 00:25:21,740
-cats is they have to use a slight
-protector so they put his foot a slide
+that is a stimulus, they have to use a slide
+projector so they put his foot a slide
 
 227
 00:25:21,740 --> 00:25:26,799
