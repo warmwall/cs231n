@@ -24,7 +24,7 @@ Numpy
 이 튜토리얼은 [Justin Johnson](http://cs.stanford.edu/people/jcjohns/) 에 의해 작성되었습니다.
 
 cs231n 수업의 모든 과제에서는 프로그래밍 언어로 파이썬을 사용할 것입니다.
-파이썬은 그 자체만으로도 훌륭한 범용 프로그래밍 언어이지만, 몇몇 라이브러리(numpy, scipy, matplotlib)의 도움으로 
+파이썬은 그 자체만으로도 훌륭한 범용 프로그래밍 언어이지만, 몇몇 라이브러리(numpy, scipy, matplotlib)의 도움으로
 계산과학 분야에서 강력한 개발 환경을 갖추게 됩니다.  
 
 많은 분들이 파이썬과 numpy를 경험 해보셨을 거라고 생각합니다. 경험하지 못했을지라도 이 문서를 통해  
@@ -130,7 +130,7 @@ print type(t) # 출력 "<type 'bool'>"
 print t and f # 논리 AND; 출력 "False"
 print t or f  # 논리 OR; 출력 "True"
 print not t   # 논리 NOT; 출력 "False"
-print t != f  # 논리 XOR; 출력 "True" 
+print t != f  # 논리 XOR; 출력 "True"
 ~~~
 
 **문자열:** 파이썬은 문자열과 연관된 다양한 기능을 지원합니다:
@@ -597,7 +597,7 @@ a = np.array([[1,2], [3, 4], [5, 6]])
 
 bool_idx = (a > 2)  # 2보다 큰 a의 요소를 찾습니다;
                     # 이 코드는 a와 shape가 같고 불리언 자료형을 요소로 하는 numpy 배열을 반환합니다,
-                    # bool_idx의 각 요소는 동일한 위치에 있는 a의 
+                    # bool_idx의 각 요소는 동일한 위치에 있는 a의
                     # 요소가 2보다 큰지를 말해줍니다.
 
 print bool_idx      # 출력 "[[False False]
@@ -814,7 +814,7 @@ print y  # 출력 "[[ 2  2  4]
 
 설명이 이해하기 부족하다면 [scipy문서](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)나 [scipy위키](http://wiki.scipy.org/EricsBroadcastingDoc)를 참조하세요.
 
-브로드캐스팅을 지원하는 함수를 *universal functions*라고 합니다. 
+브로드캐스팅을 지원하는 함수를 *universal functions*라고 합니다.
 *universal functions* 목록은 [문서](http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs)를 참조하세요.
 
 브로드캐스팅을 응용한 예시들입니다:
@@ -844,7 +844,7 @@ print x + v
 # 벡터를 행렬의 각 행에 더하기
 # x는 shape가 (2, 3)이고 w는 shape가 (2,)입니다.
 # x의 전치행렬은 shape가 (3,2)이며 이는 w와 브로드캐스팅이 가능하고 결과로 shape가 (3,2)인 행렬이 생깁니다;
-# 이 행렬을 전치하면 shape가 (2,3)인 행렬이 나오며 
+# 이 행렬을 전치하면 shape가 (2,3)인 행렬이 나오며
 # 이는 행렬 x의 각 열에 벡터 w을 더한 결과와 동일합니다.
 # 아래의 행렬입니다:
 # [[ 5  6  7]
@@ -896,7 +896,7 @@ from scipy.misc import imread, imsave, imresize
 img = imread('assets/cat.jpg')
 print img.dtype, img.shape  # 출력 "uint8 (400, 248, 3)"
 
-# 각각의 색깔 채널을 다른 상수값으로 스칼라배함으로써 
+# 각각의 색깔 채널을 다른 상수값으로 스칼라배함으로써
 # 이미지의 색을 변화시킬 수 있습니다.
 # 이미지의 shape는 (400, 248, 3)입니다;
 # 여기에 shape가 (3,)인 배열 [1, 0.95, 0.9]를 곱합니다;
@@ -923,7 +923,7 @@ imsave('assets/cat_tinted.jpg', img_tinted)
 <a name='scipy-matlab'></a>
 
 ### MATLAB 파일
-`scipy.io.loadmat` 와 `scipy.io.savemat`함수를 통해 
+`scipy.io.loadmat` 와 `scipy.io.savemat`함수를 통해
 matlab 파일을 읽고 쓸 수 있습니다.
 [문서](http://docs.scipy.org/doc/scipy/reference/io.html)를 참조하세요.
 
@@ -1027,7 +1027,7 @@ plt.show()
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 사인과 코사인 곡선의 x,y 좌표를 계산 
+# 사인과 코사인 곡선의 x,y 좌표를 계산
 x = np.arange(0, 3 * np.pi, 0.1)
 y_sin = np.sin(x)
 y_cos = np.cos(x)
