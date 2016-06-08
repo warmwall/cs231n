@@ -940,182 +940,178 @@ skull is open into the brain of the
 
 191
 00:21:35,130 --> 00:21:42,180
-cut into an area what we already know
-come primary visual cortex primary
+cat into an area what we already know
+called primary visual cortex.
 
 192
 00:21:42,180 --> 00:21:49,490
-visual cortex area do a lot of things
-for for visual processing but before
+Primary visual cortex is the area that
+nuerons do a lot of things for for visual processing
 
 193
 00:21:49,490 --> 00:21:54,779
-visa we don't really know what primary
-visual cortex is to be winter snow is
+but before Hubel and Wiesel,
+we don't really know what primary visual cortex is doing.
 
 194
 00:21:54,779 --> 00:22:02,369
-one of the earliest stage of the UI is
-of course but earliest stage for visual
+We just know it's one of the earliest stage on the eyes,
+of course, but earliest stage for visual processing.
 
 195
 00:22:02,369 --> 00:22:07,299
-processing then there is tons and tons
-of neurons working on vision then we
+And then there is tons and tons
+of neurons working on vision. 
 
 196
 00:22:07,299 --> 00:22:12,419
-really alter our to know what this is
+And we really ought to know what this is
 because that's the beginning of vision
 
 197
 00:22:12,420 --> 00:22:20,300
-visual process in the bring so they they
-put this electrode into the primary
+visual process in the brain.
+So they they put this electrode into the primary visual cortex
 
 198
-00:22:20,299 --> 00:22:25,930
-visual cortex and an interesting this is
-another interesting fact I don't drop my
+00:22:20,300 --> 00:22:25,930
+and an interestingly,
+this is another interesting fact.
 
 199
 00:22:25,930 --> 00:22:34,880
-stuff for sure you probably visual
-cortex the first they come from being
+I will drop off my stuff. I will show you.
+Primary visual cortex, the first stage, or second depending on where they come from.
 
 200
 00:22:34,880 --> 00:22:40,910
-very very rough prosecutor first aid of
-your cortical visual processing stage is
+I'm being very very rough.
+The First stage of your cortical visual processing stage is
 
 201
 00:22:40,910 --> 00:22:47,180
-in the back of your bring not near your
-I know it's very interesting because
+in the back of your brain not near your eye.
+Okay? It's very interesting because
 
 202
 00:22:47,180 --> 00:22:51,788
-your own factory in cortical processing
-is right
+your olfactory cortical processing is right behind your nose.
 
 203
 00:22:51,788 --> 00:22:58,519
-behind her nose your auditory is right
-behind every year but your primary
+Your auditory is right behind your ear.
+
 
 204
 00:22:58,519 --> 00:23:05,798
-visual cortex is the furthest from your
-eye and another very interesting that in
+but your primary visual cortex is the furthest from your eye
+and another very interesting fact.
 
 205
 00:23:05,798 --> 00:23:11,099
-fact not only the primary there's a huge
-area working on vision almost 50% of
+In fact, not only the primary,
+there's a huge area working on vision.
 
 206
 00:23:11,099 --> 00:23:17,888
-your brain is a love division this in
-this the hardest and most important
+Almost 50% of your brain is involved in vision.
+Vision is the hardest and most important
 
 207
 00:23:17,888 --> 00:23:22,608
-sensory perceptual cognitive system in
-the break and I'm not saying anything
+sensory perceptual cognitive system in the brain.
+I'm not saying anything
 
 208
 00:23:22,608 --> 00:23:29,839
-else does is not useful clearly but it
-take nature of this long to develop this
+else isn't useful clearly, but it
+take nature this long to develop this sensory system
 
 209
 00:23:29,839 --> 00:23:37,579
-this sensory system and it takes the
-troop this much realist a space to be
+and it takes the intro this much real estate space to be
 
 210
 00:23:37,579 --> 00:23:43,148
-used for the system why because it's so
-important and it's so damn hard that's
+used for the system. Why?
+Because it's so important and it's so damn hard.
 
 211
 00:23:43,148 --> 00:23:50,959
-why we need to get back to human reason
-they were really ambitious they wanna
+That's why we need to use this much space.
+OK, back to Hubel and Wiesel. They were really ambitious.
 
 212
 00:23:50,960 --> 00:23:56,028
-know what primary visual cortex is doing
+They wanna know what primary visual cortex is doing
 because this is the beginning of our
 
 213
 00:23:56,028 --> 00:24:02,878
-knowledge for deep learning neural
-network cats social then put the cats in
+knowledge for deep learning neural network.
+So, they were showing cats. so they put the cats in this room
 
 214
 00:24:02,878 --> 00:24:07,709
-this room and they were recording your
-activities when I say recording your
+and they were recording neural activities.
+When I say recording neural activity,
 
 215
 00:24:07,710 --> 00:24:11,659
-activities fair trial there basically
-trying to see you know if I put the
+they're basically trying to see,
+you know if I put the
 
 216
 00:24:11,659 --> 00:24:18,059
-electrode here like to the new office to
-the new house fire when they see
+neural electrode here,
+Do the neurons fire when they see something?
 
 217
-00:24:18,058 --> 00:24:25,308
-something so for example if they show if
-they show cat their ideas if I showed
+00:24:18,059 --> 00:24:25,308
+So, for example if they show cats,
+their idea is..,
 
 218
 00:24:25,308 --> 00:24:30,519
-this kind of fish you know apparently at
-that time comes to eat fish rather than
+if I showed this kind of fish, you know,
+apparently at that time cats eat fish rather than these beans.
 
 219
 00:24:30,519 --> 00:24:42,019
-these beings with the cats no I like
-yellow happy and spikes and here's a
+With the cat's neuron like, you know,
+they're happy and start sending spikes.
 
 220
 00:24:42,019 --> 00:24:48,128
-story of scientific discovery is
-scientific discovery takes both luck and
+and the funny thing of a story of scientific discovery is
 
 221
 00:24:48,128 --> 00:24:52,449
-care and thoughtfulness they were shown
+scientific discovery takes both luck and care and thoughtfulness.
 
 222
 00:24:52,450 --> 00:24:58,740
-whatever mouse flower it just doesn't
-work the cats new are in the primary
+They were showing this cat fish, whatever mouse, flower.
+It just doesn't work. The cat's neuron in the primary
 
 223
 00:24:58,740 --> 00:25:02,839
-visual cortex was silent there was no
-spiking
+visual cortex was silent there was no spiking.
 
 224
 00:25:02,839 --> 00:25:09,079
-very little spike in there were really
-frustrated but the good news is that
+Very little spike and they were really frustrated.
+but the good news is that
 
 225
 00:25:09,079 --> 00:25:14,509
 there was no computer at that time so
-what they have to do when they showed us
+what they have to do when they showed this cats
 
 226
 00:25:14,509 --> 00:25:21,740
-cats is they have to use a slight
-protector so they put his foot a slide
+that is a stimulus, they have to use a slide
+projector so they put his foot a slide
 
 227
 00:25:21,740 --> 00:25:26,799

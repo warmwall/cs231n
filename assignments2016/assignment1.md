@@ -51,7 +51,7 @@ cd cs231n/datasets
 **IPython 시작:**
 CIFAR-10 data를 받았다면, `assignment1` 폴더의 IPython notebook server를 시작할 수 있습니다. IPython에 친숙하지 않다면 작성해둔 [IPython tutorial](/ipython-tutorial)를 읽어보는 것을 권장합니다.
 
-**NOTE:** OSX에서 virtual environment를 실행하면, matplotlib 에러가 날 수 있습니다([이 문제에 관한 이슈](http://matplotlib.org/faq/virtualenv_faq.html)).  IPython 서버를 `assignment1`폴더의 `start_ipython_osx.sh`로 실행하면 이 문제를 피해갈 수 있습니다; 이 스크립트는 virtual environment가 `.env`라고 되어있다고 가정하고 작성되었습니다.로
+**NOTE:** OSX에서 virtual environment를 실행하면, matplotlib 에러가 날 수 있습니다([이 문제에 관한 이슈](http://matplotlib.org/faq/virtualenv_faq.html)).  IPython 서버를 `assignment1`폴더의 `start_ipython_osx.sh`로 실행하면 이 문제를 피해갈 수 있습니다; 이 스크립트는 virtual environment가 `.env`라고 되어있다고 가정하고 작성되었습니다.
 
 ### 과제 제출:
 로컬 환경이나 Terminal에 상관없이, 이번 숙제를 마쳤다면 `collectSubmission.sh`스크립트를 실행하세요. 이 스크립트는 `assignment1.zip`파일을 만듭니다. 이 파일을 [the coursework](https://coursework.stanford.edu/portal/site/W16-CS-231N-01/)에 업로드하세요.

@@ -51,7 +51,7 @@ cd cs231n/datasets
 ./get_pretrained_model.sh
 ~~~
 
-**Compile the Cython extension:** 컨볼루션 신경망은 매우 효율적인 구현이 필요합니다. [Cython](http://cython.org/)을 사용하여 필요한 기능들을 구현해 두어서, 코드를 돌리기 전에 Cython extension을 컴파일해 주어야 합니다. `cs231n` 디렉토리에서 다음 명령어를 입력하세요.
+**Cython extension 컴파일하기:** 컨볼루션 신경망은 매우 효율적인 구현을 필요로 합니다. 이 숙제를 위해서 [Cython](http://cython.org/)을 활용하여 여러 기능들을 구현해 놓았는데, 이를 위해 코드를 돌리기 전에 Cython extension을 컴파일해 주어야 합크니다. `cs231n` 디렉토리에서 아래 명령어를 실행하세요:
 
 ~~~bash
 python setup.py build_ext --inplace
