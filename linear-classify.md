@@ -71,27 +71,27 @@ $$
   </div>
 </div>
 
-As we saw above, every row of $W$ is a classifier for one of the classes. The geometric interpretation of these numbers is that as we change one of the rows of $W$, the corresponding line in the pixel space will rotate in different directions. The biases $b$, on the other hand, allow our classifiers to translate the lines. In particular, note that without the bias terms, plugging in $ x_i = 0 $ would always give score of zero regardless of the weights, so all lines would be forced to cross the origin.
+위에서 살펴보았듯이, $$W$$의 각 행은 각각의 클래스를 구별하는 분류기이다. 각 행에 있는 숫자들을 기하학적으로 해석해보자면, 우리가 $$W$$의 하나의 행을 바꾸면 픽셀 공간에서 해당하는 선이 다른 방향으로 회전할 것이다. 반면에, bias인 $$b$$는 분류기가 그 선들을 평행이동 할 수 있도록 해준다. 특히, bias가 없다면 $$ x_i = 0 $$가 입력으로 들어왔을 때 파라미터 값들에 상관없이 항상 스코어가 0이 될 것이고, 모든 (분류) 선들이 원점을 지나야만 할 것이다.
 
-**Interpretation of linear classifiers as template matching.**
-Another interpretation for the weights $W$ is that each row of $W$ corresponds to a *template* (or sometimes also called a *prototype*) for one of the classes. The score of each class for an image is then obtained by comparing each template with the image using an *inner product* (or *dot product*) one by one to find the one that "fits" best. With this terminology, the linear classifier is doing template matching, where the templates are learned. Another way to think of it is that we are still effectively doing Nearest Neighbor, but instead of having thousands of training images we are only using a single image per class (although we will learn it, and it does not necessarily have to be one of the images in the training set), and we use the (negative) inner product as the distance instead of the L1 or L2 distance.
+**템플릿 매칭으로서의 선형 분류기 해석.**
+파라미터 $$W$$에 대해 다른 방식으로 해석해보면, $$W$$의 각 행은 각 클래스별 *템플릿* (또는 *프로토타입*)에 해당된다. 이미지의 각 클래스 스코어는 각 템플릿들을 이미지와 *내적(inner product, 또는 dot product)*을 통해 하나하나 비교함으로써 계산되고, 이 스코어를 기준으로 가장 잘 "맞는" 것이 무엇인지 정한다. 즉, 선형 분류기가 결국 템플릿 매칭을 하고 있고, 각 템플릿이 학습을 통해 배워진다고 할 수 있다. 또다른 방식으로 생각해보면, 우리는 Nearest Neighbor와 비슷한 것을 하고 있는데, 수 천 장의 학습 이미지를 갖고 있지 않고 각 클래스마다 한 장의 이미지만 사용한다고 볼 수 있다. (다만, 그 이미지를 학습하고, 학습 데이터셋에 실제로 존재하는 이미지일 필요는 없다.) 이 때, 거리 함수로는 L1이나 L2 거리를 사용하지 않고 서로 내적한 것(의 반대 부호인 값)을 사용한다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/templates.jpg">
   <div class="figcaption">
-    Skipping ahead a bit: Example learned weights at the end of learning for CIFAR-10. Note that, for example, the ship template contains a lot of blue pixels as expected. This template will therefore give a high score once it is matched against images of ships on the ocean with an inner product.
+    약간의 선행학습: CIFAR-10 데이터셋에 학습된 파라미터들의 시각화 예시. 예를 들어 ship 템플릿을 보면, 예상할 수 있듯이 많은 수의 파란색 픽셀들로 이루어져 있다는 점에 주목하자. 이 템플릿은 배(ship)가 바다 위에 떠있는 이미지와 내적을 통해 비교되었을 때, 높은 스코어 값을 가질 것이다.
   </div>
 </div>
 
-Additionally, note that the horse template seems to contain a two-headed horse, which is due to both left and right facing horses in the dataset. The linear classifier *merges* these two modes of horses in the data into a single template. Similarly, the car classifier seems to have merged several modes into a single template which has to identify cars from all sides, and of all colors. In particular, this template ended up being red, which hints that there are more red cars in the CIFAR-10 dataset than of any other color. The linear classifier is too weak to properly account for different-colored cars, but as we will see later neural networks will allow us to perform this task. Looking ahead a bit, a neural network will be able to develop intermediate neurons in its hidden layers that could detect specific car types (e.g. green car facing left, blue car facing front, etc.), and neurons on the next layer could combine these into a more accurate car score through a weighted sum of the individual car detectors.
+추가적으로, horse 템플릿은 머리가 두 개인 말(horse)이 있는 것처럼 보이는데, 이것은 데이터셋 안에 왼쪽을 보고 있는 말과 오른쪽을 보고 있는 말이 섞여있기 때문이다. 선형 분류기는 말에 대한 이 두 가지 모드를 하나의 템플릿으로 *합친* 것을 확인할 수 있다. 이와 비슷한 현상으로, car 분류기는 모든 방향 및 색깔의 자동차 모양들을 하나의 템플릿으로 합쳐 놓았다. 특히, 이 템플릿이 결과적으로 붉은 색을 띄는 것으로 보아 CIFAR-10 데이터셋에는 다른 색깔에 비해 빨간색 자동차가 더 많다는 점을 알 수 있다. 선형 분류기는 여러 가지 색깔의 자동차를 제대로 분류하기에는 너무 모델이 단순하지만, 나중에 배울 뉴럴 네트워크는 이를 해결할 수 있다. 약간만 미리 살펴보자면, 뉴럴 네트워크는 히든 레이어의 각 뉴런들이 특정 자동차 타입 (e.g. 왼쪽을 바라보고 있는 초록색 자동차, 정면을 보고 있는 파란색 차, 등등)을 검출하도록 할 수 있고, 다음 레이어의 뉴런들이 이 정보들을 종합하여 각각의 자동차 타입 검출기의 점수의 가중치 합을 통해 보다 정확한 (자동차에 대한) 스코어를 계산할 수 있다.
 
-**Bias trick.** Before moving on we want to mention a common simplifying trick to representing the two parameters $W,b$ as one. Recall that we defined the score function as:
+**Bias 트릭.** 다음 내용으로 넘어가기 전에, 두 파라미터 $$W, b$$를 하나로 표현하는 간단한 트릭을 소개한다. 앞에서 스코어 함수는 아래와 같이 정의되었다.
 
 $$
 f(x_i, W, b) =  W x_i + b
 $$
 
-As we proceed through the material it is a little cumbersome to keep track of two sets of parameters (the biases $b$ and weights $W$) separately. A commonly used trick is to combine the two sets of parameters into a single matrix that holds both of them by extending the vector $x_i$ with one additional dimension that always holds the constant $1$ - a default *bias dimension*. With the extra dimension, the new score function will simplify to a single matrix multiply:
+앞으로 내용을 전개해 나갈 때 두 가지 파라미터를 (bias $$b$$와 weight $$W$$) 매번 동시에 고려해야 한다면 표현이 번거로워진다. 흔히 사용하는 트릭은 이 두 파라미터들을 하나의 행렬로 합치고, $$x_i$$를 항상 $$1$$의 값을 갖는 한 차원 - 디폴트 *bias* 차원 - 을 늘리는 방식이다. 이 한 차원 추가하는 것으로, 새 스코어 함수는 행렬곱 한 번으로 계산이 가능해진다:
 
 $$
 f(x_i, W) =  W x_i
