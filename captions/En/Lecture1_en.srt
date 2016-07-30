@@ -1208,81 +1208,78 @@ The beginning of visual
 
 246
 00:27:23,779 --> 00:27:29,178
-processing is simple structures of the
-world
+processing is simple structures of the world,
 
 247
 00:27:29,179 --> 00:27:40,890
-oriented and this is a very deep deep
-implications are signs as well as
+edges, oriented edges and this is a very deep deep
+implication to both neurophysiology, neuroscience as well as
 
 248
 00:27:40,890 --> 00:27:47,870
-engineering modeling it's later when we
-visualize our dealer network features
+engineering modeling. It's later when we
+visualize our deep neural network features,
 
 249
-00:27:47,869 --> 00:27:57,069
-will see that simple like structure in
-emerging from our from our model and
+00:27:47,870 --> 00:27:57,069
+we'll see that simple edge-like structure in
+emerging from our model.
 
 250
 00:27:57,069 --> 00:28:03,298
-even though the discovery was later
-fifties and early sixties they won the
+Even though the discovery was later
+fifties and early sixties, they won the
 
 251
 00:28:03,298 --> 00:28:12,039
-nobel medical price for this work in
-1981 so that was another very important
+Nobel medical prize for this work in 1981.
+So, that was another very important
 
 252
 00:28:12,039 --> 00:28:25,928
-piece of work related to vision and
-visual processing so that's another
+piece of work related to vision and visual processing.
+So, when did computer vision begin?
 
 253
 00:28:25,929 --> 00:28:35,620
-interesting story the precursor of
-computer vision as a modern field was
+That's another interesting story, history.
+the precursor of computer vision as a modern field was
 
 254
-00:28:35,619 --> 00:28:42,779
-this particular dissipation by Larry
-Roberts in 1963 it's called block world
+00:28:35,620 --> 00:28:42,779
+this particular dissertation by Larry Roberts in 1963.
+It's called block world.
 
 255
 00:28:42,779 --> 00:28:49,889
-he just as humulin visa we're
-discovering that the visual world in our
+He, just as Hubel and Wiesel were discovering
+that the visual world in our
 
 256
 00:28:49,890 --> 00:29:00,380
-brain is organized by simple like
-structures Larry Roberts as early as PhD
+brain is organized by simple edge-like
+structures, Larry Roberts as early as Computer Science PhD
 
 257
 00:29:00,380 --> 00:29:06,350
-students were trying to extract these
-like structures
+students, were trying to extract these edge-like structures
 
 258
 00:29:06,349 --> 00:29:08,980
-images
+and images as a as a piece of engineering work.
 
 259
 00:29:08,980 --> 00:29:16,210
-as a as a piece of engineering work in
-this particular case his goal is that
+In this particular case his goal is that
 
 260
 00:29:16,210 --> 00:29:22,210
-you know both you and not as humans can
+you know, you and I as humans can
 recognize blocks no matter how it's
 
 261
 00:29:22,210 --> 00:29:28,009
-turned right like we know it's a saint
+turned, right? We know it's the same
 block these two are the same block even
 
 262
