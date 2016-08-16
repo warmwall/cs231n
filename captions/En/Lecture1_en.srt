@@ -1275,77 +1275,76 @@ In this particular case his goal is that
 260
 00:29:16,210 --> 00:29:22,210
 you know, you and I as humans can
-recognize blocks no matter how it's
+recognize blocks no matter how it's turned, right?
 
 261
 00:29:22,210 --> 00:29:28,009
-turned, right? We know it's the same
-block these two are the same block even
+We know it's the same block.
+These two are the same block, even though
 
 262
 00:29:28,009 --> 00:29:33,019
-though the lighting changed and the
-orientation changed and he's conjuncture
+he lighting changed and the orientation changed.
+And, his conjuncture
 
 263
 00:29:33,019 --> 00:29:40,720
-is that just like we thought told us
-it's the edges that define this the
+is that just like Hubel and Wiesel told us,
+it's the edges that define this the structure.
 
 264
 00:29:40,720 --> 00:29:46,419
-structure that the edges defying the
-laws shape and they don't change
+That the edges define the shape and they don't change,
 
 265
 00:29:46,419 --> 00:29:53,290
-relevant all these internal things so
-Larry Roberts Road a PhD dissertation to
+rather than all these internal things.
+So, Larry Roberts wrote a PhD dissertation to
 
 266
 00:29:53,289 --> 00:29:59,250
-just extract these edges you know if
+just extract these edges. You know if
 your work as a PhD student computer
 
 267
 00:29:59,250 --> 00:30:03,990
 vision this is like you know this is
-like undergraduate computer vision would
+like undergraduate computer vision wouldn't
 
 268
 00:30:03,990 --> 00:30:10,210
-have been had PhD theses but that was
-the first precursor computer vision PhD
+have been a PhD thesis but that was
+the first precursor computer vision PhD thesis.
 
 269
 00:30:10,210 --> 00:30:18,819
-theses like Robert since interest he
-gave up his computer vision afterwards
+And, Larry Roberts's interest
+he gave up his work in computer vision afterwards,
 
 270
 00:30:18,819 --> 00:30:27,189
-and DARPA I was one of the inventors of
-the internet we didn't do too badly by
+and went to DARPA.
+He was one of the inventors of the Internet. He didn't do too badly by
 
 271
 00:30:27,190 --> 00:30:34,490
-giving up computer vision but we always
-like to say that the birth of computer
+giving up computer vision.
+but we always like to say that the birthday of computer
 
 272
 00:30:34,490 --> 00:30:43,960
 vision as a modern field is in the
-summer of 1966 the summer of 1966 MIT
+summer of 1966. In the summer of 1966,
 
 273
 00:30:43,960 --> 00:30:49,548
-artificial intelligence lab was
-established before that actually for one
+MIT artificial intelligence lab was established.
+Before that actually for one
 
 274
 00:30:49,548 --> 00:30:55,819
-piece of history should feel proud of
-them for student this there are two
+piece of history you should feel proud of
+as Stanford student, this there are two
 
 275
 00:30:55,819 --> 00:31:02,579
@@ -1354,18 +1353,18 @@ established in the world in the early
 
 276
 00:31:02,579 --> 00:31:10,329
-1960's one by Marvin Minsky at MIT one
-by John McCarthy at suffered a stone for
+1960's, one by Marvin Minsky at MIT, one
+by John McCarthy at Stanford.
 
 277
 00:31:10,329 --> 00:31:15,369
-the artificial intelligence lab was
-established before the computer science
+At Stanford, the artificial intelligence lab was
+established before the computer science department
 
 278
 00:31:15,369 --> 00:31:21,479
-department and professor John McCarthy
-who founded and I love is the one who is
+and professor John McCarthy
+who founded AI Lab is the one who is
 
 279
 00:31:21,480 --> 00:31:22,490
@@ -1373,13 +1372,12 @@ responsible for
 
 280
 00:31:22,490 --> 00:31:26,450
-the term artificial intelligence so
-that's a little bit of a problem
+the term artificial intelligence.
+So, that's a little bit of a proud of Stanford history.
 
 281
 00:31:26,450 --> 00:31:31,720
-stempler history but anyway we have to
-give us credit for starting the field of
+But, anyway we have to give us credit for starting the field of
 
 282
 00:31:31,720 --> 00:31:41,380
