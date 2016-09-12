@@ -6,7 +6,7 @@ permalink: /neural-networks-3/
 Table of Contents:
 
 - [그라디언트 점검 (Gradient checks)](#gradcheck)
-- [Sanity checks](#sanitycheck)
+- [제대로 돌아가는지 확인하기 (Sanity checks)](#sanitycheck)
 - [학습 과정 돌보기 (Babysitting the learning process)](#baby)
   - [손실 함수 (Loss function)](#loss)
   - [훈련/검증 성능 (Train/val accuracy)](#accuracy)
@@ -82,68 +82,74 @@ $$
 
 
 
-**Be careful with the step size h**. It is not necessarily the case that smaller is better, because when $h$ is much smaller, you may start running into numerical precision problems. Sometimes when the gradient doesn't check, it is possible that you change $h$ to be 1e-4 or 1e-6 and suddenly the gradient will be correct. This [wikipedia article](http://en.wikipedia.org/wiki/Numerical_differentiation) contains a chart that plots the value of **h** on the x-axis and the numerical gradient error on the y-axis.
+**Step size h에 주의하라**. 꼭 작을 수록 좋은 건 아닌 게, $h$가 훨씬 작으면 수치적인 정확도(numerical precision) 문제에 부딪힐 수 있다. 가끔 그라디언트 체크가 잘 안 되면, $h$를 1e-4나 1e-6 정도로 조정하여 보라. 갑자기 될 수도 있다. 링크된 [위키피디아 기사](http://en.wikipedia.org/wiki/Numerical_differentiation)에는 **h**에 따른 수치적 그라디언트 오차가 xy-plot으로 조사되어 있다.
 
-**Gradcheck during a "characteristic" mode of operation**. It is important to realize that a gradient check is performed at a particular (and usually random), single point in the space of parameters. Even if the gradient check succeeds at that point, it is not immediately certain that the gradient is correctly implemented globally. Additionally, a random initialization might not be the most "characteristic" point in the space of parameters and may in fact introduce pathological situations where the gradient seems to be correctly implemented but isn't. For instance, an SVM with very small weight initialization will assign almost exactly zero scores to all datapoints and the gradients will exhibit a particular pattern across all datapoints. An incorrect implementation of the gradient could still produce this pattern and not generalize to a more characteristic mode of operation where some scores are larger than others. Therefore, to be safe it is best to use a short **burn-in** time during which the network is allowed to learn and perform the gradient check after the loss starts to go down. The danger of performing it at the first iteration is that this could introduce pathological edge cases and mask an incorrect implementation of the gradient.
 
-**Don't let the regularization overwhelm the data**. It is often the case that a loss function is a sum of the data loss and the regularization loss (e.g. L2 penalty on weights). One danger to be aware of is that the regularization loss may overwhelm the data loss, in which case the gradients will be primarily coming from the regularization term (which usually has a much simpler gradient expression). This can mask an incorrect implementation of the data loss gradient. Therefore, it is recommended to turn off regularization and check the data loss alone first, and then the regularization term second and independently. One way to perform the latter is to hack the code to remove the data loss contribution. Another way is to increase the regularization strength so as to ensure that its effect is non-negligible in the gradient check, and that an incorrect implementation would be spotted.
+**"특징적인" 연산이 수행되는 곳에서 그라디언트 체크를 (Gradcheck during a "characteristic" mode of operation)**. 그라디언트 체크는 파라미터 공간(parameter space)의 특정한 (보통 랜덤인) 점 위에서 수행됨을 기억하자. 그라디언트 체크가 한 점에서는 성공한다 하여도 다른 점에서 맞게 수행되리라고는 믿기 힘들다. 게다가, 초기값을 랜덤하게 줄 경우(random initialization) 그 점은 파라미터 공간의 가장 "특징적인(characteristic)" 점이 아닐 수도 있고, 분명 제대로 코딩(implement)된 듯한 그라디언트가 사실 잘 계산되지 않는 병적인 상황을 야기할 수도 있다. 예를 들어, SVM에서 초기 웨이트값을 매우 작게 설정하면, 모든 데이터 포인트에 거의 0에 근접한 점수를 부여할 것이고 그라디언트 값들 또한 모든 데이터에 걸쳐 어떤 패턴을 나타낼 것이다. 만약 그라디언트 구현이 잘못되었다면 이 패턴을 계속 만들어낼 것이고 좀더 특징적인 계산으로 (e.g. 몇몇 점수가 다른 것보다 큰 경우) 일반화하지 못할 수도 있다. 그러므로, 안전하게 가려면, 네트워크가 학습을 시작할 무렵 짧은 번인(**burn-in**)을 이용하고, 손실(loss)가 하강하기 시작한 뒤에 그라디언트 체크를 수행하는 것이 최선이다. 요컨대, 첫번째 iteration에서부터 그라디언트 체크를 수행하면 그 때만의 병적인(pathological) 오류 때문에 우리가 정말로 정확하게 그라디언트 체크를 수행하는 부분에서의 오류를 놓칠 수도 있다.   
 
-**Remember to turn off dropout/augmentations**. When performing gradient check, remember to turn off any non-deterministic effects in the network, such as dropout, random data augmentations, etc. Otherwise these can clearly introduce huge errors when estimating the numerical gradient. The downside of turning off these effects is that you wouldn't be gradient checking them (e.g. it might be that dropout isn't backpropagated correctly). Therefore, a better solution might be to force a particular random seed before evaluating both $f(x+h)$ and $f(x-h)$, and when evaluating the analytic gradient.
 
-**Check only few dimensions**. In practice the gradients can have sizes of million parameters. In these cases it is only practical to check some of the dimensions of the gradient and assume that the others are correct. **Be careful**: One issue to be careful with is to make sure to gradient check a few dimensions for every separate parameter. In some applications, people combine the parameters into a single large parameter vector for convenience. In these cases, for example, the biases could only take up a tiny number of parameters from the whole vector, so it is important to not sample at random but to take this into account and check that all parameters receive the correct gradients.
+**정규화가 데이터를 압도하게 하지 마라 (Don't let the regularization overwhelm the data)**. 가끔, 손실함수(loss function)는 데이터 손실과 정규화(regularization) 손실 (e.g. 웨이트값(weight)들에 대한 L2 벌점(penalty))의 합으로 이루어져 있다. 하나 알고 있어야 하는 위험은, 정규화 손실이 데이터 손실을 압도할 수 있다는 것인데, 이 경우 그라디언트는 주로 (그라디언트 표현이 훨씬 간단한) 정규화 항(term)에서 올 것이다. 이 경우 데이터 손실 그라디언트가 올바르게 구현되지 못하는 상황을 감출 수도 있다. 그러므로, 먼저 정규화를 끄고 데이터 손실 부분만 체크를 수행하길 추천하며 그 다음에 정규화 항을 따로 점검해 보라. 정규화 항만 따로 어떻게 점검 하냐고? 하나의 방법은 코드를 해킹(hack)하여 데이터 손실 부분을 제거하는 것이다. 다른 방법으로는 정규화 항의 강도(strength)를 높여서 그 효과가 그라디언트 체크 수행시 무시할 수 없게 키운 뒤 (정규화 항 부분에서의) 잘못된 그라디언트가 감지되도록 하라. 
+
+
+**드랍아웃과 augmentation을 끄라 (Remember to turn off dropout/augmentations)**.  그라디언트 체크를 수행하는 동안, 네트워크에서 결정되지 않은(non-deterministic) 효과, 이를테면 드랍아웃(dropout), 임의 자료 확대(random data augmentations), 등을 반드시 꺼 두어라. 당연한 이야기지만 이들을 꺼두지 않으면 수치적 그라디언트 근사에서 대규모의 오차가 생길 수 있다. 이 효과들을 끌 경우 단점은 이들의 그라디언트 체크를 수행할수 없다는 것이다 (e.g. 드랍아웃이 올바르게 역전파(backpropagate)되지 않을 수 있다). 그러므로 $f(x+h)$ and $f(x-h)$ 및 수식으로 계산된(analytic) 그라디언트를 계산하기 전에 시드(seed)를 특정 값으로 고정하는 것이 좀더 나은 해결책일 수도 있다. 
+
+
+**몇 개의 차원에서만 체크하라 (Check only few dimensions)**. 실제 데이터에서 그라디언트는 수백만개의 파라미터값을 가질 수도 있다. 이런 경우엔 오직 몇 차원의 그라디언트들만 체크 하고 다른 것들은 잘 계산되었다고 믿는 것이 현실적일 수도 있다.  **조심하라**: 모든 '분리된 파라미터'들에 대해서 적은 차원의 그라디언트 체크를 수행하라. 몇몇 용례에서는, 사람들이 파라미터들을 편의상 하나의 큰 파라미터 벡터로 결합한다. 이 경우, 이를테면, 편향값(bias)들은 전체 벡터에서 아주 적은 수만 차지하고 있을 수 있으므로, 이를 반영하여 샘플한 뒤 모든 파라미터들이 올바른 그라디언트를 받고 있는지 확인하는 것이 중요하다.
+
 
 <a name='sanitycheck'></a>
-### Before learning: sanity checks Tips/Tricks
+### 학습 전에: 제대로 돌아가는지 확인하는 팁과 트릭들 (Before learning: sanity checks Tips/Tricks)
 
-Here are a few sanity checks you might consider running before you plunge into expensive optimization:
+풀려는 최적화 문제가 매우 비싸(expensive)지기 전에, 다음 절차들을 돌려볼 만하다.
 
-- **Look for correct loss at chance performance.** Make sure you're getting the loss you expect when you initialize with small parameters. It's best to first check the data loss alone (so set regularization strength to zero). For example, for CIFAR-10 with a Softmax classifier we would expect the initial loss to be 2.302, because we expect a diffuse probability of 0.1 for each class (since there are 10 classes), and Softmax loss is the negative log probability of the correct class so: -ln(0.1) = 2.302. For The Weston Watkins SVM, we expect all desired margins to be violated (since all scores are approximately zero), and hence expect a loss of 9 (since margin is 1 for each wrong class). If you're not seeing these losses there might be issue with initialization.
-- As a second sanity check, increasing the regularization strength should increase the loss
-- **Overfit a tiny subset of data**. Lastly and most importantly, before training on the full dataset try to train on a tiny portion (e.g. 20 examples) of your data and make sure you can achieve zero cost. For this experiment it's also best to set regularization to zero, otherwise this can prevent you from getting zero cost. Unless you pass this sanity check with a small dataset it is not worth proceeding to the full dataset. Note that it may happen that you can overfit very small dataset but still have an incorrect implementation. For instance, if your datapoints' features are random due to some bug, then it will be possible to overfit your small training set but you will never notice any generalization when you fold it your full dataset.
+- **맞는 손실함수를 찾아라 ?? (Look for correct loss at chance performance.)**  
+적은 수의 파라미터로 초기화할 때는 당신이 기대한 손실함수값(loss)를 얻는지 확인하라. 먼저 데이터 손실함수 (data loss) 하나만 확인하는 것이 가장 낫다 (따라서 정규화 강도(regularization strength)는 영으로 설정하여라). 예를 들어, CIFAR-10에 Softmax 분류기를 이용할 경우 초기 손실함수값을 2.302로 기대할 수 있는데, 왜냐하면, -ln(0.1) = 2.302 -- 각 클래스에 확률이 0.1로 분산되었을 테고 Softmax 손실함수는 올바른 분류 확률에 음의 로그를 취한 값이기 때문이다. Weston Watkins SVM을 사용할 경우에는, (모든 점수(score)가 어림잡아 0이기 때문에) 고려되는 모든 마진값(margin)이 위반될 테니 9의 손실값을 기대할 수 있다 (마진값은 각각 잘못 분류된 클래스마다 1이다). 이런 손실값들이 나오지 않으면 초기화에 문제가 있을 수 있다. 
+- 두 번째 확인 절차로써, 정규화 강도를 올릴 수록 손실함수값이 올라가야 한다.
+- **자료의 작은 부분집합으로 과적합해 보라 (Overfit a tiny subset of data)**. 마지막으로 가장 중요한 사항인데, 전체 데이터셋으로 훈련을 시작하기 전에, 작은 부분으로 훈련을 시도하여 보고 (한 20개의 자료 정도), 0의 비용(cost)을 달성할 수 있는지 확인하여 보라. 이 실험에서도 역시 정규화 강도는 0으로 설정하는 것이 가장 나으며, 그렇지 않으면 0의 비용을 얻을 수 없을 것이다. 작은 자료에서의 이러한 확인 과정이 제대로 끝나지 않으면 전체 데이터셋으로 나아가는 것은 무가치하다. 하나 강조할 것은, 아주 작은 데이터셋에 성공적으로 과적합하였지만 여전히 코딩(implementation)이 올바르게 이루어지지 않았을 수 있다. 예를 들어, 가지고 있는 데이터 포인트(datapoint)들의 특성(feature)들이 어떤 버그 때문에 임의로(randomly) 선정된 경우, 작은 훈련 집합(training set)에의 과적합은 성공할지라도 그게 전체 데이터셋으로 일반화되지 않을 수도 있다. 
 
 <a name='baby'></a>
-### Babysitting the learning process
+### 학습 과정 돌보기 (Babysitting the learning process)
 
-There are multiple useful quantities you should monitor during training of a neural network. These plots are the window into the training process and should be utilized to get intuitions about different hyperparameter settings and how they should be changed for more efficient learning. 
+신경망을 훈련하는 중에 몇몇 쓸모있는 값(quantitity)은 모니터링해야 한다. 이런 도표들은 학습 과정을 지켜보는 창문이다. 좀더 효율적인 학습을 위한 하이퍼파라미터(hyperparameter) 조정도 여기서 직관적 영감을 얻는다.
 
-The x-axis of the plots below are always in units of epochs, which measure how many times every example has been seen during training in expectation (e.g. one epoch means that every example has been seen once). It is preferable to track epochs rather than iterations since the number of iterations depends on the arbitrary setting of batch size.
+도표의 x축은 언제나 에폭(epoch)을 단위로 한다. 에폭(epoch)은 각 자료(example)가 몇 번이나 학습(SGD iteration--역자 주)에 사용되었는가를 재는 용어이다. (이를테면 1 에폭이 지났다는 것은 모든 자료가 한 번씩 SGD iteration에 사용되었음을 뜻한다.) x축으로 SGD 알고리즘 반복횟수(iteration)를 할 수도 있겠지만 에폭이 더 선호되는 편이다. 반복 횟수(iteration number)은 배치 사이즈(batch size)의 선택에 따라 임의로 바뀔 수 있기 때문이다.
 
 <a name='loss'></a>
-#### Loss function
+#### 손실 함수 (Loss function)
 
-The first quantity that is useful to track during training is the loss, as it is evaluated on the individual batches during the forward pass. Below is a cartoon diagram showing the loss over time, and especially what the shape might tell you about the learning rate:
+손실 함수(loss)는 forward pass 동안 개개의 배치(batch)에서 계산되고 따라서 훈련(training) 과정에서 추적하기 용이하다. 아래는 시간에 따른 손실 그래프의 모양을 여러 학습 속도(learning rate)에 따라 그려본 것이다. 각각의 모양이 시사하는 바도 함께 적었다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn3/learningrates.jpeg" width="49%">
   <img src="{{site.baseurl}}/assets/nn3/loss.jpeg" width="49%">
   <div class="figcaption">
-    <b>Left:</b> A cartoon depicting the effects of different learning rates. With low learning rates the improvements will be linear. With high learning rates they will start to look more exponential. Higher learning rates will decay the loss faster, but they get stuck at worse values of loss (green line). This is because there is too much "energy" in the optimization and the parameters are bouncing around chaotically, unable to settle in a nice spot in the optimization landscape. <b>Right:</b> An example of a typical loss function over time, while training a small network on CIFAR-10 dataset. This loss function looks reasonable (it might indicate a slightly too small learning rate based on its speed of decay, but it's hard to say), and also indicates that the batch size might be a little too low (since the cost is a little too noisy).
+    <b>좌측:</b> 훈련 과정에서 학습 속도의 영향. 낮은 학습 속도로는 선형적인 향상이 이루어질 것이다. 높은 학습 속도에서는 좀더 지수적인(exponential) 향상이 보일 것이다. 더 높은 학습 속도는 손실의 감소를 가속할 것이나, 더 나쁜 손실값에 빠지게 할 수도 있다 (초록 선). 그 이유는 최적화에 너무 많은 "에너지"가 가해져서 파라미터값들이 혼돈스러운 형태로 움직이고 (최적화 목적함수 모양에서) 좋은 곳에 정착하기가 힘들어지기 때문이다.  <b>우측:</b> 전형적인 손실 함수의 예. x축은 시간(epoch)이고 CIFAR-10 데이터셋에서 작은 신경망을 훈련하였다. 이 손실함수의 모양은 적절해 보이고 (손실 감소의 속ㄷ를 보았을 때, 약간 학습 속도가 너무 작은 감이 있으나 뭐라 말하기 어렵다) 배치 사이즈는 너무 작은 것으로 보인다 (비용(cost)에 너무 노이즈가 많다).
   </div>
 </div>
 
-The amount of "wiggle" in the loss is related to the batch size. When the batch size is 1, the wiggle will be relatively high. When the batch size is the full dataset, the wiggle will be minimal because every gradient update should be improving the loss function monotonically (unless the learning rate is set too high).
+손실 함수의 "씰룩거림"은 배치 사이즈와 연관이 있다. 만일 배치 사이즈가 1이면 훨씬 더 많이 씰룩거릴 것이다. 만일 배치 사이즈가 전체 데이터셋이면 이 씰룩거림은 최소화될 것인데, 왜냐하면  모든 그라디언트 업데이트가 손실함수를 단조적으로 향상시킬 것이기 때문이다 (학습 속도가 너무 크지만 않다면).
 
-Some people prefer to plot their loss functions in the log domain. Since learning progress generally takes an exponential form shape, the plot appears more as a slightly more interpretable straight line, rather than a hockey stick. Additionally, if multiple cross-validated models are plotted on the same loss graph, the differences between them become more apparent.
+어떤 사람들은 손실함수의 로그값의 그래프를 선호하기도 한다. 일반적으로 학습 과정은 어떤 지수적인 모양(하키 스틱 모양)을 취하고 있기 때문에, 로그 손실 그래프는 좀 더 해석이 용이한 직선의 모양처럼 보인다. 부가적인 사항으로, 만약 여러 개의 교차검증 모형(의 손실 그래프)를 같은 그래프 위에 그리면, (로그 손실 그래프로 보면) 그들 사이의 차이가 좀 더 명백해지는 장점이 있다.
 
-Sometimes loss functions can look funny [lossfunctions.tumblr.com](http://lossfunctions.tumblr.com/).
+가끔 손실 함수 모양이 우스꽝스러울 때도 있다.  [lossfunctions.tumblr.com](http://lossfunctions.tumblr.com/).
 
 <a name='accuracy'></a>
-#### Train/Val accuracy
+#### 훈련/검증 정확도 (Train/Val accuracy)
 
-The second important quantity to track while training a classifier is the validation/training accuracy. This plot can give you valuable insights into the amount of overfitting in your model:
+훈련/검증 정확도(training/validation accuracy)는 분류기 훈련시 추적해야 할 또다른 중요한 값이다. 이 플롯은 당신의 모형이 과적합(overfitting) 중인지를 발견할 수 있는 값진 인사이트를 제공한다:
 
 <div class="fig figleft fighighlight">
   <img src="{{site.baseurl}}/assets/nn3/accuracies.jpeg">
   <div class="figcaption">
-    The gap between the training and validation accuracy indicates the amount of overfitting. Two possible cases are shown in the diagram on the left. The blue validation error curve shows very small validation accuracy compared to the training accuracy, indicating strong overfitting (note, it's possible for the validation accuracy to even start to go down after some point). When you see this in practice you probably want to increase regularization (stronger L2 weight penalty, more dropout, etc.) or collect more data. The other possible case is when the validation accuracy tracks the training accuracy fairly well. This case indicates that your model capacity is not high enough: make the model larger by increasing the number of parameters.
+	훈련/검증 정확도의 차이는 오버피팅의 정도를 가리킬 수 있다. 두 가능한 경우는 그림의 왼쪽에 나타나 있다. 파란색 (검증 오류) 곡선은 훈련 정확도에 비하여 매우 낮은 검증 정확도를 보여주고 있는데, 이는 강한 과적합의 가능성을 시사한다 (어떤 지점 이후에 검증 정확도가 갑자기 떨어질 수 있는 것도 가능하다). 실제로 당신이 이 현상을 보게 되면 아마 정규화(regularization)을 쓰거나 (더 강한 L2 벌점(penalty)나 드랍아웃 등) 데이터를 더 모으고 싶을 것이다. 다른 가능성으로는 검증 정확도가 훈련 정확도를 꽤 잘 따라가는 것이다. 이것은 당신의 모델의 수용량이 충분히 높지 않음을 시사할 수도 있다. 파라미터(웨이트)의 개수를 늘려서 모형을 더 크게 만들어 봐라.
   </div>
   <div style="clear:both"></div>
 </div>
 
 <a name='ratio'></a>
-#### Ratio of weights:updates
+#### 웨이트의 현재값과 변화량의 비율 (Ratio of weights:updates)
 
-The last quantity you might want to track is the ratio of the update magnitudes to to the value magnitudes. Note: *updates*, not the raw gradients (e.g. in vanilla sgd this would be the gradient multiplied by the learning rate). You might want to evaluate and track this ratio for every set of parameters independently. A rough heuristic is that this ratio should be somewhere around 1e-3. If it is lower than this then the learning rate might be too low. If it is higher then the learning rate is likely too high. Here is a specific example:
+마지막으로, 웨이트의 현재 크기와 업데이트로 인한 변화량의 크기를 비교해 볼 수도 있다. (Note: 그냥 날 것의 그라디언트 값이 아니라, 웨이트의 *변화량*이다 (이를테면 vanilla SGD에서는 학습 속도(learning rate)와 그라디언트의 곱이다).) 모든 파라미터(의 집합)마다 독립적으로 이 비율을 추적/계산하고 싶은가? 대충 짚자면 이 비율은 1e-3 근처여야 한다. 이보다 낮으면 학습 속도(learning rate)가 너무 낮은 것이다. 이보다 크면 학습 속도가 너무 크다. 특정한 예를 들자면 아래와 같다:
 
 ~~~python
 # assume parameter vector W and its gradient vector dW
@@ -154,49 +160,50 @@ W += update # the actual update
 print update_scale / param_scale # want ~1e-3
 ~~~
 
-Instead of tracking the min or the max, some people prefer to compute and track the norm of the gradients and their updates instead. These metrics are usually correlated and often give approximately the same results.
+최솟값이나 최댓값을 추적할 수도 있고, 그라디언트와 업데이트값의 놈(norm)을 계산하고 추적할 수도 있다. 이 지표들은 대개 연관성이 높아서 거의 비슷한 결과를 준다.  
 
 <a name='distr'></a>
-#### Activation / Gradient distributions per layer
+#### 층별 활성값 및 그라디언트의 분포 (Activation / Gradient distributions per layer)
 
-An incorrect initialization can slow down or even completely stall the learning process. Luckily, this issue can be diagnosed relatively easily. One way to do so is to plot activation/gradient histograms for all layers of the network. Intuitively, it is not a good sign to see any strange distributions - e.g. with tanh neurons we would like to see a distribution of neuron activations between the full range of [-1,1], instead of seeing all neurons outputting zero, or all neurons being completely saturated at either -1 or 1.
+올바르지 않은 초기값 설정(initialization)은 학습 과정을 느리게 하거나 완전히 망칠 수 있다. 운좋게도 이 이슈는 상대적으로 쉽게 분석할 수 있다.  한 방법은 활성값/그라디언트값의 히스토그램을 망(network)의 모든 층(layer)마다 그려보는 것이다. 직관적으로 생각해 보면, 만일 이상한 분포가 나오면 좋은 징조가 아닐 수 있다 - 이를테면, tanh 뉴런(neuron)에서는 활성값이 [-1,1]의 전 범위에 걸쳐 분산되어 있는 모습을 보고 싶다. 혹시 모든 활성값이 0을 내놓거나 -1 혹은 1에 집중되어 있으면 문제가 있는 것이다.
 
 
 <a name='vis'></a>
-#### First-layer Visualizations
+#### 첫번째 층의 시각화 (First-layer Visualizations)
 
-Lastly, when one is working with image pixels it can be helpful and satisfying to plot the first-layer features visually:
+마지막으로, 만일 당신이 이미지 픽셀에 관련된 일을 한다면 첫 층의 특징(feature)들을 시각화하는 것이 많은 도움이 될 수도 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn3/weights.jpeg" width="43%" style="margin-right:10px;">
   <img src="{{site.baseurl}}/assets/nn3/cnnweights.jpg" width="49%">
   <div class="figcaption">
-    Examples of visualized weights for the first layer of a neural network. <b>Left</b>: Noisy features indicate could be a symptom: Unconverged network, improperly set learning rate, very low weight regularization penalty. <b>Right:</b> Nice, smooth, clean and diverse features are a good indication that the training is proceeding well.
+    신경망 첫 층의 웨이트값(weight)를 시각화한 에. <b>좌측</b>: 특징값(feature)에 잡음(noise)이 많을 때 나타날 수 있는 증상: 수렴하지 않은 망(network), 적절하지 않은 학습 속도(learning rate), 매우 낮은 정규화 페널티(regularization penalty). <b>우측:</b> 부드럽고 깨끗하며 다양한 피쳐값들이 보이는 경우 훈련이 잘 진행되고 있다는 지표일 수 있다.
   </div>
 </div>
 
 <a name='update'></a>
-### Parameter updates
+### 파라미터값의 업데이트 (Parameter updates)
 
-Once the analytic gradient is computed with backpropagation, the gradients are used to perform a parameter update. There are several approaches for performing the update, which we discuss next.
+수식적으로 그라디언트값은 역전파(backpropagation)으로 계산되고 이는 파라미터값 업데이트를 위해 사용된다. 업데이트를 수행하는 몇 접근법들이 있는데 후술하겠다.
 
-We note that optimization for deep networks is currently a very active area of research. In this section we highlight some established and common techniques you may see in practice, briefly describe their intuition, but leave a detailed analysis outside of the scope of the class. We provide some further pointers for an interested reader.
+딥 네트워크에서의 최적화 문제는 지금 가장 활발히 연구가 진행되고 있는 분야이다. 이 섹션에서는 (당신이 자주 보았을) 공통적으로 자주 쓰이는 테크닉과 그것들의 직관적인 아이디어를 살펴 본다. 디테일한 사항은 수업의 범위를 넘으므로 다루지 않는다. 흥미 있는 독자는 후에 등장할 몇 참고문헌을 봐도 좋다.
+
 
 <a name='sgd'></a>
-#### SGD and bells and whistles
+#### SGD와 벨, 호루라기(?) (SGD and bells and whistles)
 
-**Vanilla update**. The simplest form of update is to change the parameters along the negative gradient direction (since the gradient indicates the direction of increase, but we usually wish to minimize a loss function). Assuming a vector of parameters `x` and the gradient `dx`, the simplest update has the form:
+**바닐라 업데이트 (Vanilla update)**. 가장 간단한 업데이트 형태는 그라디언트의 반대방향으로 파라미터를 업데이트하는 것이다(왜냐하면 그라디언트는 증가하는 방향을 가리키니까. 그렇지만 우리는 손실함수를 최소화하고 싶어한다). 파라미터의 벡터를  `x`라 하고 그라디언트를  `dx`라 쓰면, 가장 간단한 업데이트는 다음과 같:
 
 ~~~python
 # Vanilla update
 x += - learning_rate * dx
 ~~~
 
-where `learning_rate` is a hyperparameter - a fixed constant. When evaluated on the full dataset, and when the learning rate is low enough, this is guaranteed to make non-negative progress on the loss function.
+여기서 학습속도 `learning_rate` 는 하이퍼파라미터(hyperparamter)이고 고정된 상수이다. 만일 `dx`가 전체 데이터셋에서 계산되고 학습 속도가 충분히 작을 때, 최소한 나쁜 프로세스는 아님을 보장한다.
 
-**Momentum update** is another approach that almost always enjoys better converge rates on deep networks. This update can be motivated from a physical perspective of the optimization problem. In particular, the loss can be interpreted as a the height of a hilly terrain (and therefore also to the potential energy since $U = mgh$ and therefore $ U \propto h $ ). Initializing the parameters with random numbers is equivalent to setting a particle with zero initial velocity at some location. The optimization process can then be seen as equivalent to the process of simulating the parameter vector (i.e. a particle) as rolling on the landscape.
+**모멘텀 업데이트 (Momentum update)**는, 적어도 딥 네트워크에서는, 바닐라 업데이트보다 더 잘 수렴한다. 이 방법은 최적화 문제(optimization problem)를 물리학적 관점에서 바라보는 데서 유래했다. 자세히 말하자면, 손실함수는 구릉지대에서 높이에 해당한다 (그래서 포텐셜 에너지에도 대응되는데 $U = mgh$이고 따라서 $ U \propto h $이다). 파라미터의 초기값을 임의로 정하는 것은 입자를 어떤 위치에서 0의 속도로 세팅하는 것과 똑같다. 이 상황에서 최적화 과정은 파라미터 벡터(즉 입자)를 '굴리는' 과정과 동일하다 볼 수 있다. 
 
-Since the force on the particle is related to the gradient of potential energy (i.e. $F = - \nabla U $ ), the **force** felt by the particle is precisely the (negative) **gradient** of the loss function. Moreover, $F = ma $ so the (negative) gradient is in this view proportional to the acceleration of the particle. Note that this is different from the SGD update shown above, where the gradient directly integrates the position. Instead, the physics view suggests an update in which the gradient only directly influences the velocity, which in turn has an effect on the position:
+입자에 작용하는 힘(force)은 포텐셜 에너지의 그라디언트 (즉 $F = - \nabla U $ )와 관련되어 있으므로, 입자가 느끼는 **힘**은은 정확하게 손실함수의 그라디언트(의 반대부호)이다. 게다가 $F = ma$이므로 그 그라디언트(의 반대부호)는 입자에 작용하는 가속도에 비례한다. 위에서의 SGD와 다른 점을 발견했는가? SGD는 위치값(현재 파라미터값 - 역자주)에 그라디언트가 직접 합쳐진다. 모멘텀 업데이트는, 물리학적 관점에서, 그라디언트가 오직 속도(velocity)에만 직접적으로 영향을 주고 속도가 위치값(position)에 영향을 줄 것을  제안하고 있다:
 
 ~~~python
 # Momentum update
@@ -204,22 +211,24 @@ v = mu * v - learning_rate * dx # integrate velocity
 x += v # integrate position
 ~~~
 
-Here we see an introduction of a `v` variable that is initialized at zero, and an additional hyperparameter (`mu`). As an unfortunate misnomer, this variable is in optimization referred to as *momentum* (its typical value is about 0.9), but its physical meaning is more consistent with the coefficient of friction. Effectively, this variable damps the velocity and reduces the kinetic energy of the system, or otherwise the particle would never come to a stop at the bottom of a hill. When cross-validated, this parameter is usually set to values such as [0.5, 0.9, 0.95, 0.99]. Similar to annealing schedules for learning rates (discussed later, below), optimization can sometimes benefit a little from momentum schedules, where the momentum is increased in later stages of learning. A typical setting is to start with momentum of about 0.5 and anneal it to 0.99 or so over multiple epochs.
+여기서 우리는 새로운 변수 `v`를 도입하고 0으로 초기화했다. `mu`는 또 하나의 하이퍼파라미터(hyperparamter)이다.
+정확한 용어는 아니지만 우리는 이 `mu`를 *모멘텀(운동량)*이라 부르기로 한다. (보통 0.9로 설정한다) 사실 마찰 계수라고 부르는 쪽이 더 `mu`에 맞기는 하다. 이 변수는 입자의 현재 속도 및 운동에너지를 효과적으로 감소시키도록 도와준다. 이게 없다면 아마 입자는 언덕의 아래쪽에 절대 멈추지 못할 것이다. 만약 모멘텀을 교차검증(cross-validation)으로 선택한다면 보통 [0.5, 0.9, 0.95, 0.99]로 설정한다. 에폭에 따라 모멘텀의 크기를 조정하면 최적화(optimization)에 더 이로울 수도 있다. 이를테면 시작할 때는 0.5의 모멘텀으로 시작하되 몇 번의 에폭을 지나면 0.99로 설정할 수도 있다. 이는 학습 속도의 스케줄을 담금질(annealing)하는 것과도 비슷하다. (뒤에 논의할 예정이다)        
 
-> With Momentum update, the parameter vector will build up velocity in any direction that has consistent gradient.
+> 모멘텀 업데이트를 쓰면, (파라미터 벡터가 업데이트되는) 속도의 방향은 그라디언트들이 많이 향하는 방향으로 축적될 것이다.
 
-**Nesterov Momentum** is a slightly different version of the momentum update has recently been gaining popularity. It enjoys stronger theoretical converge guarantees for convex functions and in practice it also consistenly works slightly better than standard momentum.
 
-The core idea behind Nesterov momentum is that when the current parameter vector is at some position `x`, then looking at the momentum update above, we know that the momentum term alone (i.e. ignoring the second term with the gradient) is about to nudge the parameter vector by `mu * v`. Therefore, if we are about to compute the gradient, we can treat the future approximate position `x + mu * v` as a "lookahead" - this is a point in the vicinity of where we are soon going to end up. Hence, it makes sense to compute the gradient at `x + mu * v` instead of at the "old/stale" position `x`. 
+최근에 많은 주목을 받은 **Nesterov 모멘텀 (Nesterov Momentum)** 은 모멘텀 업데이트와 조금 다르다. 볼록함수(convex function)에서는 이 업데이트가 강력한 이론적 성질을 갖고 있고, 실제상황에서도 보통의 모멘텀 방법론보다 (많은 경우에서) 조금 더 낫다고 한다.  
+
+Nesterov 모멘텀의 핵심 아이디어는 다음과 같다. 만약 현재 파라미터 벡터가 `x`라는 어떤 위치에 있다고 치고 위의 모멘텀 엄데이트를 보자. 만일 위의 integrate velocity 과정에서 뒷항없이 `v = mu * v` 만 있다고 가정하면, 다음 위치로 `x + mu * v`가 "예견"될 것이다. 그러므로 이전의/오래된 위치 `x` 대신 예견된 위치 `x + mu * v`에서 그라디언트를 계산하는 것이 합리적일 수 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn3/nesterov.jpeg">
   <div class="figcaption">
-    Nesterov momentum. Instead of evaluating gradient at the current position (red circle), we know that our momentum is about to carry us to the tip of the green arrow. With Nesterov momentum we therefore instead evaluate the gradient at this "looked-ahead" position.
+	Nesterov 모멘텀. 지금 위치(붉은색 원)에서 모멘텀에 의해 연두색 화살표의 끝점으로 이동할 상황이다. Nesterov 모멘텀은  현재 위치에서 그라디언트를 계산하는 것이 아니라 이 "예견된" 위치(화살표 끝점)에서 그라디언트를 계산한다.	
   </div>
 </div>
 
-That is, in a slightly awkward notation, we would like to do the following:
+다른 말로 하면, 다음과 같이 계산한다. (notation이 조금 이상하다.) 
 
 ~~~python
 x_ahead = x + mu * v
@@ -228,7 +237,7 @@ v = mu * v - learning_rate * dx_ahead
 x += v
 ~~~
 
-However, in practice people prefer to express the update to look as similar to vanilla SGD or to the previous momentum update as possible. This is possible to achieve by manipulating the update above with a variable transform `x_ahead = x + mu * v`, and then expressing the update in terms of `x_ahead` instead of `x`. That is, the parameter vector we are actually storing is always the ahead version. The equations in terms of `x_ahead` (but renaming it back to `x`) then become:
+실제 용례에서 사람들은 위 식을 재서술하여 바닐라 SGD나 이전의 모멘텀 업데이트의 꼴처럼 고칠 때가 있다. 이를테면 `x_ahead = x + mu * v` 부분을 손보고, 업데이트를 `x`의 관점이 아닌 `x_ahead`의 관점에서 서술하면 (그리고 `x_ahead`를 `x`로 고쳐쓰면) 아래와 같다. 사족을 달자면 이제 우리가 저장하는 파라미터 벡터는 언제나 "예견된" 버전이다.
 
 ~~~python
 v_prev = v # back this up
@@ -236,51 +245,54 @@ v = mu * v - learning_rate * dx # velocity update stays the same
 x += -mu * v_prev + (1 + mu) * v # position update changes form
 ~~~
 
-We recommend this further reading to understand the source of these equations and the mathematical formulation of Nesterov's Accelerated Momentum (NAG):
+
+위 식들의 출처와 Nesterov's Accelerated Momentum의 수학적 서술에 대해 더 알아보고 싶으면 아래를 참조하라.
 
 - [Advances in optimizing Recurrent Networks](http://arxiv.org/pdf/1212.0901v2.pdf) by Yoshua Bengio, Section 3.5.
 - [Ilya Sutskever's thesis](http://www.cs.utoronto.ca/~ilya/pubs/ilya_sutskever_phd_thesis.pdf) (pdf) contains a longer exposition of the topic in section 7.2
 
 
 <a name='anneal'></a>
-#### Annealing the learning rate
+#### 학습 속도 담금질 (Annealing the learning rate)
 
-In training deep networks, it is usually helpful to anneal the learning rate over time. Good intuition to have in mind is that with a high learning rate, the system contains too much kinetic energy and the parameter vector bounces around chaotically, unable to settle down into deeper, but narrower parts of the loss function. Knowing when to decay the learning rate can be tricky: Decay it slowly and you'll be wasting computation bouncing around chaotically with little improvement for a long time. But decay it too aggressively and the system will cool too quickly, unable to reach the best position it can. There are three common types of implementing the learning rate decay:
+깊은 신경망의 훈련에서 시간에 따라 훈련 속도를 담금질(anneal, 조정)하는 건 언제나 도움이 된다. 이 직관을 기억해 두면 도움이 된다: 높은 학습 속도에서는, 전체 시스템이 너무 높은 운동 에너지를 갖고 있어서 파라미터 벡터가 혼돈스럽게 튀고, (손실 함수의) 좁고 깊숙한 골짜기 안으로 쏙 들어가서 정착하기 힘들다.     
+그러면 학습 속도를 언제 줄일 것인가? 좀 tricky할 것이다. 우선 천천히 줄여봐라. 그러면 오랜 시간동안 거의 제자리에서 혼돈스럽게 왔다갔다 할 것이다. 그렇지만 너무 빨리 줄이면 전체 시스템이 너무 빨리 식을 것이고, 갈 수 있는 최적의 장소에 도달하지 못할 수 있다. 학습속도를 감소시키는 방법은 보통 다음 세 가지가 있다. 
 
-- **Step decay**: Reduce the learning rate by some factor every few epochs. Typical values might be reducing the learning rate by a half every 5 epochs, or by 0.1 every 20 epochs. These numbers depend heavily on the type of problem and the model. One heuristic you may see in practice is to watch the validation error while training with a fixed learning rate, and reduce the learning rate by a constant (e.g. 0.5) whenever the validation error stops improving.
-- **Exponential decay.** has the mathematical form $\alpha = \alpha_0 e^{-k t}$, where $\alpha_0, k$ are hyperparameters and $t$ is the iteration number (but you can also use units of epochs).
-- **1/t decay** has the mathematical form $\alpha = \alpha_0 / (1 + k t )$ where $a_0, k$ are hyperparameters and $t$ is the iteration number.
+- **계단식 감소 (step decay)**: 몇 에폭마다 일정량만큼 학습 속도를 줄인다. 전형적으로는 5 에폭마다 반으로 줄이거나 20 에폭마다 1/10씩 줄이기도 한다. 이 숫자들은 전적으로 문제와 모형의 타입에 의존한다. 실전에서는, 우선 고정된 학습 속도로 검증오차(validation error)를 살펴보다가, 검증오차가 개선되지 않을 때마다 학습 속도를 감소시키는 (이를테면 0.5정도?) 방법을 택하기도 한다.
+- **지수적 감소 (exponential decay)**는 $\alpha = \alpha_0 e^{-k t}$ 꼴을 뜻한다. 여기서 $\alpha_0, k$는 초모수(hyperparameter)이고  $t$는 반복 횟수이다 (물론 에폭을 단위로 해도 된다.)
+- **1/t 감소**는 $\alpha = \alpha_0 / (1 + k t )$ 꼴을 뜻하고 여기서 $a_0, k$는 초모수이고 $t$는 반복 횟수이다.
 
-In practice, we find that the step decay dropout is slightly preferable because the hyperparameters it involves (the fraction of decay and the step timings in units of epochs) are more interpretable than the hyperparameter $k$. Lastly, if you can afford the computational budget, err on the side of slower decay and train for a longer time.
+실전에서는 계단식 감소 방식이 조금 더 선호될만 한데, 관련된 초모수들(몇 에폭마다 감소시킬지, 그리고 감소율)이 $k$에 비해서 해석이 더 쉽기 때문이다. 마지막으로, 계산 자원이 충분하다면, 감소율을 좀 더 낮춰서 오랜 시간동안 (모형을) 훈련시켜라.
 
 <a name='second'></a>
-#### Second order methods
+#### 이차 근사 방법들 (Second order methods)
 
-A second, popular group of methods for optimization in context of deep learning is based on [Newton's method](http://en.wikipedia.org/wiki/Newton%27s_method_in_optimization), which iterates the following update:
+딥러닝의 맥락에서 두 번째로 대중적인 최적화 방법은 [뉴턴 방법(Newton's method)](http://en.wikipedia.org/wiki/Newton%27s_method_in_optimization)인데 다음과 같은 업데이트 방식을 뜻한다:
 
 $$
 x \leftarrow x - [H f(x)]^{-1} \nabla f(x)
 $$
 
-Here, $H f(x)$ is the [Hessian matrix](http://en.wikipedia.org/wiki/Hessian_matrix), which is a square matrix of second-order partial derivatives of the function. The term $\nabla f(x)$ is the gradient vector, as seen in Gradient Descent. Intuitively, the Hessian describes the local curvature of the loss function, which allows us to perform a more efficient update. In particular, multiplying by the inverse Hessian leads the optimization to take more aggressive steps in directions of shallow curvature and shorter steps in directions of steep curvature. Note, crucially, the absence of any learning rate hyperparameters in the update formula, which the proponents of these methods cite this as a large advantage over first-order methods.
+여기서 $H f(x)$는 [헤시안 행렬(Hessian matrix)](http://en.wikipedia.org/wiki/Hessian_matrix)로, (다변수 함수의) 2차 미분으로 이루어진 정방행렬을 뜻한다. $\nabla f(x)$ 항은 (그라디언트 감소 Gradient Descent에서 보았던) 그라디언트 벡터이다. 직관적으로 헤시안 행렬은 어떤 함수의 국지적인 곡률(curvature)을 뜻하고 이 정보로 울이는 더 효율적인 업데이트를 수행할 수 있다. 특별히, 헤시안 행렬의 역행렬을 곱함으로써, 휨이 약한 방향으로는 더 공격적으로 그리고 휨이 강한 방향으로는 짧게짧게 움직일 수 있다. 일차 근사 방법에 비해 뉴턴 방법이 가지는 강점은, 위의 업데이트 공식을 보면 학습 속도(learning rate)에 대한 초모수(hyperparameter)가 없다는 것이다. 
 
-However, the update above is impractical for most deep learning applications because computing (and inverting) the Hessian in its explicit form is a very costly process in both space and time. For instance, a Neural Network with one million parameters would have a Hessian matrix of size [1,000,000 x 1,000,000], occupying approximately 3725 gigabytes of RAM. Hence, a large variety of *quasi-Newton* methods have been developed that seek to approximate the inverse Hessian. Among these, the most popular is [L-BFGS](http://en.wikipedia.org/wiki/Limited-memory_BFGS), which uses the information in the gradients over time to form the approximation implicitly (i.e. the full matrix is never computed).
+그렇지만 위의 업데이트는 거의 모든 실제 상황에서는 쓸모가 없는 게, 공식 그대로(explicitly) 헤시안 행렬을 계산한다면 (역행렬을 취하는 일 포함하여) 상상도 못할 시간과 메모리가 필요하다. 예를 들면, 모수가 백만개 정도인 신경망은 [1,000,000 x 1,000,000] 크기의 헤시안 행렬을 필요로 하고 이는 3725GB의 램(RAM)을 필요로 한다. 그 결과로 다양한 *유사-뉴턴* 방법이 역-헤시안 행렬을 근사하기 위해 고안되었다. 이 방법론들 중 [L-BFGS](http://en.wikipedia.org/wiki/Limited-memory_BFGS)가 가장 대중적이다. L-BFGS는 시간(iteration)에 따른 그라디언트의 변화를 (간접적으로) 근사에 이용한다. 즉, 전체 행렬은 절대 계산되지 않는다.
 
-However, even after we eliminate the memory concerns, a large downside of a naive application of L-BFGS is that it must be computed over the entire training set, which could contain millions of examples. Unlike mini-batch SGD, getting L-BFGS to work on mini-batches is more tricky and an active area of research.
+그렇다고 해도, 메모리 걱정을 없앴다고 할지라도, L-BFGS를 그냥 적용하자면 큰 단점이 하나 있는데 바로 전체 훈련 집합(traning set) 전체를 대상으로 계산하여야 한다는 점이다. 수백만 개체가 있는 그 데이터셋 말이다. 배치(Batch)-SGD와는 달리, 미니배치(mini-batch)에서 L-BFGS가 작동하게 하는 방법은 좀더 꼼수를 필요로 하며 활발한 연구 분야이다.
+ 
+**실제 상황에서는**, 지금까지는, L-BFGS나 다른 이차 근사 방법이 대규모 딥러닝이나 CNN에서 사용되지는 않는 게 보통이다. 표준적으로는 SGD와 그 변종들 (모멘텀이나 Nesterov's 모멘텀)이 훨씬 간단하고 계산도 빨라서 많이 사용된다.  
 
-**In practice**, it is currently not common to see L-BFGS or similar second-order methods applied to large-scale Deep Learning and Convolutional Neural Networks. Instead, SGD variants based on (Nesterov's) momentum are more standard because they are simpler and scale more easily.
+추가 참고문헌:
 
-Additional references:
-
-- [Large Scale Distributed Deep Networks](http://research.google.com/archive/large_deep_networks_nips2012.html) is a paper from the Google Brain team, comparing L-BFGS and SGD variants in large-scale distributed optimization.
-- [SFO](http://arxiv.org/abs/1311.2115) algorithm strives to combine the advantages of SGD with advantages of L-BFGS.
+- [Large Scale Distributed Deep Networks](http://research.google.com/archive/large_deep_networks_nips2012.html)은 Google Brain team이 출판하였다. 대규모 분산 최적화 (large-scale distributed optimization)에서 L-BFGS와 SGD(의 변형 방법론들)을 비교하였다.
+- [SFO](http://arxiv.org/abs/1311.2115) 알고리즘은 SGD와 L-BFGS의 장점을 혼합하고자 노력하였다.
 
 <a name='ada'></a>
-#### Per-parameter adaptive learning rate methods
+#### 파라미터별 데이터-맞춤 학습 속도 (Per-parameter adaptive learning rates)
 
-All previous approaches we've discussed so far manipulated the learning rate globally and equally for all parameters. Tuning the learning rates is an expensive process, so much work has gone into devising methods that can adaptively tune the learning rates, and even do so per parameter. Many of these methods may still require other hyperparameter settings, but the argument is that they are well-behaved for a broader range of hyperparameter values than the raw learning rate. In this section we highlight some common adaptive methods you may encounter in practice:
+지금까지 논의된 접근법들은 모든 파라미터에 똑같은 학습 속도를 적용하였다. 학습 속도의 튜닝(tuning)은 계산이 많은(expensive) 작업인지라, 데이터에 맞추어(adaptively) 자동으로 학습 속도를 정하는 방법을 찾고자 많은 사람들이 노력하였다. 파라미터별로 학습 속도를 다르게 하고 이를 데이터-맞춤으로 정하려는 노력들 또한 있었다. 이러한 방법들은 보통 또다른 초모수(hyperparameter) 세팅이 필요하긴 하지만, 이 초모수는 넓은 범위에서 잘 작동하는 편이라 일반적인 학습 속도 튜닝보다는 덜 까다롭다. 이번 절에서는 실전에서 마주칠 수도 있는 주요 데이터-맞춤 방법들을 조망해본다:
 
-**Adagrad** is an adaptive learning rate method originally proposed by [Duchi et al.](http://jmlr.org/papers/v12/duchi11a.html).
+ 
+**Adagrad**는 데이터-맞춤 학습속도 조정 방법 중 하나이고 [Duchi et al.](http://jmlr.org/papers/v12/duchi11a.html) 에서 처음 제안되었다.
 
 ~~~python
 # Assume the gradient dx and parameter vector x
@@ -288,18 +300,18 @@ cache += dx**2
 x += - learning_rate * dx / (np.sqrt(cache) + eps)
 ~~~
 
-Notice that the variable `cache` has size equal to the size of the gradient, and keeps track of per-parameter sum of squared gradients. This is then used to normalize the parameter update step, element-wise. Notice that the weights that receive high gradients will have their effective learning rate reduced, while weights that receive small or infrequent updates will have their effective learning rate increased. Amusingly, the square root operation turns out to be very important and without it the algorithm performs much worse. The smoothing term `eps` (usually set somewhere in range from 1e-4 to 1e-8) avoids division by zero. A downside of Adagrad is that in case of Deep Learning, the monotonic learning rate usually proves too aggressive and stops learning too early.
+위에서 변수 `cache`는 그라디언트 벡터의 사이즈와 동일한 사이즈를 갖고 있다. `cache`의 각 성분은 (해당 성분에 대응하는) 그라디언트의 제곱값들을 계속 추적하고 있고, 파라미터 업데이트에서, 성분별로, 일종의 표준화 기능을 수행한다. 주목할 점은, 높은 그라디언트값을 갖는 웨이트값(weight)들은 점점 실질적인 학습속도(effective learning rate)가 감소하고 / 그라디언트 값이 낮거나 업데이트가 거의 없는 웨이트값들은 실질 학습속도가 증가한다는 것이다. 놀랍게도 제곱근(square root) 연산이 여기서 중요한 비중을 차지한다. 제곱근이 없다면 알고리즘의 성능이 많이 나빠진다. 변수 `eps`는 분모가 너무 0에 가깝지 않도록 안정화 역할을 하고 주로 1e-4에서 1e-8의 값이 할당된다. Adagrad의 단점이 있다면, 딥러닝의 경우에는, 학습 속도가 단조적이라 너무 한 방향으로 급진적(aggressive)으로 나가거나, 혹은 학습을 너무 빨리 멈출 가능성도 있다.
 
-**RMSprop.** RMSprop is a very effective, but currently unpublished adaptive learning rate method. Amusingly, everyone who uses this method in their work currently cites [slide 29 of Lecture 6](http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf) of Geoff Hinton's Coursera class. The RMSProp update adjusts the Adagrad method in a very simple way in an attempt to reduce its aggressive, monotonically decreasing learning rate. In particular, it uses a moving average of squared gradients instead, giving:
+**RMSprop.** RMSprop는 매우 효과적이지만 아직 출판되지 않은 데이터-맞춤 학습속도 조정 방법이다. 현재는 Geoff Hinton의 Coursera 강의 중 다음 슬라이드를 인용한다: [slide 29 of Lecture 6](http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf) (역자 주: 2016년 8월 현재에도 검색결과 논문을 찾지는 못하였습니다. Goodfellow et al.의 책 [<Deep Learning>](http://www.deeplearningbook.org)의 8장에 줄글로 설명이 있습니다.) RMSProp 업데이트는 Adagrad를 간단히 조정하여 급진적이고 단조감소하는 학습속도를 경감시켰다. 어떻게? 제곱 그라디언트의 평균(Adagrad처럼)이 아니라, 이동평균(moving average)을 사용한다:
 
 ~~~python
 cache = decay_rate * cache + (1 - decay_rate) * dx**2
 x += - learning_rate * dx / (np.sqrt(cache) + eps)
 ~~~
 
-Here, `decay_rate` is a hyperparameter and typical values are [0.9, 0.99, 0.999]. Notice that the `x+=` update is identical to Adagrad, but the `cache` variable is a "leaky". Hence, RMSProp still modulates the learning rate of each weight based on the magnitudes of its gradients, which has a beneficial equalizing effect, but unlike Adagrad the updates do not get monotonically smaller.
+여기서 `decay_rate`는 초모수이고 보통 [0.9, 0.99, 0.999] 중 하나의 값을 취한다. 주목할 점은 `+=` 업데이트는 Adagrad와 동등하지만, `cache`가 "어디선가 샌다". 따라서 RMSProp은 여전히 각 웨이트값을 (그것의 과거 그라디언트) 값으로) 조정하여 성분별로 실질 학습속도를 비슷하게 만드는 효과는 갖고 있지만, Adagrad처럼 학습 속도가 단조적으로 줄지는 않는다.
 
-**Adam.** [Adam](http://arxiv.org/abs/1412.6980) is a recently proposed update that looks a bit like RMSProp with momentum. The (simplified) update looks as follows:
+**Adam.** [Adam](http://arxiv.org/abs/1412.6980)은 최근에 제안된 방법인데 RMSProp에 모멘텀(momentum)을 혼합한 것처럼 보인다. 간단하게 쓰면 업데이트는 다음과 같다:
 
 ~~~python
 m = beta1*m + (1-beta1)*dx
@@ -307,82 +319,83 @@ v = beta2*v + (1-beta2)*(dx**2)
 x += - learning_rate * m / (np.sqrt(v) + eps)
 ~~~
 
-Notice that the update looks exactly as RMSProp update, except the "smooth" version of the gradient `m` is used instead of the raw (and perhaps noisy) gradient vector `dx`. Recommended values in the paper are `eps = 1e-8`, `beta1 = 0.9`, `beta2 = 0.999`. In practice Adam is currently recommended as the default algorithm to use, and often works slightly better than RMSProp. However, it is often also worth trying SGD+Nesterov Momentum as an alternative. The full Adam update also includes a *bias correction* mechanism, which compensates for the fact that in the first few time steps the vectors `m,v` are both initialized and therefore biased at zero, before they fully "warm up". We refer the reader to the paper for the details, or the course slides where this is expanded on.
+업데이트는 RMSProp의 업데이트 방식과 정확히 같아 보이는데, 그냥 (노이즈가 껴있을 수도 있는) 그라디언트 `dx` 대신에 "안정화된" 버전인 `m`이 사용되었다는 점이 다르다. 논문에 따르면 추천되는 초모수값들은  `eps = 1e-8`, `beta1 = 0.9`, `beta2 = 0.999`이다. 실전에서 Adam은 기본 알고리즘으로 추천되고 있고, 가끔은 RMSProp보다 조금 더 잘 하기도 한다. 그러나 SGD+Nesterov Momentum도 대안으로 해볼만 하다. Adam 업데이트 절차에는 *편향 보정(bias correction)* 매커니즘이 반영되어 있는데, 벡터 `m,v`가 나중에 완벽하게 "워밍업" 되기 전에 (iteration의 처음 몇 스텝에서) 초기화되어 0에 편향되어 있다는 점을 보상하기 위해서이다. 자세한 사항은 논문이나 강의 코스 슬라이드를 참조하라.
 
-Additional References:
+추가 참고문헌:
 
-- [Unit Tests for Stochastic Optimization](http://arxiv.org/abs/1312.6055) proposes a series of tests as a standardized benchmark for stochastic optimization.
+- [Unit Tests for Stochastic Optimization](http://arxiv.org/abs/1312.6055)는 (지금까지 제안된) 확률적 최적화(stochastic optimization) 방법들을 평가하는 표준적인 테스트들을 제안하고 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn3/opt2.gif" width="49%" style="margin-right:10px;">
   <img src="{{site.baseurl}}/assets/nn3/opt1.gif" width="49%">
   <div class="figcaption">
-    Animations that may help your intuitions about the learning process dynamics. <b>Left:</b> Contours of a loss surface and time evolution of different optimization algorithms. Notice the "overshooting" behavior of momentum-based methods, which make the optimization look like a ball rolling down the hill. <b>Right:</b> A visualization of a saddle point in the optimization landscape, where the curvature along different dimension has different signs (one dimension curves up and another down). Notice that SGD has a very hard time breaking symmetry and gets stuck on the top. Conversely, algorithms such as RMSprop will see very low gradients in the saddle direction. Due to the denominator term in the RMSprop update, this will increase the effective learning rate along this direction, helping RMSProp proceed. Images credit: <a href="https://twitter.com/alecrad">Alec Radford</a>.
+	이 동영상이 학습 과정에서의 동역학(dynamics)를 직관적으로 이해하는데 도움이 되길 바란다.
+    <b>왼쪽:</b> 손실 함수의 등고선 위에서 각 최적화 알고리즘들의 시간(iteration)에 따른 변화. 모멘텀-기반 방법론들의 "급가속" 행동들을 주목하라. 이게 최적화를 마치 언덕을 내려가는 공처럼 보이게 만든다. <b>오른쪽:</b> 목적함수에 안장점(saddle point)가 있을 때의 시각화. 안장점은 그라디언트가 0이지만 헤시안 행렬의 고유치(eigenvalue)에 양수/음수가 섞여있을 때 발생한다. SGD는 안장점에서 빠져나오는 데 매우 힘든 시간을 겪는다. 반대로, RMSprop같은 알고리즘들은 안장의 방향으로 매우 작은 그라디언트를 마주하게 되지만 분모-표준화 성질 덕분에 이 방향의 실질 학습속도를 높아질 수 있고 따라서 이 방향으로 빠져나올 수 있다. Images credit: <a href="https://twitter.com/alecrad">Alec Radford</a>.
   </div>
 </div>
 
 <a name='hyper'></a>
-### Hyperparameter optimization
+### 초모수 최적화 (Hyperparameter optimization)
 
-As we've seen, training Neural Networks can involve many hyperparameter settings. The most common hyperparameters in context of Neural Networks include:
+일전에 본 대로, 신경망(neural network)의 훈련에는 많은 초모수(hyperparamter) 설정이 관련된다. 신경망 관련 논의에서 가장 빈번하게 등장하는 초모수는 다음과 같다:
 
-- the initial learning rate
-- learning rate decay schedule (such as the decay constant)
-- regularization strength (L2 penalty, dropout strength)
+- 학습속도의 초기값(the initial learning rate)
+- 학습속도 경감 계획, 이를테면 경감 상수 (learning rate decay schedule (such as the decay constant))
+- L2나 드랍아웃 페널티의 정규화 강도 (regularization strength (L2 penalty, dropout strength))
 
-But as saw, there are many more relatively less sensitive hyperparameters, for example in per-parameter adaptive learning methods, the setting of momentum and its schedule, etc. In this section we describe some additional tips and tricks for performing the hyperparameter search:
+그렇지만 역시 본 대로, 덜 민감한 초모수들도 있는데, 이들은 파라미터별 데이터-맞춤 학습 방법, 모멘텀이나 관련 스케쥴 등에서 등장하였다. 이번 절에서는 초모수 최적화를 수행하기 위한 추가적인 팁이나 트릭들을 언급한다:
 
-**Implementation**. Larger Neural Networks typically require a long time to train, so performing hyperparameter search can take many days/weeks. It is important to keep this in mind since it influences the design of your code base. One particular design is to have a **worker** that continuously samples random hyperparameters and performs the optimization. During the training, the worker will keep track of the validation performance after every epoch, and writes a model checkpoint (together with miscellaneous training statistics such as the loss over time) to a file, preferably on a shared file system. It is useful to include the validation performance directly in the filename, so that it is simple to inspect and sort the progress. Then there is a second program which we will call a **master**, which launches or kills workers across a computing cluster, and may additionally inspect the checkpoints written by workers and plot their training statistics, etc.
+**코드 구성 단계에서 (Implementation)**. 큰 신경망은 대개 긴 학습시간이 걸리고, 따라서 초모수 검색에는 며칠, 몇 주가 걸릴 수도 있다. 코드를 짤 때 이 점을 염두에 두는 것이 중요하다 (코드 베이스의 구성이 달라질 수도 있다). 하나 가능한 코드 구성은, 초모수를 임의로 선택하여 최적화를 수행하는 **일꾼**을 만드는 것이다. 이 일꾼에게 훈련 과정에서 매 에폭 뒤의 검증 성능을 쭉 추적하여 모형의 체크포인트들을 (다른 훈련 통계량들, 이를테면 시간에 따른 손실함수값들과 함께) 파일에 저장케 하라. 공유 파일 시스템 위에 저장하면 더 좋다. 검증 성능을 아예 직접 파일 이름에 써 놓는 것도 괜찮다. 그러면 과정이 더 단축되고 단순할 것이다. 그리고 **마스터**라 불릴 두번째 프로그램을 만들어서 계산 클러스터별로 일꾼들을 개시(launch)하거나 끝내(kill)게 하라. 혹은 마스터는 일꾼이 작성한 체크포인트들을 조사하고 훈련 통계량들로 그림을 그릴 수도 있다.
 
-**Prefer one validation fold to cross-validation**. In most cases a single validation set of respectable size substantially simplifies the code base, without the need for cross-validation with multiple folds. You'll hear people say they "cross-validated" a parameter, but many times it is assumed that they still only used a single validation set.
+**교차검증보다는 단일한 검증 집합 (Prefer one validation fold to cross-validation)**. 많은 경우에, 적당한 크기의 검증 집합을 설정해 두어 한 번만 검증하는 것이, 여러 번의 교차검증보다 코드를 단순화시킨다. 사람들이 "교차검증" 했다고 얘기해도, 많은 경우에 그 사람들은 단일한 검증 집합만 썼을 것이다.
 
-**Hyperparameter ranges**. Search for hyperparameters on log scale. For example, a typical sampling of the learning rate would look as follows: `learning_rate = 10 ** uniform(-6, 1)`. That is, we are generating a random random with a uniform distribution, but then raising it to the power of 10. The same strategy should be used for the regularization strength. Intuitively, this is because learning rate and regularization strength have multiplicative effects on the training dynamics. For example, a fixed change of adding 0.01 to a learning rate has huge effects on the dynamics if the learning rate is 0.001, but nearly no effect if the learning rate when it is 10. This is because the learning rate multiplies the computed gradient in the update. Therefore, it is much more natural to consider a range of learning rate multiplied or divided by some value, than a range of learning rate added or subtracted to by some value. Some parameters (e.g. dropout) are instead usually searched in the original scale (e.g. `dropout = uniform(0,1)`).
+**초모수의 범위 (Hyperparameter ranges)**. 로그 스케일로 초모수를 찾아라. 예를 들어, 학습 속도의 선정은 전형적으로 다음과 같이 보일 수도 있다: `learning_rate = 10 ** uniform(-6, 1)`. 다시 말하면, 균등분포에서 난수를 뽑은 뒤에 이를 10의 제곱값으로 취하는 것이다. 같은 전략이 정규화 강도 검색에도 사용되어야 한다. 왜냐고? 직관적으로, 학습 속도와 정규화 강도는 학습 동역학에 배수적인(multiplicative) 효과가 있기 때문이다 - 학습 속도는 업데이트에서 그라디언트에 곱해지는 수이다. 이를테면, 최초 학습 속도가 0.001이면 이를 0.01씩 더할 경우 동역학에 큰 영향을 미치지만 최초 학습 속도가 10인 경우에는 거의 영향이 없다. 그러므로 학습 속도의 범위는 어떤 값을 계속 곱하거나 나누는 것이 (빼거나 더하는 것보다) 더 자연스럽다. 대신에, 어떤 초모수들(이를테면 드랍아웃)은 보통의 스케일에서 검색된다. (예. `dropout = uniform(0,1)`).
 
-**Prefer random search to grid search**. As argued by Bergstra and Bengio in [Random Search for Hyper-Parameter Optimization](http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf), "randomly chosen trials are more efficient for hyper-parameter optimization than trials on a grid". As it turns out, this is also usually easier to implement.
+**그리드 검색보다는 임의 검색 (Prefer random search to grid search)**은 Bergstra and Bengio가 쓴 다음 논문에서 논의되었다: [Random Search for Hyper-Parameter Optimization](http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf), "randomly chosen trials are more efficient for hyper-parameter optimization than trials on a grid". 그리고 밝혀진 대로, 이게 더 구현하기 쉽다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/nn3/gridsearchbad.jpeg" width="50%">
   <div class="figcaption">
-    Core illustration from <a href="http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">Random Search for Hyper-Parameter Optimization</a> by Bergstra and Bengio. It is very often the case that some of the hyperparameters matter much more than others (e.g. top hyperparam vs. left one in this figure). Performing random search rather than grid search allows you to much more precisely discover good values for the important ones.
+	Bergstra and Bengio의 논의의 핵심을 도식화하였다. (<a href="http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">Random Search for Hyper-Parameter Optimization</a>). 어떤 초모수는 다른 것보다 훨씬 중요할 때가 많다 (예. 오른쪽 그림에서 꼭대기에 있는 초모수 vs. 왼쪽 그림). 그리드 검색보다는 임의 검색이 좋고 중요한 초모수 발견을 더 용이하게 한다.
   </div>
 </div>
 
-**Careful with best values on border**. Sometimes it can happen that you're searching for a hyperparameter (e.g. learning rate) in a bad range. For example, suppose we use `learning_rate = 10 ** uniform(-6, 1)`. Once we receive the results, it is important to double check that the final learning rate is not at the edge of this interval, or otherwise you may be missing more optimal hyperparameter setting beyond the interval.
+**가장 좋은 값이 경계에 있으면 조심하라 (Careful with best values on border)**. 가끔은 초모수 검색 범위  (이를테면 학습 속도) 가 나쁘게 설정되었을 수도 있다. 이를테면, `learning_rate = 10 ** uniform(-6, 1)`을 사용한다고 가정하여 보자. 한번 결과를 받았으면, 최종 학습 속도가 이 구간의 끝에 있지 않아야 한다. 그렇지 않으면, 당신은 (구간 밖에 있는) 더 최적의 초모수를 놓치고 있을는지도 모른다.
 
-**Stage your search from coarse to fine**. In practice, it can be helpful to first search in coarse ranges (e.g. 10 ** [-6, 1]), and then depending on where the best results are turning up, narrow the range. Also, it can be helpful to perform the initial coarse search while only training for 1 epoch or even less, because many hyperparameter settings can lead the model to not learn at all, or immediately explode with infinite cost. The second stage could then perform a narrower search with 5 epochs, and the last stage could perform a detailed search in the final range for many more epochs (for example).
+**성긴 검색에서 촘촘한 검색으로 (Stage your search from coarse to fine)**. 실전에서는, 처음에는 널찍한 범위에서 검색을 하다가 (예. 10 ** [-6, 1]), 좋은 결과가 어디에서 발생하냐에 따라 범위를 좁힐 수도 있다. 또한, 처음의 성긴 검색에서는 1 에폭이나 혹은 더 적게만 훈련하는 게 도움이 될 수도 있는데, 왜냐하면 많은 초모수 세팅에서는 하나도 학습하는 게 없을 수도 있거나 즉시 무한대의 손실함수값으로 폭발할 수도 있기 때문이다. 두 번째 단계는 좀더 좁은 범위에서의 검색을, 5 에폭 정도로, 할 수 있을 것이다. 그리고 마지막 검색에서는 좁은 범위에서 많은 에폭의 훈련을 수행해도 좋겠다.
 
-**Bayesian Hyperparameter Optimization** is a whole area of research devoted to coming up with algorithms that try to more efficiently navigate the space of hyperparameters. The core idea is to appropriately balance the exploration - exploitation trade-off when querying the performance at different hyperparameters. Multiple libraries have been developed based on these models as well, among some of the better known ones are [Spearmint](https://github.com/JasperSnoek/spearmint), [SMAC](http://www.cs.ubc.ca/labs/beta/Projects/SMAC/), and [Hyperopt](http://jaberg.github.io/hyperopt/). However, in practical settings with ConvNets it is still relatively difficult to beat random search in a carefully-chosen intervals. See some additional from-the-trenches discussion [here](http://nlpers.blogspot.com/2014/10/hyperparameter-search-bayesian.html).
+**베이지안 초모수 최적화 (Bayesian Hyperparameter Optimization)**는 초모수 공간을 좀 더 효율적으로 항해하는 방법을 고안하기 위한 분야이다. 핵심 아이디어는 초모수들의 성능을 평가할 때  탐험(exploration)-개발(exploitation)의 상충(trade-off)에서 적절한 균형을 찾는 것이다. 많은 라이브러리들이 이 모형에 기반하여 개발되었고 그 중에 잘 알려진 것은 [Spearmint](https://github.com/JasperSnoek/spearmint), [SMAC](http://www.cs.ubc.ca/labs/beta/Projects/SMAC/), 그리고 [Hyperopt](http://jaberg.github.io/hyperopt/)이다. 그러나, ConvNet 관련된 실전 세팅에서는 아직 조심스레 선택된 구간에서의 임의 검색이 상대적으로 더 뛰어나다. 딥러닝의 최전선 참호에서(from-the-trenches) 진행중인 논의를 참조하라. [here](http://nlpers.blogspot.com/2014/10/hyperparameter-search-bayesian.html).
 
 <a name='eval'></a>
-## Evaluation
+## 평가
 
 <a name='ensemble'></a>
-### Model Ensembles
+### 모형 앙상블 (Model Ensembles)
 
-In practice, one reliable approach to improving the performance of Neural Networks by a few percent is to train multiple independent models, and at test time average their predictions. As the number of models in the ensemble increases, the performance typically monotonically improves (though with diminishing returns). Moreover, the improvements are more dramatic with higher model variety in the ensemble. There are a few approaches to forming an ensemble:
+실전에서, 신경망(neural network)의 성능을 몇 퍼센트 끌어올릴 수 있는 믿을 만한 방법이 하나 있는데 바로 여러 개의 독립적인 모형을 만들고 테스트 때 그들의 평균 예측을 취하는 것이다. 앙상블에 관여하는 모형이 많아지면, 보통 성능은 단조적으로 개선된다 (비록 개선 정도가 점점 떨어질지라도). 게다가, 앙상블 내에서 모형의 다양함이 늘어날수록 성능의 개선은 더 극적이다. 아래는 앙상블을 구축하는 몇 가지 방법이다:
 
-- **Same model, different initializations**. Use cross-validation to determine the best hyperparameters, then train multiple models with the best set of hyperparameters but with different random initialization. The danger with this approach is that the variety is only due to initialization.
-- **Top models discovered during cross-validation**. Use cross-validation to determine the best hyperparameters, then pick the top few (e.g. 10) models to form the ensemble. This improves the variety of the ensemble but has the danger of including suboptimal models. In practice, this can be easier to perform since it doesn't require additional retraining of models after cross-validation
-- **Different checkpoints of a single model**. If training is very expensive, some people have had limited success in taking different checkpoints of a single network over time (for example after every epoch) and using those to form an ensemble. Clearly, this suffers from some lack of variety, but can still work reasonably well in practice. The advantage of this approach is that is very cheap.
-- **Running average of parameters during training**. Related to the last point, a cheap way of almost always getting an extra percent or two of performance is to maintain a second copy of the network's weights in memory that maintains an exponentially decaying sum of previous weights during training. This way you're averaging the state of the network over last several iterations. You will find that this "smoothed" version of the weights over last few steps almost always achieves better validation error. The rough intuition to have in mind is that the objective is bowl-shaped and your network is jumping around the mode, so the average has a higher chance of being somewhere nearer the mode.
+- **같은 모형, 다른 초기화 (Same model, different initializations)**. 교차 검증으로 최고의 초모수를 결정한 다음에, 같은 초모수를 이용하되 초기값을 임의로 다양하게 여러 모형을 훈련한다. 이 접근법의 위험은, 모형의 다양성이 오직 다양한 초기값에서만 온다는 것이다.
+- **교차 검증 동안 발견되는 최고의 모형들 (Top models discovered during cross-validation)**. 교차 검증으로 최고의 초모수(들)를 결정한 다음에, 몇 개의 최고 모형을 선정하여 (예. 10개) 이들로 앙상블을 구축한다. 이 방법은 앙상블 내의 다양성을 증대시키나, 준-최적 모형을 포함할 수도 있는 위험이 있다. 실전에서는 이를 수행하는 게 (위보다) 쉬운 편인데, 교차 검증 뒤에 추가적인 모형의 재훈련이 필요없기 때문이다. 
+- **한 모형에서 다른 체크포인트들을 (Different checkpoints of a single model)**. 만약 훈련이 매우 값비싸면, 어떤 사람들은 단일한 네트워크의 체크포인트들을 (이를테면 매 에폭 후) 앙상블하여 제한적인 성공을 거둔 바 있음을 기억해 두라. 명백하게 이 방법은 다양성이 떨어지지만, 실전에서는 합리적으로 잘 작동할 수 있다. 이 방법은 매우 간편하고 저렴하다는 것이 장점이다. 
+- **훈련 동안의 모수값들에 평균을 취하기 (Running average of parameters during training)**. 훈련 동안 (시간에 따른) 웨이트 값들의 지수 하강 합(exponentially decaying sum)을 저장하는 제 2의 네트워크를 만들면 언제나 몇 퍼센트의 이득을 값싸게 취할 수 있다. 이 방식으로 당신은 최근 몇 iteration 동안의 네트워크에 평균을 취한다고 생각할 수도 있다. 마지막 몇 스텝 동안의 웨이트값들을 이렇게 "안정화" 시킴으로써 당신은 언제나 더 나은 검증 오차를 얻을 수 있다. 거친 직관으로 생각하자면, 목적함수는 볼(bowl)-모양이고 당신의 네트워크는 극값(mode) 주변을 맴돌 것이므로, 평균을 취하면 극값에 더 가까운 어딘가에 다다를 기회가 더 많아질 것이다.
 
-One disadvantage of model ensembles is that they take longer to evaluate on test example. An interested reader may find the recent work from Geoff Hinton on ["Dark Knowledge"](https://www.youtube.com/watch?v=EK61htlw8hY) inspiring, where the idea is to "distill" a good ensemble back to a single model by incorporating the ensemble log likelihoods into a modified objective.
+모형 앙상블의 단점이 하나 있다면 테스트 샘플에 모형을 적용할 때 평가(evaluation)에 더 시간이 걸린다는 점이다. 흥미로운 독자는 Geoff Hinton의 ["Dark Knowledge"](https://www.youtube.com/watch?v=EK61htlw8hY)에서 영감을 얻을 수도 있겠다. 여기서의 아이디어는 좋은 앙상블 모형을 하나의 모형으로 "증류"하는 것인데, 앙상블 모형의 로그-가능도(log-likelihood)를 어떤 변형된 목적함수로 통합하는 작업과 관련이 있다.
 
 <a name='summary'></a>
-## Summary
+## 요약 (Summary)
 
-To train a Neural Network:
+신경망(neural network)를 훈련하기 위하여:
 
-- Gradient check your implementation with a small batch of data and be aware of the pitfalls.
-- As a sanity check, make sure your initial loss is reasonable, and that you can achieve 100% training accuracy on a very small portion of the data
-- During training, monitor the loss, the training/validation accuracy, and if you're feeling fancier, the magnitude of updates in relation to parameter values (it should be ~1e-3), and when dealing with ConvNets, the first-layer weights.
-- The two recommended updates to use are either SGD+Nesterov Momentum or Adam.
-- Decay your learning rate over the period of the training. For example, halve the learning rate after a fixed number of epochs, or whenever the validation accuracy tops off.
-- Search for good hyperparameters with random search (not grid search). Stage your search from coarse (wide hyperparameter ranges, training only for 1-5 epochs), to fine (narrower rangers, training for many more epochs)
-- Form model ensembles for extra performance
+- 코드를 짜는 중간중간에 작은 배치로 그라디언트를 체크하고, 뜻하지 않게 튀어나올 위험을 인지하고 있으라.
+- 코드가 제대로 돌아가는지 확인하는 방법으로, 손실함수값의 초기값이 합리적인지 그리고 데이터의 일부분으로 100&%의 훈련 정확도를 달성할 수 있는지 확인하라.
+- 훈련 동안, 손실함수와 훈련/검증 정확도를 계속 살펴보고, (이게 좀 더 멋져 보이면) 현재 파라미터 값 대비 업데이트 값 또한 살펴보라 (대충 ~1e-3 정도 되어야 한다). 만약 ConvNet을 다루고 있다면, 첫 층의 웨이트값도 살펴보라.
+- 업데이트 방법으로 추천하는 건 SGD+Nesterov Momentum 혹은 Adam이다.
+- 학습 속도를 훈련 동안 계속 하강시켜라. 예를 들면, 정해진 에폭 수 뒤에 (혹은 검증 정확도가 상승하다가 하강세로 꺾이면) 학습 속도를 반으로 깎아라. 
+- 초모수 검색은 그리드 검색이 아닌 임의 검색으로 수행하라. 처음에는 성긴 규모에서 탐색하다가 (넓은 초모수 범위, 1-5 에폭 정도만 학습), 점점 촘촘하게 검색하라 (좁은 범위, 더 많은 에폭에서 학습).
+- 추가적인 개선을 위하여 모형 앙상블을 구축하라.
 
 <a name='add'></a>
-## Additional References
+## 추가 참고문헌
 
 - [SGD](http://research.microsoft.com/pubs/192769/tricks-2012.pdf) tips and tricks from Leon Bottou
 - [Efficient BackProp](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) (pdf) from Yann LeCun
