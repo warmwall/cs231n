@@ -225,7 +225,7 @@ dropout이 처음 소개된 이후로 실제 적용 사례에서 나타난 성�
 
 **forward pass에서 노이즈 관련하여** 넓은 의미에서 보자면 dropout은 신경망의 forward pass에서 stochastic(확률적) 접근을 도입하는 것으로 볼 수 있다. testing 과정에서 노이즈 감소하게 되는데 이는 *분석적 해석*은 `확률 $p$ 만큼 곱해진 결과`라고 볼 수 있고, *수치적 해석*은 `랜덤하게 선택된 forward pass를 여러차례 수행한 결과의 평균`이라고 볼 수 있다. 동일한 관점에서의 연구들 중 하나인 [DropConnect](http://cs.nyu.edu/~wanli/dropc/)를 보면 forward pass 동안 가중치 값을 0으로 설정하는 것으로 볼 수 있다. Convolutional 신경망에서 dropout과 함께 stochastic(확률적) 풀링(pooling), 부분 풀링, 데이터 augmentation 등의 기법을 같이 사용하여 추가적인 성능 향상을 기대할 수 있다. 이에 대해서는 뒤에서 더 자세히 살펴 볼 것이다.
 
-**Bias resularization**. Linear Classification 파트에서 설명했듯이, bias 텀은 regularization을 적용하지 않는 것이 일반적인데, 이는 학습된 가중치와 곱셈 연산을 하지 않기 때문에 목적 함수에서 데이터 dimension을 결정하는 요소로 작용하지 않는다. 그러나 실제 적용 사례들을 보면 bias 텀에 regularization을 적용하였을 때 심각한 성능 저하가 나타나는 경우는 극히 드문 것으로 알려져 있다. 이는 모든 가중치 텀의 갯수와 비교했을 때 bais 텀의 갯수는 무시할 만한 수준이어서 so the classifier can "afford to" use the biases if it needs them to obtain a better data loss.
+**Bias regularization**. Linear Classification 파트에서 설명했듯이, bias 텀은 regularization을 적용하지 않는 것이 일반적인데, 이는 학습된 가중치와 곱셈 연산을 하지 않기 때문에 목적 함수에서 데이터 dimension을 결정하는 요소로 작용하지 않는다. 그러나 실제 적용 사례들을 보면 bias 텀에 regularization을 적용하였을 때 심각한 성능 저하가 나타나는 경우는 극히 드문 것으로 알려져 있다. 이는 모든 가중치 텀의 갯수와 비교했을 때 bais 텀의 갯수는 무시할 만한 수준이어서 so the classifier can "afford to" use the biases if it needs them to obtain a better data loss.
 
 **레이어별 정규화**. 마지막 출력 레이어를 제외하고 레이어를 각각 따로 정규화 하는 것은 일반적인 방법이 아니다. 레이어 별 정규화를 적용한 논문수도 상대적으로 매우 적은 편이다.
 

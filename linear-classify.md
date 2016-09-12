@@ -30,68 +30,68 @@ Table of Contents:
 
 ### 이미지에서 라벨 스코어로의 파라미터화된 매핑(mapping)
 
-The first component of this approach is to define the score function that maps the pixel values of an image to confidence scores for each class. We will develop the approach with a concrete example. As before, let's assume a training dataset of images $ x_i \in R^D $, each associated with a label $ y_i $. Here $ i = 1 \dots N $ and $ y_i \in \{ 1 \dots K \} $. That is, we have **N** examples (each with a dimensionality **D**) and **K** distinct categories. For example, in CIFAR-10 we have a training set of **N** = 50,000 images, each with **D** = 32 x 32 x 3 = 3072 pixels, and **K** = 10, since there are 10 distinct classes (dog, cat, car, etc). We will now define the score function $f: R^D \mapsto R^K$ that maps the raw image pixels to class scores.
+먼저, 이미지의 픽셀 값들을 각 클래스에 대한 신뢰도 점수 (confidence score)로 매핑시켜주는 스코어 함수를 정의한다. 여기서는 구체적인 예시를 통해 각 과정을 살펴볼 것이다. 이전 노트에서처럼, 학습 데이터셋 이미지들인 $$ x_i \in R^D $$가 있고, 각각이 해당 라벨 $$ y_i $$를 갖고 있다고 하자. 여기서 $$ i = 1 \dots N $$, 그리고 $$ y_i \in \{ 1 \dots K \} $$이다. 즉, 학습할 데이터 **N** 개가 있고 (각각은 **D** 차원의 벡터이다.), 총 **K** 개의 서로 다른 카테고리(클래스)가 있다. 예를 들어, CIFAR-10 에서는 **N** = 50,000 개의 학습 데이터 이미지들이 있고, 각각은 **D** = 32 x 32 x 3 = 3072 픽셀로 이루어져 있으며, (dog, cat, car, 등등) 10개의 서로 다른 클래스가 있으므로 **K** = 10 이다. 이제 이미지의 픽셀값들을 클래스 스코어로 매핑해 주는 스코어 함수 $$f: R^D \mapsto R^K$$ 을 아래에 정의할 것이다.
 
-**Linear classifier.** In this module we will start out with arguably the simplest possible function, a linear mapping:
+**선형 분류기 (Linear Classifier).** 이 파트에서는 가장 단순한 함수라고 할 수 있는 선형 매핑 함수로 시작할 것이다.
 
 $$
 f(x_i, W, b) =  W x_i + b
 $$
 
-In the above equation, we are assuming that the image $x_i$ has all of its pixels flattened out to a single column vector of shape [D x 1]. The matrix **W** (of size [K x D]), and the vector **b** (of size [K x 1]) are the **parameters** of the function. In CIFAR-10, $x_i$ contains all pixels in the i-th image flattened into a single [3072 x 1] column, **W** is [10 x 3072] and **b** is [10 x 1], so 3072 numbers come into the function (the raw pixel values) and 10 numbers come out (the class scores). The parameters in **W** are often called the **weights**, and **b** is called the **bias vector** because it influences the output scores, but without interacting with the actual data $x_i$. However, you will often hear people use the terms *weights* and *parameters* interchangeably.
+위 식에서, 우리는 각 이미지 $$x_i$$의 모든 픽셀들이 [D x 1] 모양을 갖는 하나의 열 벡터로 평평하게 했다고 가정하였다. [K x D] 차원의 행렬 **W** 와 [K x 1] 차원의 벡터 **b** 는 이 함수의 **파라미터** 이다. CIFAR-10 에서 $$x_i$$ 는 i번째 이미지의 모든 픽셀을 [3072 x 1] 크기로 평평하게 모양을 바꾼 열 벡터가 될 것이고, **W** 는 [10 x 3072], **b** 는 [10 x 1] 여서 3072 개의 숫자가 함수의 입력(이미지 픽셀 값들)으로 들어와 10개의 숫자가 출력(클래스 스코어)으로 나오게 된다. **W** 안의 파라미터들은 보통 **weight** 라고 불리고, **b** 는 **bias 벡터** 라 불리는데, 그 이유는 b가 실제 입력 데이터인 $$x_i$$와의 아무런 상호 작용이 없이 출력 스코어 값에는 영향을 주기 때문이다. 그러나 보통 일반적으로 사람마다 *weight* 와 *파라미터(parameter)* 두 개의 용어를 혼용해서 사용하는 경우가 많다.
 
-There are a few things to note:
+여기서 몇 가지 짚고 넘어갈 점이 있다.
 
-- First, note that the single matrix multiplication $W x_i$ is effectively evaluating 10 separate classifiers in parallel (one for each class), where each classifier is a row of **W**.
-- Notice also that we think of the input data $ (x_i, y_i) $ as given and fixed, but we have control over the setting of the parameters **W,b**. Our goal will be to set these in such way that the computed scores match the ground truth labels across the whole training set. We will go into much more detail about how this is done, but intuitively we wish that the correct class has a score that is higher than the scores of incorrect classes.
-- An advantage of this approach is that the training data is used to learn the parameters **W,b**, but once the learning is complete we can discard the entire training set and only keep the learned parameters. That is because a new test image can be simply forwarded through the function and classified based on the computed scores.
-- Lastly, note that to classifying the test image involves a single matrix multiplication and addition, which is significantly faster than comparing a test image to all training images.
+- 먼저, 한 번의 행렬곱 $$W x_i$$ 만으로 10 개의 로 다른 분류기(각 클래스마다 하나씩)를 병렬로 계산하는 효과를 나타내고 있다는 점을 살펴보자. 이 때 **W** 행렬의 각 열이 각각 하나의 분류기가 된다.
+- 또한, 여기서 입력 데이터 $$ (x_i, y_i) $$는 주어진 값이고 고정되어 있지만, 파라미터들인 **W, b** 의 세팅은 우리가 조절할 수 있다는 점을 생각하자. 우리의 최종 목표는 전체 학습 데이터에 대해서 우리가 계산할 스코어 값들이 실제 (ground truth) 라벨과 가장 잘 일치하도록 이 파라미터 값들을 정하는 것이다. 이후(아래)에 자세한 방법에 대해 다룰 것이지만, 직관적으로 간략하게 말하자면 올바르게 잘 맞춘 클래스가 틀린 클래스들보다 더 높은 스코어를 갖도록 조절할 것이다.
+- 이러한 방식의 장점은, 학습 데이터가 파라미터들인 **W, b** 를 학습하는데 사용되지만 학습이 끝난 이후에는 학습된 파라미터들만 남기고, 학습에 사용된 데이터셋은 더 이상 필요가 없다는 (따라서 메모리에서 지워버려도 된다는) 점이다. 그 이유는, 새로운 테스트 이미지가 입력으로 들어올 때 위의 함수에 의해 스코어를 계산하고, 계산된 스코어를 통해 바로 분류되기 때문이다.
+- 마지막으로, 테스트 이미지를 분류할 때 행렬곱 한 번과 덧셈 한 번을 하는 계산만 필요하다는 점을 주목하자. 이것은 테스트 이미지를 모든 학습 이미지와 비교하는 것에 비하면 매우 빠르다.
 
-> Foreshadowing: Convolutional Neural Networks will map image pixels to scores exactly as shown above, but the mapping ( f ) will be more complex and will contain more parameters.
+> 스포일러: 컨볼루션 신경망(Convolutional Neural Networks)은 정확히 위의 방식처럼 이미지 픽셀 값을 스코어 값으로 매핑시켜 주지만, 매핑시켜주는 함수 ( f ) 가 훨씬 더 복잡해지고 더 많은 수의 파라미터를 갖고 있을 것이다.
 
 <a name='interpret'></a>
 
 ### 선형 분류기 분석하기
 
-Notice that a linear classifier computes the score of a class as a weighted sum of all of its pixel values across all 3 of its color channels. Depending on precisely what values we set for these weights, the function has the capacity to like or dislike (depending on the sign of each weight) certain colors at certain positions in the image. For instance, you can imagine that the "ship" class might be more likely if there is a lot of blue on the sides of an image (which could likely correspond to water). You might expect that the "ship" classifier would then have a lot of positive weights across its blue channel weights (presence of blue increases score of ship), and negative weights in the red/green channels (presence of red/green descreases the score of ship).
+선형 분류기는 클래스 스코어를 이미지의 모든 픽셀 값들의 가중치 합으로 스코어를 계산하고, 이 때 각 픽셀의 3 개의 색 채널을 모두 고려하는 것에 주목하자. 이 때 각 가중치(파라미터, weights)에 어떤 값을 주느냐에 따라 스코어 함수는 이미지의 특정 위치에서 특정 색깔을 선호하거나 선호하지 않거나 (가중치 값의 부호에 따라) 할 수 있다. 예를 들어, "ship" 클래스는 이미지의 가장자리 부분에 파란색이 많은 경우에 (강, 바다 등의 물에 해당하는 색) 스코어 값이 더 높아질 것이라고 추측해 볼 수 있을 것이다. 즉, "ship" 분류기는 파란색 채널의 파라미터(weights)들이 양의 값을 갖고 (파란색이 존재하는 것이 ship의 스코어를 증가시키도록), 빨강/초록색 채널에는 음의 값을 갖는 파라미터들이 많을 것이라고 (빨간색/초록색의 존재는 ship의 스코어를 감소시키도록) 예상할 수 있다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/imagemap.jpg">
-  <div class="figcaption">An example of mapping an image to class scores. For the sake of visualization, we assume the image only has 4 pixels (4 monochrome pixels, we are not considering color channels in this example for brevity), and that we have 3 classes (red (cat), green (dog), blue (ship) class). (Clarification: in particular, the colors here simply indicate 3 classes and are not related to the RGB channels.) We stretch the image pixels into a column and perform matrix multiplication to get the scores for each class. Note that this particular set of weights W is not good at all: the weights assign our cat image a very low cat score. In particular, this set of weights seems convinced that it's looking at a dog.</div>
+  <div class="figcaption"> 이미지에서 클래스 스코어로의 매핑 예시. 시각화를 위해서, 이미지가 픽셀 4 개 만으로 이루어져 있고 (색 채널도 고려하지 않고, 단일 채널이라고 생각하자), 3 개의 클래스가 있다고 하자 (빨강 (cat), 초록 (dog), 파랑 (ship) 클래스). (주: 여기에서의 색깔은 3 개의 클래스를 나타내기 위함이고, RGB 채널과는 전혀 상관이 없다.) 이제 이미지 픽셀들을 펼쳐서 열 벡터로 만들고 각 클래스에 대해 행렬곱을 수행하면 스코어 값을 얻을 수 있다. 여기서 정해준 파라미터 W 값들은 매우 안 좋은 예시인 것을 확인하자: 현재의 파라미터로는 고양이(cat) 이미지를 매우 낮은 cat 스코어를 갖도록 한다. 이 경우, 현재의 파라미터 값은 우리가 dog 이미지를 보고있다고 생각하고 있다.</div>
 </div>
 
-**Analogy of images as high-dimensional points.** Since the images are stretched into high-dimensional column vectors, we can interpret each image as a single point in this space (e.g. each image in CIFAR-10 is a point in 3072-dimensional space of 32x32x3 pixels). Analogously, the entire dataset is a (labeled) set of points.
+**이미지와 고차원 공간 상의 점에 대한 비유.** 이미지들을 고차원 열 벡터로 펼쳤기 때문에, 우리는 각 이미지를 이 고차원 공간 상의 하나의 점으로 생각할 수 있다 (e.g. CIFAR-10 데이터셋의 각 이미지는 32x32x3 개의 픽셀로 이루어진 3072-차원 공간 상의 한 점이 된다). 마찬가지로 생각하면, 전체 데이터셋은 라벨링된 고차원 공간 상의 점들의 집합이 될 것이다.
 
-Since we defined the score of each class as a weighted sum of all image pixels, each class score is a linear function over this space. We cannot visualize 3072-dimensional spaces, but if we imagine squashing all those dimensions into only two dimensions, then we can try to visualize what the classifier might be doing:
+위에서 각 클래스에 대한 스코어를 이미지의 모든 픽셀에 대한 가중치 합으로 정의했기 때문에, 각 클래스 스코어는 이 공간 상에서의 선형 함수값이 된다. 3072-차원 공간은 시각화할 수 없지만, 2차원으로 축소시켰다고 상상해보면 우리의 분류기가 어떤 행동을 하는지를 시각화하려고 시도해볼 수 있을 것이다:
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/pixelspace.jpeg">
   <div class="figcaption">
-    Cartoon representation of the image space, where each image is a single point, and three classifiers are visualized. Using the example of the car classifier (in red), the red line shows all points in the space that get a score of zero for the car class. The red arrow shows the direction of increase, so all points to the right of the red line have positive (and linearly increasing) scores, and all points to the left have a negative (and linearly decreasing) scores.
+    이미지 공간의 시각화. 각 이미지는 하나의 점에 해당되고, 3 개의 분류기가 표시되어 있다. 자동차(car) 분류기(빨간색)를 예로 들어보면, 빨간색 선이 이 공간 상에서 car 클래스에 대해 스코어 값이 0이 되는 모든 점을 나타낸 것이다. 빨간색 화살표는 스코어가 증가하는 방향을 나타낸 것으로, 빨간색 선의 오른쪽에 있는 점들은 양의 (그리고 선형적으로 증가하는) 스코어 값을 가질 것이고, 왼쪽의 점들은 음의 (그리고 선형적으로 감소하는) 스코어 값을 가질 것이다.
   </div>
 </div>
 
-As we saw above, every row of $W$ is a classifier for one of the classes. The geometric interpretation of these numbers is that as we change one of the rows of $W$, the corresponding line in the pixel space will rotate in different directions. The biases $b$, on the other hand, allow our classifiers to translate the lines. In particular, note that without the bias terms, plugging in $ x_i = 0 $ would always give score of zero regardless of the weights, so all lines would be forced to cross the origin.
+위에서 살펴보았듯이, $$W$$의 각 행은 각각의 클래스를 구별하는 분류기이다. 각 행에 있는 숫자들을 기하학적으로 해석해보자면, 우리가 $$W$$의 하나의 행을 바꾸면 픽셀 공간에서 해당하는 선이 다른 방향으로 회전할 것이다. 반면에, bias인 $$b$$는 분류기가 그 선들을 평행이동 할 수 있도록 해준다. 특히, bias가 없다면 $$ x_i = 0 $$가 입력으로 들어왔을 때 파라미터 값들에 상관없이 항상 스코어가 0이 될 것이고, 모든 (분류) 선들이 원점을 지나야만 할 것이다.
 
-**Interpretation of linear classifiers as template matching.**
-Another interpretation for the weights $W$ is that each row of $W$ corresponds to a *template* (or sometimes also called a *prototype*) for one of the classes. The score of each class for an image is then obtained by comparing each template with the image using an *inner product* (or *dot product*) one by one to find the one that "fits" best. With this terminology, the linear classifier is doing template matching, where the templates are learned. Another way to think of it is that we are still effectively doing Nearest Neighbor, but instead of having thousands of training images we are only using a single image per class (although we will learn it, and it does not necessarily have to be one of the images in the training set), and we use the (negative) inner product as the distance instead of the L1 or L2 distance.
+**템플릿 매칭으로서의 선형 분류기 해석.**
+파라미터 $$W$$에 대해 다른 방식으로 해석해보면, $$W$$의 각 행은 각 클래스별 *템플릿* (또는 *프로토타입*)에 해당된다. 이미지의 각 클래스 스코어는 각 템플릿들을 이미지와 *내적(inner product, 또는 dot product)*을 통해 하나하나 비교함으로써 계산되고, 이 스코어를 기준으로 가장 잘 "맞는" 것이 무엇인지 정한다. 즉, 선형 분류기가 결국 템플릿 매칭을 하고 있고, 각 템플릿이 학습을 통해 배워진다고 할 수 있다. 또다른 방식으로 생각해보면, 우리는 Nearest Neighbor와 비슷한 것을 하고 있는데, 수 천 장의 학습 이미지를 갖고 있지 않고 각 클래스마다 한 장의 이미지만 사용한다고 볼 수 있다. (다만, 그 이미지를 학습하고, 학습 데이터셋에 실제로 존재하는 이미지일 필요는 없다.) 이 때, 거리 함수로는 L1이나 L2 거리를 사용하지 않고 서로 내적한 것(의 반대 부호인 값)을 사용한다.
 
 <div class="fig figcenter fighighlight">
   <img src="{{site.baseurl}}/assets/templates.jpg">
   <div class="figcaption">
-    Skipping ahead a bit: Example learned weights at the end of learning for CIFAR-10. Note that, for example, the ship template contains a lot of blue pixels as expected. This template will therefore give a high score once it is matched against images of ships on the ocean with an inner product.
+    약간의 선행학습: CIFAR-10 데이터셋에 학습된 파라미터들의 시각화 예시. 예를 들어 ship 템플릿을 보면, 예상할 수 있듯이 많은 수의 파란색 픽셀들로 이루어져 있다는 점에 주목하자. 이 템플릿은 배(ship)가 바다 위에 떠있는 이미지와 내적을 통해 비교되었을 때, 높은 스코어 값을 가질 것이다.
   </div>
 </div>
 
-Additionally, note that the horse template seems to contain a two-headed horse, which is due to both left and right facing horses in the dataset. The linear classifier *merges* these two modes of horses in the data into a single template. Similarly, the car classifier seems to have merged several modes into a single template which has to identify cars from all sides, and of all colors. In particular, this template ended up being red, which hints that there are more red cars in the CIFAR-10 dataset than of any other color. The linear classifier is too weak to properly account for different-colored cars, but as we will see later neural networks will allow us to perform this task. Looking ahead a bit, a neural network will be able to develop intermediate neurons in its hidden layers that could detect specific car types (e.g. green car facing left, blue car facing front, etc.), and neurons on the next layer could combine these into a more accurate car score through a weighted sum of the individual car detectors.
+추가적으로, horse 템플릿은 머리가 두 개인 말(horse)이 있는 것처럼 보이는데, 이것은 데이터셋 안에 왼쪽을 보고 있는 말과 오른쪽을 보고 있는 말이 섞여있기 때문이다. 선형 분류기는 말에 대한 이 두 가지 모드를 하나의 템플릿으로 *합친* 것을 확인할 수 있다. 이와 비슷한 현상으로, car 분류기는 모든 방향 및 색깔의 자동차 모양들을 하나의 템플릿으로 합쳐 놓았다. 특히, 이 템플릿이 결과적으로 붉은 색을 띄는 것으로 보아 CIFAR-10 데이터셋에는 다른 색깔에 비해 빨간색 자동차가 더 많다는 점을 알 수 있다. 선형 분류기는 여러 가지 색깔의 자동차를 제대로 분류하기에는 너무 모델이 단순하지만, 나중에 배울 뉴럴 네트워크는 이를 해결할 수 있다. 약간만 미리 살펴보자면, 뉴럴 네트워크는 히든 레이어의 각 뉴런들이 특정 자동차 타입 (e.g. 왼쪽을 바라보고 있는 초록색 자동차, 정면을 보고 있는 파란색 차, 등등)을 검출하도록 할 수 있고, 다음 레이어의 뉴런들이 이 정보들을 종합하여 각각의 자동차 타입 검출기의 점수의 가중치 합을 통해 보다 정확한 (자동차에 대한) 스코어를 계산할 수 있다.
 
-**Bias trick.** Before moving on we want to mention a common simplifying trick to representing the two parameters $W,b$ as one. Recall that we defined the score function as:
+**Bias 트릭.** 다음 내용으로 넘어가기 전에, 두 파라미터 $$W, b$$를 하나로 표현하는 간단한 트릭을 소개한다. 앞에서 스코어 함수는 아래와 같이 정의되었다.
 
 $$
 f(x_i, W, b) =  W x_i + b
 $$
 
-As we proceed through the material it is a little cumbersome to keep track of two sets of parameters (the biases $b$ and weights $W$) separately. A commonly used trick is to combine the two sets of parameters into a single matrix that holds both of them by extending the vector $x_i$ with one additional dimension that always holds the constant $1$ - a default *bias dimension*. With the extra dimension, the new score function will simplify to a single matrix multiply:
+앞으로 내용을 전개해 나갈 때 두 가지 파라미터를 (bias $$b$$와 weight $$W$$) 매번 동시에 고려해야 한다면 표현이 번거로워진다. 흔히 사용하는 트릭은 이 두 파라미터들을 하나의 행렬로 합치고, $$x_i$$를 항상 $$1$$의 값을 갖는 한 차원 - 디폴트 *bias* 차원 - 을 늘리는 방식이다. 이 한 차원 추가하는 것으로, 새 스코어 함수는 행렬곱 한 번으로 계산이 가능해진다:
 
 $$
 f(x_i, W) =  W x_i
@@ -118,7 +118,7 @@ For example, going back to the example image of a cat and its scores for the cla
 
 <a name='svm'></a>
 
-#### Multiclass Support Vector Machine 손실함수수
+#### Multiclass Support Vector Machine 손실함수
 
 There are several ways to define the details of the loss function. As a first example we will first develop a commonly used loss called the **Multiclass Support Vector Machine** (SVM) loss. The SVM loss is set up so that the SVM "wants" the correct class for each image to a have a score higher than the incorrect classes by some fixed margin $\Delta$. Notice that it's sometimes helpful to anthropomorphise the loss functions as we did above: The SVM "wants" a certain outcome in the sense that the outcome would yield a lower loss (which is good).
 
@@ -339,16 +339,16 @@ where the probabilites are now more diffuse. Moreover, in the limit where the we
 
 ### 선형 분류 웹 데모
 
-<a href="http://vision.stanford.edu/teaching/cs231n/linear-classify-demo" style="text-decoration:none;">
 <div class="fig figcenter fighighlight">
-  <img src="{{site.baseurl}}/assets/classifydemo.jpeg">
+  <a href="http://vision.stanford.edu/teaching/cs231n/linear-classify-demo" style="text-decoration:none;">
+  <img src="{{site.baseurl}}/assets/classifydemo.jpeg"></a>
   <div class="figcaption">We have written an interactive web demo to help your intuitions with linear classifiers. The demo visualizes the loss functions discussed in this section using a toy 3-way classification on 2D data. The demo also jumps ahead a bit and performs the optimization, which we will discuss in full detail in the next section.
   </div>
 </div>
+
+
+<a name='summary'>
 </a>
-
-
-<a name='summary'></a>
 
 ### 요약
 
