@@ -1275,77 +1275,76 @@ In this particular case his goal is that
 260
 00:29:16,210 --> 00:29:22,210
 you know, you and I as humans can
-recognize blocks no matter how it's
+recognize blocks no matter how it's turned, right?
 
 261
 00:29:22,210 --> 00:29:28,009
-turned, right? We know it's the same
-block these two are the same block even
+We know it's the same block.
+These two are the same block, even though
 
 262
 00:29:28,009 --> 00:29:33,019
-though the lighting changed and the
-orientation changed and he's conjuncture
+he lighting changed and the orientation changed.
+And, his conjuncture
 
 263
 00:29:33,019 --> 00:29:40,720
-is that just like we thought told us
-it's the edges that define this the
+is that just like Hubel and Wiesel told us,
+it's the edges that define this the structure.
 
 264
 00:29:40,720 --> 00:29:46,419
-structure that the edges defying the
-laws shape and they don't change
+That the edges define the shape and they don't change,
 
 265
 00:29:46,419 --> 00:29:53,290
-relevant all these internal things so
-Larry Roberts Road a PhD dissertation to
+rather than all these internal things.
+So, Larry Roberts wrote a PhD dissertation to
 
 266
 00:29:53,289 --> 00:29:59,250
-just extract these edges you know if
+just extract these edges. You know if
 your work as a PhD student computer
 
 267
 00:29:59,250 --> 00:30:03,990
 vision this is like you know this is
-like undergraduate computer vision would
+like undergraduate computer vision wouldn't
 
 268
 00:30:03,990 --> 00:30:10,210
-have been had PhD theses but that was
-the first precursor computer vision PhD
+have been a PhD thesis but that was
+the first precursor computer vision PhD thesis.
 
 269
 00:30:10,210 --> 00:30:18,819
-theses like Robert since interest he
-gave up his computer vision afterwards
+And, Larry Roberts's interest
+he gave up his work in computer vision afterwards,
 
 270
 00:30:18,819 --> 00:30:27,189
-and DARPA I was one of the inventors of
-the internet we didn't do too badly by
+and went to DARPA.
+He was one of the inventors of the Internet. He didn't do too badly by
 
 271
 00:30:27,190 --> 00:30:34,490
-giving up computer vision but we always
-like to say that the birth of computer
+giving up computer vision.
+but we always like to say that the birthday of computer
 
 272
 00:30:34,490 --> 00:30:43,960
 vision as a modern field is in the
-summer of 1966 the summer of 1966 MIT
+summer of 1966. In the summer of 1966,
 
 273
 00:30:43,960 --> 00:30:49,548
-artificial intelligence lab was
-established before that actually for one
+MIT artificial intelligence lab was established.
+Before that actually for one
 
 274
 00:30:49,548 --> 00:30:55,819
-piece of history should feel proud of
-them for student this there are two
+piece of history you should feel proud of
+as Stanford student, this there are two
 
 275
 00:30:55,819 --> 00:31:02,579
@@ -1354,18 +1353,18 @@ established in the world in the early
 
 276
 00:31:02,579 --> 00:31:10,329
-1960's one by Marvin Minsky at MIT one
-by John McCarthy at suffered a stone for
+1960's, one by Marvin Minsky at MIT, one
+by John McCarthy at Stanford.
 
 277
 00:31:10,329 --> 00:31:15,369
-the artificial intelligence lab was
-established before the computer science
+At Stanford, the artificial intelligence lab was
+established before the computer science department
 
 278
 00:31:15,369 --> 00:31:21,479
-department and professor John McCarthy
-who founded and I love is the one who is
+and professor John McCarthy
+who founded AI Lab is the one who is
 
 279
 00:31:21,480 --> 00:31:22,490
@@ -1373,75 +1372,75 @@ responsible for
 
 280
 00:31:22,490 --> 00:31:26,450
-the term artificial intelligence so
-that's a little bit of a problem
+the term artificial intelligence.
+So, that's a little bit of a proud of Stanford history.
 
 281
 00:31:26,450 --> 00:31:31,720
-stempler history but anyway we have to
-give us credit for starting the field of
+But, anyway we have to give MIT this credit
+for starting the field of computer vision,
 
 282
 00:31:31,720 --> 00:31:41,380
-computer vision because in the summer of
-1966 a professor at MIT I decided it's
+because in the summer of 1966,
+a professor at MIT AI lab decided it's time to solve vision. 
 
 283
 00:31:41,380 --> 00:31:46,630
-time to salvage you know so I was
-established we will start to understand
+You know, so AI was established.
+We start to understand, you know, first all the logic and all this.
 
 284
 00:31:46,630 --> 00:31:55,010
-I think this proves probably invented at
-that time but anyway
+I think this proves probably invented at that time but anyway,
 
 285
 00:31:55,009 --> 00:32:01,109
-vision is so easy you open your eyes you
-see the world how can this be love one
+vision is so easy. You open your eyes,
+you see the world. How hard can this be?
 
 286
 00:32:01,109 --> 00:32:04,109
-summer so
+Let's solve in one summer.
+So, especially MIT students are smart, right?
 
 287
 00:32:04,109 --> 00:32:18,729
-so the summer vision project is an
-attempt to use our visual system this
+So, the summer vision project is an attempt
+to use our summer workers effectively
+in a construction of significant part of a visual system.
 
 288
 00:32:18,730 --> 00:32:24,329
-was the proposal from last number and
-maybe they didn't use their summer work
+This was the proposal from that summer
+and maybe they didn't use their summer workers effectively,
 
 289
 00:32:24,329 --> 00:32:30,490
-effectively but in any case how
-individual was not solved in that silver
+but in any case, computer vision was not solved in that summer.
 
 290
 00:32:30,490 --> 00:32:35,740
-since then they become the fastest
-growing field of computer vision and I
+Since then, they become the fastest
+growing field of computer vision and AI.
 
 291
 00:32:35,740 --> 00:32:43,679
-if you go to today's premium computer
-vision conferences cost CPR or ICC we we
+If you go to today's premium computer
+vision conferences called CVPR or ICCV,
 
 292
 00:32:43,679 --> 00:32:52,160
-have like 2000 to 2500 researchers
+we have like 2000 to 2500 researchers
 worldwide attending this conference and
 
 293
 00:32:52,160 --> 00:33:00,620
-very practical note 44 students if you
+very practical note for students if you
 are a good computer vision / machine
 
 294
-00:33:00,619 --> 00:33:05,369
+00:33:00,620 --> 00:33:05,369
 learning students you will not worry
 about jobs in Silicon Valley or or
 
@@ -1452,158 +1451,158 @@ the most exciting field but that was the
 
 296
 00:33:11,569 --> 00:33:19,210
-birth of computer vision which means
+birthday of computer vision which means
 this year is the fiftieth anniversary of
 
 297
 00:33:19,210 --> 00:33:25,829
 computer vision that's a very exciting
-year in computer vision I we have a
+year in computer vision and we have come
 
 298
 00:33:25,829 --> 00:33:28,529
-caller who long long way
+a long long way
 
 299
 00:33:28,529 --> 00:33:31,660
-ok so continued of computer vision
+ok so continue on the history of computer vision
 
 300
 00:33:31,660 --> 00:33:38,169
 this is a person to remember David Mark
-he he was also at MIT at that time
+he was also at MIT at that time
 
 301
 00:33:38,169 --> 00:33:50,240
-working with a number of shimon tommy
-tommy pope Jill and Mark himself died
+working with a number of very influential
+computer vision scientists like Shimon Ullman, Tommy Poggio.
+and Mark himself died
 
 302
 00:33:50,240 --> 00:33:58,808
-early in the seventies very influential
-book called vision it's a very book
+early in the seventies and he wrote very influential
+book called "Vision". It's a very thin book.
 
 303
 00:33:58,808 --> 00:34:08,148
-smart thinking about vision he took a
-lot of insights from your signs where he
+And David Mark's thinking about vision, he took a
+lot of insights from neuro-science.
 
 304
 00:34:08,148 --> 00:34:14,868
-said that he want reasonable give us the
-concept of simple structure regions
+We have already said that
+Hubel and Wiesel give us the concept of simple structure.
 
 305
 00:34:14,869 --> 00:34:16,539
-start with
+Vision starts with simple structure.
 
 306
 00:34:16,539 --> 00:34:23,259
-simple structure in today and start with
-a holistic fish or holistic not was mark
+It didn't start with a holistic fish or holistic mouse.
 
 307
 00:34:23,260 --> 00:34:28,679
-give us the next important insight and
-these two inside together is the
+David Mark gave us the next important insight
+and these two insights together is the
 
 308
 00:34:28,679 --> 00:34:35,740
 beginning of deep learning architecture
-is that vision is hierarchical you know
+is that vision is hierarchical.
 
 309
-00:34:35,739 --> 00:34:44,029
-so you will have easily said ok we start
-simple but this major world is extremely
+00:34:35,740 --> 00:34:44,029
+You know so, Hubel and Wiesel said ok we start simple,
+but Hubel and Wiesel didn't say we end simple.
+This visual world is extremely complex.
 
 310
 00:34:44,030 --> 00:34:49,540
-complex in fact I take a picture a
-regular picture today with my eiffel
+In fact, I take a picture, a regular picture today with my iPhone.
 
 311
-00:34:49,539 --> 00:34:58,309
-there is no my iPhone's resolution let's
-suppose it's like turned up exhaust the
+00:34:49,540 --> 00:34:58,309
+There is, I don't know my iPhone's resolution.
+Let's suppose it's like 10 mega-pixels.
 
 312
 00:34:58,309 --> 00:35:05,059
-potential combination of pixels or
-picture in that is bigger than the total
+The potential combination of pixels to form
+a picture in that is bigger than the total
 
 313
 00:35:05,059 --> 00:35:11,429
-number of atoms in the universe that's
-how complex vision can be is it's it's
+number of atoms in the universe.
+That's how complex vision can be.
 
 314
 00:35:11,429 --> 00:35:18,539
-really really complex human beings are
-told us they are simple David Mark told
+It's really really complex.
+So, Hubel and Wiesel told us to start simple.
+David Mark told 
 
 315
 00:35:18,539 --> 00:35:25,130
-us build a hierarchical model of course
-there mark didn't tell us to build it in
+us build a hierarchical model. Of course
+David Mark didn't tell us to build it in
 
 316
 00:35:25,130 --> 00:35:29,400
-the coalition on your network which will
-cover for the rest of the quarter but
+the covolution neural network which will
+cover for the rest of the quarter
 
 317
 00:35:29,400 --> 00:35:36,990
-his ideas is to represent or to think
-about it image we think about it in
+but his ideas is this. To represent or to think
+about an image, we think about it in
 
 318
 00:35:36,989 --> 00:35:42,129
-several layers the first one he thinks
+several layers. The first one he thinks
 we should think about that edge image
 
 319
 00:35:42,130 --> 00:35:49,110
-which is clearly an inspiration noted
-took the inspiration from these oh and
+which is clearly an inspiration,
+took the inspiration from Hubel and Wiesel and
 
 320
 00:35:49,110 --> 00:35:52,579
-he personally called this the primal
-sketch
+he personally called this the Primal Sketch.
 
 321
 00:35:52,579 --> 00:35:55,730
-you know the name is Sophie explain it
+You know, the name is self-explainary.
 
 322
 00:35:55,730 --> 00:36:02,400
-explained every now and then you think
-about one-half the this is work you
+and then you think about 2.5D 
+This is where you
 
 323
 00:36:02,400 --> 00:36:08,829
-start to Rick reconcile your 2d image
-with the 3d world you recognize there is
+start to reconcile your 2D image
+with the 3D world. You recognize there is
 
 324
 00:36:08,829 --> 00:36:15,679
-layers right I look at you right now I
-don't think half of you only has upheld
+layers right? I look at you right now.
+I don't think half of you only has 
 
 325
 00:36:15,679 --> 00:36:17,239
-in the neck
+ head and the neck
 
 326
 00:36:17,239 --> 00:36:22,799
-even though that's all I see there is I
-know you're all concluded by the row in
+even though that's all I see, but there is,
+I know you're occluded by the row in
 
 327
 00:36:22,800 --> 00:36:29,680
-front of you and this challenge will
-post problem to solve
+front of you and this is the fundamental challenge of the Vision.
+We have ill-post problem to solve
 
 328
 00:36:29,679 --> 00:36:38,118
