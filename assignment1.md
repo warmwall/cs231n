@@ -18,12 +18,16 @@ permalink: /assignment1/
 ## 설정
 이 과제는 로컬 머신에서 직접 실행하거나, [Terminal](https://www.terminal.com/)을 통해 가상 머신에서 수행하는 두 가지 방법으로 진행할 수 있습니다.
 
+※ 이 과제에 필요한 모든 자료는 [여기](/assignments2016/assignment1)에서 받으실 수 있습니다.
+
 ## 로컬 머신에서 직접 실행
 
 **코드 가져오기**
+
 [Starter Code 다운로드](http://vision.stanford.edu/teaching/cs231n/assignment1.zip).
 
 **[선택] virtual environment 설정**
+
 Starter Code를 압축 해제한 뒤에 [virtual environment](http://docs.python-guide.org/en/latest/dev/virtualenvs/)을 만들 수도 있습니다. Visual environment를 사용하지 않으면 직접 본인 컴퓨터에 모든 dependency들을 설치해야 합니다.
 
 visual environment 설정 방법은 아래와 같습니다.
@@ -37,6 +41,7 @@ pip install -r requirements.txt  # dependency 설치
 ~~~
 
 **데이터 다운로드**
+
 starter code를 다운로드 하면, CIFAR-10 데이터셋도 다운로드 해야 합니다.
 `assignment1` 디렉토리에서 다음을 실행합니다.
 
